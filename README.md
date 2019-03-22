@@ -11,7 +11,7 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 - [Beginning](#Beginning)
   - [Installation](#Installation)
   - [Quick Start](#Quick-Start)
-  - [Request vs. Subscription](#Request vs. Subscription)
+  - [Request vs. Subscription](#Request-vs.-Subscription)
   - [Clients](#Clients)
   - [Create client](#create-client)
   - [Custom host](#custom-host)
@@ -47,8 +47,8 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
     - [Reply loan](#reply-loan)
     - [Loan history](#loan-history)
 - [Subscription example](#Subscription-example)
-  - [Implement the listener](#Implement the listener)
-  - [Subscribe market data](#Subscribe market data)
+  - [Implement the listener](#Implement-the0listener)
+  - [Subscribe market data](#Subscribe-market-data)
   - [Subscribe order update](#subscribe-order-update)
   - [Subscribe account change](#subscribe-account-change)
   - [Unsubscribe](#unsubscribe)
@@ -228,7 +228,7 @@ subscription_client.subscribe_trade_event("btcusdt,ethusdt", callback)
 
 ### Error handling
 
-####For request
+#### For request
 
 In error case, such as you set the invalid symbol to ```get_best_quote()```. The ```HuobiApiException``` will be thrown. See below example:
 
@@ -243,7 +243,7 @@ except HuobiApiException as e:
 
 ```
 
-####For Subscription
+#### For Subscription
 
 If you want to check the error, you should implement your ```error_handler```. See below example:
 
@@ -348,7 +348,8 @@ print(trade_statistics.open)
 *Authentication is required.*
 
 ```python
-???????
+balance = request_client.get_account_balance_by_account_type(AccountType.SPOT)
+print(balance.get(0).get(0).balance)
 ```
 
 ### Wallet
