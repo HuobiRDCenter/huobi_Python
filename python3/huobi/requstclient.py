@@ -175,7 +175,7 @@ class RequestClient(object):
         """
         return call_sync(self.request_impl.apply_loan(symbol, currency, amount))
 
-    def repay_loan(self, load_id: 'int', amount: 'float'):
+    def repay_loan(self, load_id: 'int', amount: 'float') -> int:
         """
         Get the margin loan records.
 
@@ -183,6 +183,7 @@ class RequestClient(object):
         :param amount: The amount of currency to repay. (mandatory)
         :return: The margin order id.
         """
+        return call_sync(self.request_impl.repay_loan(load_id, amount))
 
     def get_loan_history(self, symbol: 'str', start_date: 'str' = None, end_date: 'str' = None,
                          status: 'LoanOrderState' = None, from_id: 'int' = None, size: 'int' = None) -> list:
@@ -297,7 +298,7 @@ class RequestClient(object):
         Request to cancel open orders.
 
         :param symbol: The symbol, like "btcusdt". (mandatory)
-        :param account_type: ccount type. (mandatory)
+        :param account_type: Account type. (mandatory)
         :param side: The order side, buy or sell. If no side defined, will cancel all open orders of the account. (optional)
         :param size: The number of orders to cancel. Range is [1, 100]. Default is 100. (optional)
         :return: Status of batch cancel result.
