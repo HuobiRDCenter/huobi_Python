@@ -46,8 +46,8 @@ class RestApiRequestImpl(object):
     def get_exchange_timestamp(self):
         request = self.__create_request_by_get("/v1/common/timestamp")
 
-        def parse(json):
-            return convert_cst_in_millisecond_to_utc(json["data"])
+        def parse(json_wrapper):
+            return convert_cst_in_millisecond_to_utc(json_wrapper.get_int("data"))
 
         request.json_parser = parse
         return request
