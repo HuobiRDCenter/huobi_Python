@@ -54,6 +54,8 @@ class BalanceType:
     FROZEN = "frozen"
     LOAN = "loan"
     INTEREST = "interest"
+    LOAN_AVAILABLE = "loan-available"
+    TRANSFER_OUT_AVAILABLE = "transfer-out-available"
     INVALID = None
 
 
@@ -92,8 +94,14 @@ class OrderSource:
     WEB = "web"
     API = "api"
     APP = "app"
-    MARGIN_API = "margin-api"
+    FL_SYS = "fl-sys"
+    FL_MGT = "fl-mgt"
+    SPOT_WEB = "spot-web"
     SPOT_API = "spot-api"
+    SPOT_APP = "spot-app"
+    MARGIN_API = "margin-api"
+    MARGIN_WEB = "margin-web"
+    MARGIN_APP = "margin-app"
     INVALID = None
 
 
@@ -148,3 +156,10 @@ class BalanceMode:
     AVAILABLE = "0"
     TOTAL = "1"
     INVALID = None
+
+
+class QueryDirection:
+    PREV = "prev"
+    NEXT = "next"
+    INVALID = None
+

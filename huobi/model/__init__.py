@@ -28,5 +28,7 @@ from huobi.model.orderupdateevent import OrderUpdateEvent
 from huobi.model.accountevent import AccountEvent
 from huobi.model.accountchange import AccountChange
 from huobi.model.tradestatisticsevent import TradeStatisticsEvent
+from huobi.model.marginbalancedetail import MarginBalanceDetail
+
 
 

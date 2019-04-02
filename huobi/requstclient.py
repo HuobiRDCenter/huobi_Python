@@ -186,7 +186,8 @@ class RequestClient(object):
         return call_sync(self.request_impl.repay_loan(load_id, amount))
 
     def get_loan_history(self, symbol: 'str', start_date: 'str' = None, end_date: 'str' = None,
-                         status: 'LoanOrderState' = None, from_id: 'int' = None, size: 'int' = None) -> list:
+                         status: 'LoanOrderState' = None, from_id: 'int' = None,
+                         size: 'int' = None, direction: 'QueryDirection' = None) -> list:
         """
         Get the margin loan records.
 
@@ -196,9 +197,10 @@ class RequestClient(object):
         :param status: The loan order states, it could be created, accrual, cleared or invalid. (optional)
         :param from_id: Search order id to begin with. (optional)
         :param size: The number of orders to return.. (optional)
+        :param direction: The query direction, prev or next. (optional)
         :return: The list of the margin loan records.
         """
-        return call_sync(self.request_impl.get_loan(symbol, start_date, end_date, status, from_id, size))
+        return call_sync(self.request_impl.get_loan(symbol, start_date, end_date, status, from_id, size, direction))
 
     def get_last_trade_and_best_quote(self, symbol: 'str') -> LastTradeAndBestQuote:
         """
@@ -458,3 +460,12 @@ class RequestClient(object):
         :return: The list of candlestick/kline data.
         """
         return call_sync(self.request_impl.get_etf_candlestick(etf_symbol, interval, size))
+
+    def get_margin_balance_detail(self, symbol: 'str' ) -> list:
+        """
+        Get the Balance of the Margin Loan Account.
+
+        :param symbol: The currency, like "btc". (mandatory)
+        :return: The margin loan account detail list.
+        """
+        return call_sync(self.request_impl.get_margin_balance_detail(symbol))

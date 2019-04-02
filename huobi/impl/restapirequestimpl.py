@@ -243,7 +243,7 @@ class RestApiRequestImpl(object):
         builder.put_url("currency", currency)
         builder.put_url("type", "withdraw")
         builder.put_url("from", from_id)
-        builder.put_url("size", size);
+        builder.put_url("size", size)
         request = self.__create_request_by_get_with_signature("/v1/query/deposit-withdraw", builder)
 
         def parse(json_wrapper):
@@ -317,7 +317,7 @@ class RestApiRequestImpl(object):
                 balances.append(balance)
             return balances
 
-        request.json_parser = parse;
+        request.json_parser = parse
         return request
 
     def transfer(self, symbol, from_account, to_account, currency, amount):
@@ -376,7 +376,7 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
-    def get_loan(self, symbol, start_date=None, end_date=None, states=None, from_id=None, size=None):
+    def get_loan(self, symbol, start_date=None, end_date=None, states=None, from_id=None, size=None, direction=None):
         check_symbol(symbol)
         start_date = format_date(start_date, "start_date")
         end_date = format_date(end_date, "end_date")
@@ -387,6 +387,7 @@ class RestApiRequestImpl(object):
         builder.put_url("states", states)
         builder.put_url("from", from_id)
         builder.put_url("size", size)
+        builder.put_url("direct", direction)
         request = self.__create_request_by_get_with_signature("/v1/margin/loan-orders", builder)
 
         def parse(json_wrapper):
@@ -522,10 +523,10 @@ class RestApiRequestImpl(object):
         user = account_info_map.get_user(self.__api_key)
         account = user.get_account_by_type(account_type)
         builder = UrlParamsBuilder()
-        builder.put_url("account-id", account.id)
-        builder.put_url("symbol", symbol)
-        builder.put_url("side", side)
-        builder.put_url("size", size)
+        builder.put_post("account-id", account.id)
+        builder.put_post("symbol", symbol)
+        builder.put_post("side", side)
+        builder.put_post("size", size)
         request = self.__create_request_by_post_with_signature("/v1/order/orders/batchCancelOpenOrders", builder)
 
         def parse(json_wrapper):
@@ -886,3 +887,37 @@ class RestApiRequestImpl(object):
 
         request.json_parser = parse
         return request
+
+    def get_margin_balance_detail(self, symbol):
+        check_symbol(symbol)
+        builder = UrlParamsBuilder()
+        builder.put_url("symbol", symbol)
+        request = self.__create_request_by_get_with_signature("/v1/margin/accounts/balance", builder)
+
+        def parse(json_wrapper):
+            margin_balance_detail_list = list()
+            data_array = json_wrapper.get_array("data")
+            for item_in_data in data_array.get_items():
+                margin_balance_detail = MarginBalanceDetail()
+                margin_balance_detail.id = item_in_data.get_int("id")
+                margin_balance_detail.type = item_in_data.get_string("type")
+                margin_balance_detail.symbol = item_in_data.get_string("symbol")
+                margin_balance_detail.state = item_in_data.get_string("state")
+                margin_balance_detail.fl_price = item_in_data.get_float("fl-price")
+                margin_balance_detail.fl_type = item_in_data.get_string("fl-type")
+                margin_balance_detail.risk_rate = item_in_data.get_float("risk-rate")
+                balance_list = list()
+                list_array = item_in_data.get_array("list")
+                for item_in_list in list_array.get_items():
+                    balance = Balance()
+                    balance.currency = item_in_list.get_string("currency")
+                    balance.balance_type = item_in_list.get_string("type")
+                    balance.balance = item_in_list.get_float("balance")
+                    balance_list.append(balance)
+                margin_balance_detail.sub_account_balance_list = balance_list
+                margin_balance_detail_list.append(margin_balance_detail)
+            return margin_balance_detail_list
+
+        request.json_parser = parse
+        return request
+

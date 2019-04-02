@@ -71,10 +71,10 @@ The example code is in python3/example.
 
 
 
-<TBD>
+To install by source code, run below command
 
-```xml
-pip
+```python
+python setup.py install
 ```
 
 
