@@ -16,7 +16,7 @@ class RestApiRequestImpl(object):
         self.__secret_key = secret_key
         self.__server_url = server_url
 
-    def __create_request_by_get(self, url, builder=UrlParamsBuilder()):
+    def __create_request_by_get(self, url, builder):
         request = RestApiRequest()
         request.method = "GET"
         request.host = self.__server_url
@@ -34,7 +34,7 @@ class RestApiRequestImpl(object):
         request.url = url + builder.build_url()
         return request
 
-    def __create_request_by_get_with_signature(self, url, builder=UrlParamsBuilder()):
+    def __create_request_by_get_with_signature(self, url, builder):
         request = RestApiRequest()
         request.method = "GET"
         request.host = self.__server_url
@@ -44,7 +44,7 @@ class RestApiRequestImpl(object):
         return request
 
     def get_exchange_timestamp(self):
-        request = self.__create_request_by_get("/v1/common/timestamp")
+        request = self.__create_request_by_get("/v1/common/timestamp", UrlParamsBuilder())
 
         def parse(json_wrapper):
             return convert_cst_in_millisecond_to_utc(json_wrapper.get_int("data"))
@@ -218,7 +218,7 @@ class RestApiRequestImpl(object):
         return request
 
     def get_accounts(self):
-        request = self.__create_request_by_get_with_signature("/v1/account/accounts")
+        request = self.__create_request_by_get_with_signature("/v1/account/accounts", UrlParamsBuilder())
 
         def parse(json_wrapper):
             account_list = list()
