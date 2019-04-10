@@ -59,7 +59,7 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 ### Installation
 
-*The SDK is compiled by Python 3.5 and above*
+*The SDK is compiled by Python 3.7 and above*
 
 #### Pip
 
@@ -74,7 +74,7 @@ The example code is in python3/example.
 To install by source code, run below command
 
 ```python
-python setup.py install
+python3 setup.py install
 ```
 
 
