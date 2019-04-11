@@ -5,5 +5,5 @@ setup(
     name="huobi-client",
     version="0.1",
     packages=['huobi'],
-    install_requires=['requests', 'apscheduler', 'websocket', 'urllib3']
+    install_requires=['requests', 'apscheduler', 'websocket', 'websocket-client', 'urllib3']
 )
