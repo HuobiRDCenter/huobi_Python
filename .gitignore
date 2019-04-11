@@ -1,3 +1,7 @@
 venv/
 *.pyc
 .idea/
+build/
+dist/
+huobi_client.egg-info/
+
