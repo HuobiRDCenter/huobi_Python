@@ -243,7 +243,7 @@ class RequestClient(object):
         accounts = call_sync(self.request_impl.get_accounts())
         for item in accounts:
             if account_type == item.account_type:
-                balances = self.request_impl.get_balance(item)
+                balances = call_sync(self.request_impl.get_balance(item))
                 item.balances = balances
                 return item
 
