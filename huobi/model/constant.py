@@ -23,6 +23,12 @@ class TradeDirection:
     INVALID = None
 
 
+class TradeOffset:
+    OPEN = "open"
+    CLOSE = "close"
+    INVALID = None
+
+
 class OrderType:
     SELL_LIMIT = "sell-limit"
     BUY_LIMIT = "buy-limit"
@@ -41,6 +47,17 @@ class AccountType:
     OTC = "otc"
     POINT = "point"
     INVALID = None
+
+class ContractType:
+    """
+    合约类型 ("this_week":当周 "next_week":下周 "quarter":季度)
+    """
+    THIS_WEEK = "this_week"
+    NEXT_WEEK = "next_week"
+    QUARTER = "quarter"
+
+
+
 
 
 class AccountState:

@@ -35,7 +35,7 @@ class SubscriptionClient(object):
         self.__secret_key = secret_key
         self.websocket_request_impl = WebsocketRequestImpl(self.__api_key)
         self.connections = list()
-        self.uri = "wss://api.huobi.pro/"
+        self.uri = "wss://api.hbdm.com"
         is_auto_connect = True
         receive_limit_ms = 60000
         connection_delay_failure = 15

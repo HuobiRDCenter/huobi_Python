@@ -8,8 +8,8 @@ def check_response(json_wrapper):
     if json_wrapper.contain_key("status"):
         status = json_wrapper.get_string("status")
         if status == "error":
-            err_code = json_wrapper.get_string("err-code")
-            err_msg = json_wrapper.get_string("err-msg")
+            err_code = json_wrapper.get_string("err_code")
+            err_msg = json_wrapper.get_string("err_msg")
             raise HuobiApiException(HuobiApiException.EXEC_ERROR,
                                     "[Executing] " + err_code + ": " + err_msg)
         elif status != "ok":
@@ -35,6 +35,7 @@ def call_sync(request):
         return request.json_parser(json_wrapper)
     elif request.method == "POST":
         response = requests.post(request.host + request.url, data=json.dumps(request.post_body), headers=request.header)
+        print("response.text:%s" % (response.text))
         json_wrapper = parse_json_from_string(response.text)
         check_response(json_wrapper)
         return request.json_parser(json_wrapper)

@@ -448,6 +448,91 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
+    def create_contract_order(self
+                              , symbol: 'str'
+                              , contract_type: 'ContractType'
+                              , contract_code: 'str'
+                              , client_order_id: 'str'
+                              , price: 'float'
+                              , volume: 'long'
+                              , direction: 'TradeDirection'
+                              , offset: 'TradeOffset'
+                              , lever_rate: 'str'
+                              , order_price_type: 'str'
+                              ) -> int:
+        check_symbol(symbol)
+        check_should_not_none(contract_type, "contract_type")
+        check_should_not_none(price, "price")
+        check_should_not_none(volume, "volume")
+        check_should_not_none(direction, "direction")
+        check_should_not_none(offset, "offset")
+        check_should_not_none(lever_rate, "lever_rate")
+        check_should_not_none(order_price_type, "order_price_type")
+
+        # user = account_info_map.get_user(self.__api_key)
+        # account = user.get_account_by_type(AccountType.SPOT)
+        source = "api"
+
+        builder = UrlParamsBuilder()
+        builder.put_post("symbol",symbol)
+        builder.put_post("contract_type",contract_type)
+        builder.put_post("contract_code",contract_code)
+        builder.put_post("client_order_id",client_order_id)
+        builder.put_post("price",price)
+        builder.put_post("volume",volume)
+        builder.put_post("direction",direction)
+        builder.put_post("offset",offset)
+        builder.put_post("lever_rate",lever_rate)
+        builder.put_post("order_price_type",order_price_type)
+        builder.put_post("source", source)
+        request = self.__create_request_by_post_with_signature("/api/v1/contract_order", builder)
+
+        def parse(json_wrapper):
+            return json_wrapper.get_object("data").get_int("order_id")
+
+        request.json_parser = parse
+        return request
+
+    def cancel_contract_all(self
+                            , symbol
+                            , contract_code
+                            , contract_type
+                            ) -> int:
+        check_symbol(symbol)
+
+        builder = UrlParamsBuilder()
+        builder.put_post("symbol",symbol)
+        builder.put_post("contract_code",contract_code)
+        builder.put_post("contract_type",contract_type)
+        request = self.__create_request_by_post_with_signature("/api/v1/contract_cancelall", builder)
+
+        def parse(json_wrapper):
+            return json_wrapper.get_array("data")
+
+        request.json_parser = parse
+        return request
+
+    def get_contract_orders(self
+                            , order_id
+                            , client_order_id
+                            , symbol: 'str'
+                            ) -> int:
+        check_symbol(symbol)
+
+        builder = UrlParamsBuilder()
+        builder.put_post("order_id",order_id)
+        builder.put_post("client_order_id",client_order_id)
+        builder.put_post("symbol",symbol)
+
+        request = self.__create_request_by_post_with_signature("/api/v1/contract_order_info", builder)
+
+        def parse(json_wrapper):
+            return json_wrapper.get_array("data")
+
+        request.json_parser = parse
+        return request
+
+
     def get_open_orders(self, symbol, account_type, size=None, side=None):
         check_symbol(symbol)
         check_range(size, 1, 2000, "size")

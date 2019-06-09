@@ -17,7 +17,7 @@ class RequestClient(object):
         """
         api_key = None
         secret_key = None
-        url = "https://api.huobi.pro"
+        url = "https://api.hbdm.com"
         if "api_key" in kwargs:
             api_key = kwargs["api_key"]
         if "secret_key" in kwargs:
@@ -261,6 +261,55 @@ class RequestClient(object):
         """
         return call_sync(self.request_impl.create_order(symbol, account_type, order_type, amount, price))
 
+    def create_contract_order(self, symbol: 'str'
+                     , contract_type: 'ContractType'
+                     , contract_code: 'str'
+                     , client_order_id: 'str'
+                     , price: 'float'
+                     , volume: 'long'
+                     , direction: 'TradeDirection'
+                     , offset: 'TradeOffset'
+                     , lever_rate: 'str'
+                     , order_price_type: 'str'
+                     ) -> int:
+        """
+        symbol	            string	true	"BTC","ETH"...
+        contract_type	    string	true	合约类型 ("this_week":当周 "next_week":下周 "quarter":季度)
+        contract_code	    string	true	BTC180914
+        client_order_id	    long	false	客户自己填写和维护，这次一定要大于上一次
+        price	            decimal	true	价格
+        volume	            long	true	委托数量(张)
+        direction	        string	true	"buy":买 "sell":卖
+        offset	            string	true	"open":开 "close":平
+        lever_rate	        int	    true	杠杆倍数[“开仓”若有10倍多单，就不能再下20倍多单]
+        order_price_type	string	true	订单报价类型 "limit":限价 "opponent":对手价 "post_only":只做Maker单
+        """
+        return call_sync(self.request_impl.create_contract_order(symbol, contract_type, contract_code, client_order_id, price, volume, direction, offset, lever_rate, order_price_type))
+
+    def cancel_contract_all(self
+                            , symbol
+                            , contract_code
+                            , contract_type: 'ContractType'
+                              ) -> int:
+        """
+        symbol	        true	string	品种代码，如"BTC","ETH"...
+        contract_code	false	string	合约code
+        contract_type	false	string	合约类型
+        """
+        return call_sync(self.request_impl.cancel_contract_all(symbol, contract_code, contract_type))
+
+    def get_contract_orders(self
+                            , order_id
+                            , client_order_id
+                            , symbol: 'str'
+                            ) -> int:
+        """
+        order_id	false	string	订单ID(多个订单ID中间以","分隔,一次最多允许查询20个订单)
+        client_order_id	false	string	客户订单ID(多个订单ID中间以","分隔,一次最多允许查询20个订单)
+        symbol	true	string	"BTC","ETH"...
+        """
+        return call_sync(self.request_impl.get_contract_orders(order_id, client_order_id, symbol))
+
     def get_open_orders(self, symbol: 'str', account_type: 'AccountType', side: 'OrderSide' = None,
                         size: 'int' = 10) -> list:
         """
@@ -450,7 +499,7 @@ class RequestClient(object):
         """
         return call_sync(self.request_impl.get_etf_swap_config(etf_symbol, offset, size))
 
-    def get_etf_candlestick(self, etf_symbol: 'str', interval: 'CandlestickInterval', size: 'int'=None) -> list:
+    def get_etf_candlestick(self, etf_symbol: 'str', interval: 'CandlestickInterval', size: 'int' = None) -> list:
         """
         Get the latest candlestick/kline for the etf.
 
@@ -461,7 +510,7 @@ class RequestClient(object):
         """
         return call_sync(self.request_impl.get_etf_candlestick(etf_symbol, interval, size))
 
-    def get_margin_balance_detail(self, symbol: 'str' ) -> list:
+    def get_margin_balance_detail(self, symbol: 'str') -> list:
         """
         Get the Balance of the Margin Loan Account.
 
