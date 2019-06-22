@@ -533,6 +533,31 @@ class RestApiRequestImpl(object):
         return request
 
 
+    def get_market_depth(self
+                              , symbol: 'str'
+                              , type: 'str'
+                              ) -> int:
+        """
+        :param symbol:如"BTC_CW"表示BTC当周合约，"BTC_NW"表示BTC次周合约，"BTC_CQ"表示BTC季度合约
+        :param type:(150档数据) step0, step1, step2, step3, step4, step5（合并深度1-5）；step0时，不合并深度, (20档数据) step6, step7, step8, step9, step10, step11（合并深度7-11）；step6时，不合并深度
+        :return:
+            ch	true	string	数据所属的 channel，格式： market.period
+            status	true	string	请求处理结果	"ok" , "error"
+            asks	true	object	卖盘,[price(挂单价), vol(此价格挂单张数)], 按price升序
+            bids	true	object	买盘,[price(挂单价), vol(此价格挂单张数)], 按price降序
+            mrid	true	string	订单ID
+            ts	true	number	响应生成时间点，单位：毫秒
+        """
+        builder = UrlParamsBuilder()
+        builder.put_url("symbol",symbol)
+        builder.put_url("type",type)
+        request = self.__create_request_by_get("/market/depth", builder)
+        def parse(json_wrapper):
+            return json_wrapper.get_object("tick")
+
+        request.json_parser = parse
+        return request
+
     def get_open_orders(self, symbol, account_type, size=None, side=None):
         check_symbol(symbol)
         check_range(size, 1, 2000, "size")
