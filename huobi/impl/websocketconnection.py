@@ -165,8 +165,8 @@ class WebsocketConnection:
         #print("RX: " + gzip.decompress(message).decode("utf-8"))
 
         if json_wrapper.contain_key("status") and json_wrapper.get_string("status") != "ok":
-            error_code = json_wrapper.get_string_or_default("err-code", "Unknown error")
-            error_msg = json_wrapper.get_string_or_default("err-msg", "Unknown error")
+            error_code = json_wrapper.get_string_or_default("err_code", "Unknown error")
+            error_msg = json_wrapper.get_string_or_default("err_msg", "Unknown error")
             self.on_error(error_code + ": " + error_msg)
         elif json_wrapper.contain_key("op"):
             op = json_wrapper.get_string("op")

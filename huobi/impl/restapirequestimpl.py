@@ -553,10 +553,60 @@ class RestApiRequestImpl(object):
         builder.put_url("type",type)
         request = self.__create_request_by_get("/market/depth", builder)
         def parse(json_wrapper):
-            return json_wrapper.get_object("tick")
+            return json_wrapper.get_object("tick").__dict__['json_object']
 
         request.json_parser = parse
         return request
+
+    def get_contract_openorders(self
+                         , symbol: 'str'
+                         , page_index: 'int'
+                         , page_size: 'int'
+                         ) -> int:
+        """
+        :param symbol	true	string	品种代码		"BTC","ETH"...
+        :param page_index	false	int	页码，不填默认第1页	1
+        :param page_size	false	int			不填默认20，不得多于50
+        :return:
+            <list>(属性名称: data)
+                symbol	true	string	品种代码
+                contract_type	true	string	合约类型	当周:"this_week", 次周:"next_week", 季度:"quarter"
+                contract_code	true	string	合约代码	"BTC180914" ...
+                volume	true	decimal	委托数量
+                price	true	decimal	委托价格
+                order_price_type	true	string	订单报价类型 "limit":限价 "opponent":对手价 "post_only":只做maker单,post only下单只受用户持仓数量限制
+                direction	true	string	"buy":买 "sell":卖
+                offset	true	string	"open":开 "close":平
+                lever_rate	true	int	杠杆倍数	1\5\10\20
+                order_id	true	long	订单ID
+                client_order_id	true	long	客户订单ID
+                created_at	true	long	订单创建时间
+                trade_volume	true	decimal	成交数量
+                trade_turnover	true	decimal	成交总金额
+                fee	true	decimal	手续费
+                trade_avg_price	true	decimal	成交均价
+                margin_frozen	true	decimal	冻结保证金
+                profit	true	decimal	收益
+                status	true	int	订单状态	(3未成交 4部分成交 5部分成交已撤单 6全部成交 7已撤单)
+                order_source	true	string	订单来源
+            </list>
+            total_page	true	int	总页数
+            current_page	true	int	当前页
+            total_size	true	int	总条数
+        """
+        builder = UrlParamsBuilder()
+        builder.put_post("symbol",symbol)
+        builder.put_post("type",type)
+        request = self.__create_request_by_post_with_signature("/api/v1/contract_openorders", builder)
+
+        def parse(json_wrapper):
+            return json_wrapper.get_object("data").__dict__['json_object']
+
+        request.json_parser = parse
+        return request
+
+
+
 
     def get_open_orders(self, symbol, account_type, size=None, side=None):
         check_symbol(symbol)

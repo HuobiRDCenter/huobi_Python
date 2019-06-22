@@ -327,6 +327,18 @@ class RequestClient(object):
         """
         return call_sync(self.request_impl.get_market_depth(symbol, type))
 
+    def get_contract_openorders(self
+                                , symbol: 'str'
+                                , page_index: 'int'
+                                , page_size: 'int'
+                                ) -> int:
+        """
+        :param symbol	true	string	品种代码		"BTC","ETH"...
+        :param page_index	false	int	页码，不填默认第1页	1
+        :param page_size	false	int			不填默认20，不得多于50
+        """
+        return call_sync(self.request_impl.get_contract_openorders(symbol, page_index, page_size))
+
     def get_open_orders(self, symbol: 'str', account_type: 'AccountType', side: 'OrderSide' = None,
                         size: 'int' = 10) -> list:
         """
