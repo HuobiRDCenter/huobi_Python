@@ -50,7 +50,7 @@ class SubscriptionClient(object):
         self.__watch_dog = WebSocketWatchDog(is_auto_connect, receive_limit_ms, connection_delay_failure)
 
         try:
-            host = urllib.parse.urlparse(uri).hostname
+            host = urllib.parse.urlparse(self.uri).hostname
             impl = RestApiRequestImpl(api_key, secret_key, "https://" + host)
             account_info_map.update_user_info(api_key, impl)
         except Exception:
