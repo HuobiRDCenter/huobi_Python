@@ -29,6 +29,7 @@ data = '''
 
 
 class TestGetOrders(unittest.TestCase):
+
     @classmethod
     def setUpClass(cls):
         user = User()
@@ -47,8 +48,7 @@ class TestGetOrders(unittest.TestCase):
     def test_request(self):
         impl = RestApiRequestImpl("12345", "67890")
         request = impl.get_order("htbtc", 24962048654)
-        url = "/v1/order/orders/()"
-        url = url.format(24962048654)
+        url = "/v1/order/orders/24962048654"
         self.assertEqual("GET", request.method)
         self.assertTrue(request.url.find("Signature") != -1)
         self.assertTrue(request.url.find(url) != -1)

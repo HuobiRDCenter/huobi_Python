@@ -542,7 +542,7 @@ class RestApiRequestImpl(object):
     def get_order(self, symbol, order_id):
         check_symbol(symbol)
         check_should_not_none(order_id, "order_id")
-        path = "/v1/order/orders/()"
+        path = "/v1/order/orders/{}"
         path = path.format(order_id)
         request = self.__create_request_by_get_with_signature(path, UrlParamsBuilder())
 
