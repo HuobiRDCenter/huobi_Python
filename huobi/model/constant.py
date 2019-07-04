@@ -157,6 +157,10 @@ class BalanceMode:
     TOTAL = "1"
     INVALID = None
 
+class OperateMode:
+    PING = "ping"
+    PONG = "pong"
+    INVALID = None
 
 class QueryDirection:
     PREV = "prev"
