@@ -14,3 +14,4 @@ i = 0
 for entry in depth.asks:
     i = i + 1
     print(str(i) + ": price: " + str(entry.price) + ", amount: " + str(entry.amount))
+
