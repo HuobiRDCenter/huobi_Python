@@ -30,3 +30,6 @@ class MatchResult:
         self.source = OrderSource.INVALID
         self.symbol = ""
         self.order_type = OrderType.INVALID
+        self.role = ""
+        self.filled_points = ""
+        self.fee_deduct_currency = ""

@@ -167,3 +167,6 @@ class QueryDirection:
     NEXT = "next"
     INVALID = None
 
+class TransferFuturesPro:
+    TO_PRO = "futures-to-pro"
+    TO_FETURES ="pro-to-futures"

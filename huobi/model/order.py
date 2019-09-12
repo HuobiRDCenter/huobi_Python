@@ -37,3 +37,10 @@ class Order:
         self.filled_fees = 0.0
         self.source = OrderSource.INVALID
         self.state = OrderState.INVALID
+        self.stop_price = ""
+        self.type = ""
+        self.next_time = 0
+        self.operator=""
+
+
+
