@@ -13,7 +13,8 @@ class Symbol:
         value_precision : value precision
         min_order_amt : minimum volume limit only used in limit-order and sell-market order
         max_order_amt : Maximum volume
-        min_order_value :
+        min_order_value : Minimum order amount
+        leverage_ratio : Leverage ratio for symbol
     """
 
     def __init__(self):

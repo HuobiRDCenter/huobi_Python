@@ -20,6 +20,9 @@ class Order:
         filled_fees: The transaction fee paid so far.
         source: The source where the order was triggered, possible values: sys, web, api, app.
         state: The order state: submitted, partial-filled, cancelling, filled, canceled.
+        stop_price : stop price used for buy-stop-limit，sell-stop-limit
+        operator : only [gte] and [lte] to trigger buy-stop-limit，sell-stop-limit
+        type : order type and value as below : buy-market, sell-market, buy-limit, sell-limit, buy-ioc, sell-ioc， buy-stop-limit，sell-stop-limit
     """
 
     def __init__(self):
