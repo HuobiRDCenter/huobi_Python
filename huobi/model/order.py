@@ -22,7 +22,6 @@ class Order:
         state: The order state: submitted, partial-filled, cancelling, filled, canceled.
         stop_price : stop price used for buy-stop-limit，sell-stop-limit
         operator : only [gte] and [lte] to trigger buy-stop-limit，sell-stop-limit
-        type : order type and value as below : buy-market, sell-market, buy-limit, sell-limit, buy-ioc, sell-ioc， buy-stop-limit，sell-stop-limit
     """
 
     def __init__(self):
@@ -41,7 +40,6 @@ class Order:
         self.source = OrderSource.INVALID
         self.state = OrderState.INVALID
         self.stop_price = ""
-        self.type = ""
         self.next_time = 0
         self.operator=""
 

@@ -3,9 +3,9 @@ from huobi.model import *
 from huobi.base.printobject import PrintMix
 
 symbol_test = "eosht"
-client_order_id_test = "yyyyyy-01"  # unique id in 24hours
+client_order_id_test = "xxxxxx"  # unique id in 24hours
 
-request_client = RequestClient(api_key="dbuqg6hkte-224686ba-fe1eb263-24763", secret_key="3bf81612-9b8013af-97e3c966-d71cd")
+request_client = RequestClient(api_key="xxxxxx", secret_key="xxxxxx")
 
 order_id = request_client.create_order(symbol=symbol_test,
                                        account_type=AccountType.SPOT,

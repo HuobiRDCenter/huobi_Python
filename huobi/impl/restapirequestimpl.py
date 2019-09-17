@@ -595,7 +595,6 @@ class RestApiRequestImpl(object):
         order.source = json_data.get_string("source")
         order.state = json_data.get_string("state")
         order.stop_price = json_data.get_float_or_default("stop-price", 0.0)
-        order.type = json_data.get_string("type")
         order.operator = json_data.get_string_or_default("operator", "")
         order.next_time = json_data.get_string_or_default("next-time", "")
         return order

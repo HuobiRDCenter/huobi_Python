@@ -17,9 +17,9 @@ class RequestClient(object):
         """
         api_key = None
         secret_key = None
-        #url = "https://api.huobi.vn"
+        url = "https://api.huobi.vn"
         #url = "https://api.huobi.so"
-        url = "https://api.huobi.pro"
+        #url = "https://api.huobi.pro"
         if "api_key" in kwargs:
             api_key = kwargs["api_key"]
         if "secret_key" in kwargs:

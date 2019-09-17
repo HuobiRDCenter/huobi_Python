@@ -50,12 +50,22 @@ class TypeCheck:
 
 class PrintBasic:
     @staticmethod
-    def print_basic(data):
-        print(str(data))
+    def print_basic(data, name=None):
+        if name and len(name):
+            print(str(name) + " : " + str(data))
+        else:
+            print(str(data))
 
     @staticmethod
-    def print_basic_trans(data):
-        print(str(data))
+    def print_basic_bool(data, name=None):
+        bool_desc = "True"
+        if not data:
+            bool_desc = "False"
+
+        if name and len(name):
+            print(str(name) + " : " + str(bool_desc))
+        else:
+            print(str(bool_desc))
 
     @staticmethod
     def print_obj(obj):
@@ -94,7 +104,7 @@ class PrintList:
         if obj_type == TYPE_BASIC:
             PrintBasic.print_basic(obj)
         elif obj_type == TYPE_BOOL:
-            PrintBasic.print_basic_trans(obj)
+            PrintBasic.print_basic_bool(obj)
         elif obj_type == TYPE_OBJECT:
             PrintBasic.print_obj(obj)
         else:
@@ -153,7 +163,7 @@ class PrintMix:
         if obj_type == TYPE_BASIC:
             PrintBasic.print_basic(data)
         elif obj_type == TYPE_BOOL:
-            PrintBasic.print_basic_trans(data)
+            PrintBasic.print_basic_bool(data)
         elif obj_type == TYPE_LIST:
             PrintList.print_object_list(data)
         elif obj_type == TYPE_DICT:

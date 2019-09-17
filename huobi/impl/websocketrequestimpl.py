@@ -6,6 +6,8 @@ from huobi.impl.accountinfomap import account_info_map
 from huobi.impl.utils.timeservice import *
 from huobi.impl.utils.inputchecker import *
 from huobi.model import *
+from huobi.model.orderupdatenew import OrderUpdateNew
+from huobi.model.orderupdatenewevent import OrderUpdateNewEvent
 
 
 class WebsocketRequestImpl(object):
@@ -208,6 +210,52 @@ class WebsocketRequestImpl(object):
         request.json_parser = json_parse
         request.update_callback = callback
         request.error_handler = error_handler
+        return request
+
+    def subscribe_order_update_new(self, symbols, callback, error_handler=None):
+        print ("enter subscribe_order_update_new ")
+        check_symbol_list(symbols)
+        check_should_not_none(callback, "callback")
+        print("enter subscribe_order_update_new impl")
+
+        def subscription_handler(connection):
+            print ("enter subscribe_order_update_new subscription_handler")
+            for val in symbols:
+                connection.send(orders_update_new_channel(val))
+                time.sleep(0.01)
+
+        def json_parse(json_wrapper):
+            print ("enter subscribe_order_update_new parse")
+            print(json_wrapper)
+            ch = json_wrapper.get_string("topic")
+            parse = ChannelParser(ch)
+            order_update_event = OrderUpdateNewEvent()
+            order_update_event.symbol = parse.symbol
+            order_update_event.timestamp = convert_cst_in_millisecond_to_utc(json_wrapper.get_int("ts"))
+            data = json_wrapper.get_object("data")
+            order = OrderUpdateNew()
+
+            order.match_id = data.get_int("match-id")
+            order.order_id = data.get_int("order-id")
+            order.symbol = parse.symbol
+            order.state = data.get_string("order-state")
+            order.role = data.get_string("role")
+            order.price = data.get_float("price")
+            order.filled_amount = data.get_float("filled-amount")
+            order.filled_cash_amount = data.get_float("filled-cash-amount")
+            order.unfilled_amount = data.get_float("unfilled-amount")
+            order.client_order_id = data.get_string("client-order-id")
+
+            order_update_event.data = order
+            return order_update_event
+
+        request = WebsocketRequest()
+        request.subscription_handler = subscription_handler
+        request.is_trading = True
+        request.json_parser = json_parse
+        request.update_callback = callback
+        request.error_handler = error_handler
+        print ("enter subscribe_order_update_new request")
         return request
 
     def subscribe_account_event(self, mode, callback, error_handler=None):
