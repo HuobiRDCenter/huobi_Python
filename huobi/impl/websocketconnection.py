@@ -1,5 +1,5 @@
 import threading
-import websockets
+import websocket
 import gzip
 import ssl
 import logging

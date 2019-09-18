@@ -126,7 +126,6 @@ class SubscriptionClient(object):
                         pass
         :return:  No return
         """
-        print("enter subscribe_order_update_new_event")
         symbol_list = symbols.split(",")
         request = self.websocket_request_impl.subscribe_order_update_new(symbol_list, callback, error_handler)
         self.__create_connection(request)

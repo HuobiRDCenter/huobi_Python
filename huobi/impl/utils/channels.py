@@ -35,7 +35,6 @@ def orders_update_new_channel(symbol):
     channel["op"] = "sub"
     channel["cid"] = str(get_current_timestamp())
     channel["topic"] = "orders." + symbol + ".update"
-    print(channel)
     return json.dumps(channel)
 
 

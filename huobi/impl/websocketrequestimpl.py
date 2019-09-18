@@ -213,20 +213,15 @@ class WebsocketRequestImpl(object):
         return request
 
     def subscribe_order_update_new(self, symbols, callback, error_handler=None):
-        print ("enter subscribe_order_update_new ")
         check_symbol_list(symbols)
         check_should_not_none(callback, "callback")
-        print("enter subscribe_order_update_new impl")
 
         def subscription_handler(connection):
-            print ("enter subscribe_order_update_new subscription_handler")
             for val in symbols:
                 connection.send(orders_update_new_channel(val))
                 time.sleep(0.01)
 
         def json_parse(json_wrapper):
-            print ("enter subscribe_order_update_new parse")
-            print(json_wrapper)
             ch = json_wrapper.get_string("topic")
             parse = ChannelParser(ch)
             order_update_event = OrderUpdateNewEvent()
@@ -255,7 +250,6 @@ class WebsocketRequestImpl(object):
         request.json_parser = json_parse
         request.update_callback = callback
         request.error_handler = error_handler
-        print ("enter subscribe_order_update_new request")
         return request
 
     def subscribe_account_event(self, mode, callback, error_handler=None):
