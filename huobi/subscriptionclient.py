@@ -113,6 +113,24 @@ class SubscriptionClient(object):
         request = self.websocket_request_impl.subscribe_order_update(symbol_list, callback, error_handler)
         self.__create_connection(request)
 
+    def subscribe_order_update_new_event(self, symbols: 'str', callback, error_handler=None):
+        """
+        Subscribe order changing event. If a order is created, canceled etc, server will send the data to client and onReceive in callback will be called.
+
+        :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(order_update_event: 'OrderUpdateEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+        :return:  No return
+        """
+        print("enter subscribe_order_update_new_event")
+        symbol_list = symbols.split(",")
+        request = self.websocket_request_impl.subscribe_order_update_new(symbol_list, callback, error_handler)
+        self.__create_connection(request)
+
     def subscribe_trade_event(self, symbols: 'str', callback, error_handler=None):
         """
         Subscribe price depth event. If the price depth is updated, server will send the data to client and onReceive in callback will be called.

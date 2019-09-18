@@ -20,6 +20,8 @@ class Order:
         filled_fees: The transaction fee paid so far.
         source: The source where the order was triggered, possible values: sys, web, api, app.
         state: The order state: submitted, partial-filled, cancelling, filled, canceled.
+        stop_price : stop price used for buy-stop-limit，sell-stop-limit
+        operator : only [gte] and [lte] to trigger buy-stop-limit，sell-stop-limit
     """
 
     def __init__(self):
@@ -37,3 +39,9 @@ class Order:
         self.filled_fees = 0.0
         self.source = OrderSource.INVALID
         self.state = OrderState.INVALID
+        self.stop_price = ""
+        self.next_time = 0
+        self.operator=""
+
+
+

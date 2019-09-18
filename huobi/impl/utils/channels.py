@@ -30,6 +30,14 @@ def orders_channel(symbol):
     channel["topic"] = "orders." + symbol
     return json.dumps(channel)
 
+def orders_update_new_channel(symbol):
+    channel = dict()
+    channel["op"] = "sub"
+    channel["cid"] = str(get_current_timestamp())
+    channel["topic"] = "orders." + symbol + ".update"
+    print(channel)
+    return json.dumps(channel)
+
 
 def trade_statistics_channel(symbol):
     channel = dict()

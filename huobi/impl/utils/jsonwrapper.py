@@ -78,6 +78,12 @@ class JsonWrapper:
         self.__check_mandatory_field(name)
         return float(self.json_object[name])
 
+    def get_float_or_default(self, name, default):
+        if self.contain_key(name):
+            return float(self.json_object[name])
+        else:
+            return default
+
     def get_object(self, name):
         self.__check_mandatory_field(name)
         return JsonWrapper(self.json_object[name])

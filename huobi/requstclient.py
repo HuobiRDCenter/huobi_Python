@@ -86,6 +86,15 @@ class RequestClient(object):
         if trade_list is not None and len(trade_list) != 0:
             return trade_list[0]
 
+    def get_market_trade(self, symbol: 'str') -> list:
+        """
+        Get the most recent trades with their price, volume and direction.
+
+        :param symbol: The symbol, like "btcusdt". (mandatory)
+        :return: The list of trade.
+        """
+        return call_sync(self.request_impl.get_market_trade(symbol))
+
     def get_historical_trade(self, symbol: 'str', size: 'int' = 1) -> list:
         """
         Get the most recent trades with their price, volume and direction.
@@ -104,6 +113,26 @@ class RequestClient(object):
         :return: Trade statistics.
         """
         return call_sync(self.request_impl.get_24h_trade_statistics(symbol))
+
+    def get_exchange_symbol_list(self) -> list():
+        """
+        Get all the trading assets and currencies supported in huobi.
+        The information of trading instrument etc.
+
+        :return: The information of trading instrument.
+        """
+        symbol_list = call_sync(self.request_impl.get_symbols())
+        return symbol_list
+
+    def get_exchange_currencies(self) -> list():
+        """
+        Get all the trading assets and currencies supported in huobi.
+        The information of trading instrument, including base currency, quote precision, etc.
+
+        :return: The information of trading currencies.
+        """
+        currencies = call_sync(self.request_impl.get_currencies())
+        return currencies
 
     def get_exchange_info(self) -> ExchangeInfo:
         """
@@ -128,27 +157,29 @@ class RequestClient(object):
         """
         return call_sync(self.request_impl.get_best_quote(symbol))
 
-    def get_withdraw_history(self, currency: 'str', from_id: 'int', size: 'int') -> list:
+    def get_withdraw_history(self, currency: 'str', from_id: 'int', size: 'int', direct=None) -> list:
         """
         Get the withdraw records of an account.
 
         :param currency: The currency, like "btc". (mandatory)
         :param from_id: The beginning withdraw record id. (mandatory)
         :param size: The size of record. (mandatory)
+        :param direct: "prev" is order by asc, "next" is order by desc, default as "prev"
         :return: The list of withdraw records.
         """
-        return call_sync(self.request_impl.get_withdraw_history(currency, from_id, size))
+        return call_sync(self.request_impl.get_withdraw_history(currency, from_id, size, direct))
 
-    def get_deposit_history(self, currency: 'str', from_id: 'int', size: 'int') -> list:
+    def get_deposit_history(self, currency: 'str', from_id: 'int', size: 'int', direct=None) -> list:
         """
         Get the deposit records of an account.
 
         :param currency: The currency, like "btc". (mandatory)
         :param from_id: The beginning deposit record id. (mandatory)
         :param size: The size of record. (mandatory)
+        :param direct: "prev" is order by asc, "next" is order by desc, default as "prev"
         :return: The list of deposit records.
         """
-        return call_sync(self.request_impl.get_deposit_history(currency, from_id, from_id, size))
+        return call_sync(self.request_impl.get_deposit_history(currency, from_id, from_id, size, direct))
 
     def transfer(self, symbol: 'str', from_account: 'AccountType', to_account: 'AccountType', currency: 'str',
                  amount: 'float') -> int:
@@ -248,7 +279,7 @@ class RequestClient(object):
                 return item
 
     def create_order(self, symbol: 'str', account_type: 'AccountType', order_type: 'OrderType', amount: 'float',
-                     price: 'float') -> int:
+                     price: 'float', client_order_id=None, stop_price=None, operator=None) -> int:
         """
         Make an order in huobi.
 
@@ -257,22 +288,27 @@ class RequestClient(object):
         :param order_type: The order type. (mandatory)
         :param amount: The amount to buy (quote currency) or to sell (base currency). (mandatory)
         :param price: The limit price of limit order, only needed for limit order. (mandatory for buy-limit, sell-limit, buy-limit-maker and sell-limit-maker)
+        :param client_order_id: unique Id which is user defined and must be unique in recent 24 hours
+        :param stop_price: Price for auto sell to get the max benefit
+        :param operator: the condition for stop_price, value can be "gte" or "lte",  gte – greater than and equal (>=), lte – less than and equal (<=)
         :return: The order id.
         """
-        return call_sync(self.request_impl.create_order(symbol, account_type, order_type, amount, price))
+        return call_sync(self.request_impl.create_order(symbol, account_type, order_type, amount, price, client_order_id, stop_price, operator))
 
     def get_open_orders(self, symbol: 'str', account_type: 'AccountType', side: 'OrderSide' = None,
-                        size: 'int' = 10) -> list:
+                        size: 'int' = 100, from_id=None, direct=None) -> list:
         """
         The request of get open orders.
 
         :param symbol: The symbol, like "btcusdt". (mandatory)
         :param account_type: The order side, buy or sell. If no side defined, will return all open orders of the account. (mandatory)
         :param side: The order side, buy or sell. If no side defined, will return all open orders of the account. (optional)
-        :param size: The number of orders to return. Range is [1, 500]. Default is 10. (optional)
+        :param size: The number of orders to return. Range is [1, 500]. Default is 100. (optional)
+        :param direct: 1:prev  order by ID asc from from_id, 2:next order by ID desc from from_id
+        :param from_id: start ID for search
         :return: The orders information.
         """
-        return call_sync(self.request_impl.get_open_orders(symbol, account_type, size, side))
+        return call_sync(self.request_impl.get_open_orders(symbol, account_type, size, side, from_id, direct))
 
     def cancel_order(self, symbol: object, order_id: object) -> object:
         """
@@ -307,6 +343,14 @@ class RequestClient(object):
         """
         return call_sync(self.request_impl.cancel_open_orders(symbol, account_type, side, size))
 
+    def cancel_client_order(self, client_order_id: 'str') -> None:
+        """
+        Request to cancel open orders.
+
+        :param client_order_id: user defined unique order id
+        """
+        return call_sync(self.request_impl.cancel_client_order(client_order_id))
+
     def get_order(self, symbol: 'str', order_id: 'int') -> Order:
         """
         Get the details of an order.
@@ -317,15 +361,23 @@ class RequestClient(object):
         """
         return call_sync(self.request_impl.get_order(symbol, order_id))
 
-    def get_match_results_by_order_id(self, symbol: 'str', order_id: 'int') -> list:
+    def get_order_by_client_order_id(self, client_order_id: 'str') -> Order:
+        """
+        Get the details of an order.
+
+        :param client_order_id: The user defined unique order id. (mandatory)
+        :return: The information of order.
+        """
+        return call_sync(self.request_impl.get_order_by_client_order_id(client_order_id))
+
+    def get_match_results_by_order_id(self, order_id: 'int') -> list:
         """
         Get detail match results of an order.
 
-        :param symbol: The symbol, like "btcusdt". (mandatory)
         :param order_id: The order id. (mandatory)
         :return: The list of match result.
         """
-        return call_sync(self.request_impl.get_match_results_by_order_id(symbol, order_id))
+        return call_sync(self.request_impl.get_match_results_by_order_id(order_id))
 
     def get_match_result(self, symbol: 'str', order_type: 'OrderSide' = None, start_date: 'str' = None,
                          end_date: 'str' = None,
@@ -469,3 +521,38 @@ class RequestClient(object):
         :return: The margin loan account detail list.
         """
         return call_sync(self.request_impl.get_margin_balance_detail(symbol))
+
+    def get_fee_rate(self, symbols: 'str') -> list:
+        """
+        The request of get open orders.
+
+        :param symbols: The symbol, like "btcusdt,htusdt". (mandatory)
+        :return: The fee information.
+        """
+        return call_sync(self.request_impl.get_fee_rate(symbols))
+
+    def transfer_between_futures_and_pro(self, currency: 'str', amount: 'float',
+                                        transfer_type: 'TransferFuturesPro')-> int:
+        """
+        Transfer Asset between Futures and Contract.
+
+        :param sub_uid: The target sub account uid to transfer to or from. (mandatory)
+        :param currency: The crypto currency to transfer. (mandatory)
+        :param amount: The amount of asset to transfer. (mandatory)
+        :param transfer_type: The type of transfer, need be "futures-to-pro" or "pro-to-futures" (mandatory)
+        :return: The order id.
+        """
+        return call_sync(self.request_impl.transfer_between_futures_and_pro(currency, amount, transfer_type))
+
+    def get_order_recent_48hour(self, symbol=None, start_time=None, end_time=None, size=None, direct=None)-> list:
+        """
+        Transfer Asset between Futures and Contract.
+
+        :param direct:
+        :param symbol: The target sub account uid to transfer to or from. (mandatory)
+        :param start_time: The crypto currency to transfer. (mandatory)
+        :param end_time: The amount of asset to transfer. (mandatory)
+        :param size: The type of transfer, need be "futures-to-pro" or "pro-to-futures" (mandatory)
+        :return: The Order list.
+        """
+        return call_sync(self.request_impl.get_order_recent_48hour(symbol, start_time, end_time, size, direct))

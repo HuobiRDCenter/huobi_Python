@@ -17,6 +17,8 @@ class MatchResult:
         symbol: The symbol, like "btcusdt".
         order_type: The order type, possible values are: buy-market, sell-market, buy-limit, sell-limit,
             buy-ioc, sell-ioc, buy-limit-maker, sell-limit-maker.
+        filled_points: deduct points
+        fee_deduct_currency: deduct type, it means deduct from HT/ HT points / or other currency
     """
 
     def __init__(self):
@@ -30,3 +32,6 @@ class MatchResult:
         self.source = OrderSource.INVALID
         self.symbol = ""
         self.order_type = OrderType.INVALID
+        self.role = ""
+        self.filled_points = ""
+        self.fee_deduct_currency = ""

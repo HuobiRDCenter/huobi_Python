@@ -5,6 +5,7 @@ from huobi.impl.accountinfomap import account_info_map
 from huobi.impl.utils.inputchecker import *
 from huobi.impl.utils.timeservice import *
 from huobi.model import *
+from huobi.model.feerate import FeeRate
 
 
 class RestApiRequestImpl(object):
@@ -119,6 +120,31 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
+    def get_market_trade(self, symbol):
+        check_symbol(symbol)
+        builder = UrlParamsBuilder()
+        builder.put_url("symbol", symbol)
+        request = self.__create_request_by_get("/market/trade", builder)
+
+        def parse(json_wrapper):
+            tick_obj = json_wrapper.get_object("tick")
+            data_array = tick_obj.get_array("data")
+            trade_list = list()
+
+            for item in data_array.get_items():
+                local_trade = Trade()
+                local_trade.price = item.get_float("price")
+                local_trade.amount = item.get_float("amount")
+                local_trade.trade_id = item.get_int("id")
+                local_trade.timestamp = convert_cst_in_millisecond_to_utc(item.get_int("ts"))
+                local_trade.direction = item.get_string("direction")
+                trade_list.append(local_trade)
+
+            return trade_list
+
+        request.json_parser = parse
+        return request
+
     def get_historical_trade(self, symbol, form_id, size):
         check_symbol(symbol)
         check_range(size, 1, 2000, "size")
@@ -181,6 +207,12 @@ class RestApiRequestImpl(object):
                 local_symbol.amount_precision = item.get_int("amount-precision")
                 local_symbol.symbol_partition = item.get_string("symbol-partition")
                 local_symbol.symbol = item.get_string("symbol")
+                local_symbol.state = item.get_string("state")
+                local_symbol.value_precision = item.get_string("value-precision")
+                local_symbol.min_order_amt = item.get_string("min-order-amt")
+                local_symbol.max_order_amt = item.get_string("max-order-amt")
+                local_symbol.min_order_value = item.get_string("min-order-value")
+                local_symbol.leverage_ratio = item.get_string_or_default("leverage-ratio", 0)
                 symbols.append(local_symbol)
             return symbols
 
@@ -234,7 +266,7 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
-    def get_withdraw_history(self, currency, from_id, size):
+    def get_withdraw_history(self, currency, from_id, size, direct):
         check_currency(currency)
         check_should_not_none(from_id, "from_id")
         check_should_not_none(size, "size")
@@ -244,6 +276,7 @@ class RestApiRequestImpl(object):
         builder.put_url("type", "withdraw")
         builder.put_url("from", from_id)
         builder.put_url("size", size)
+        builder.put_url("direct", direct)
         request = self.__create_request_by_get_with_signature("/v1/query/deposit-withdraw", builder)
 
         def parse(json_wrapper):
@@ -267,7 +300,7 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
-    def get_deposit_history(self, currency, from_id, size):
+    def get_deposit_history(self, currency, from_id, size, direct):
         check_symbol(currency)
         check_should_not_none(from_id, "from_id")
         check_should_not_none(size, "size")
@@ -277,6 +310,7 @@ class RestApiRequestImpl(object):
         builder.put_url("type", "deposit")
         builder.put_url("from", from_id)
         builder.put_url("size", size)
+        builder.put_url("direct", direct)
         request = self.__create_request_by_get_with_signature("/v1/query/deposit-withdraw", builder)
 
         def parse(json_wrapper):
@@ -415,7 +449,16 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
-    def create_order(self, symbol, account_type, order_type, amount, price):
+    @staticmethod
+    def order_source_desc(account_type):
+        default_source = "api"
+        if account_type:
+            if account_type == AccountType.MARGIN:
+                return "margin-api"
+        return default_source
+
+    def create_order(self, symbol, account_type, order_type, amount, price,
+                     client_order_id=None, stop_price=None, operator=None):
         check_symbol(symbol)
         check_should_not_none(account_type, "account_type")
         check_should_not_none(order_type, "order_type")
@@ -430,9 +473,7 @@ class RestApiRequestImpl(object):
         global account_info_map
         user = account_info_map.get_user(self.__api_key)
         account = user.get_account_by_type(account_type)
-        source = "api"
-        if account_type == AccountType.MARGIN:
-            source = "margin-api"
+        source = RestApiRequestImpl.order_source_desc(account_type)
         builder = UrlParamsBuilder()
         builder.put_post("account-id", account.id)
         builder.put_post("amount", amount)
@@ -440,6 +481,10 @@ class RestApiRequestImpl(object):
         builder.put_post("symbol", symbol)
         builder.put_post("type", order_type)
         builder.put_post("source", source)
+        builder.put_post("client-order-id", client_order_id)
+        builder.put_post("stop-price", stop_price)
+        builder.put_post("operator", operator)
+
         request = self.__create_request_by_post_with_signature("/v1/order/orders/place", builder)
 
         def parse(json_wrapper):
@@ -448,9 +493,9 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
-    def get_open_orders(self, symbol, account_type, size=None, side=None):
+    def get_open_orders(self, symbol, account_type, size=None, side=None, from_id=None, direct=None):
         check_symbol(symbol)
-        check_range(size, 1, 2000, "size")
+        check_range(size, 1, 500, "size")
         check_should_not_none(account_type, "account_type")
         global account_info_map
         user = account_info_map.get_user(self.__api_key)
@@ -460,8 +505,11 @@ class RestApiRequestImpl(object):
         builder.put_url("symbol", symbol)
         builder.put_url("side", side)
         builder.put_url("size", size)
+        builder.put_url("from", from_id)
+        builder.put_url("direct", direct)
         request = self.__create_request_by_get_with_signature("/v1/order/openOrders", builder)
 
+        """
         def parse(json_wrapper):
             order_list = list()
             data_array = json_wrapper.get_array("data")
@@ -482,8 +530,9 @@ class RestApiRequestImpl(object):
                 order.state = item.get_string("state")
                 order_list.append(order)
             return order_list
+        """
 
-        request.json_parser = parse
+        request.json_parser = self.get_order_list_json_parse
         return request
 
     def cancel_order(self, symbol, order_id):
@@ -539,38 +588,76 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
+    def cancel_client_order(self, client_order_id):
+        check_should_not_none(client_order_id, "client-order-id")
+        path = "/v1/order/orders/submitCancelClientOrder"
+        builder = UrlParamsBuilder()
+        builder.put_post("client-order-id", client_order_id)
+        request = self.__create_request_by_post_with_signature(path, builder)
+
+        def parse(json_wrapper):
+            return
+
+        request.json_parser = parse
+        return request
+
+    # 填充Order对象，应该在model中定义，因涉及api_key等，暂时放这里
+    def format_order(self, json_data):
+        order = Order()
+        order.order_id = json_data.get_int("id")
+        order.symbol = json_data.get_string("symbol")
+        order.price = json_data.get_float("price")
+        order.amount = json_data.get_float("amount")
+        order.created_timestamp = convert_cst_in_millisecond_to_utc(json_data.get_int("created-at"))
+        order.canceled_timestamp = convert_cst_in_millisecond_to_utc(json_data.get_int("canceled-at"))
+        order.finished_timestamp = convert_cst_in_millisecond_to_utc(json_data.get_int("finished-at"))
+        order.order_type = json_data.get_string("type")
+        order.filled_amount = json_data.get_float("field-amount")
+        order.filled_cash_amount = json_data.get_float("field-cash-amount")
+        order.filled_fees = json_data.get_float("field-fees")
+        order.account_type = account_info_map.get_account_by_id(self.__api_key,
+                                                                json_data.get_int("account-id")).account_type
+        order.source = json_data.get_string("source")
+        order.state = json_data.get_string("state")
+        order.stop_price = json_data.get_float_or_default("stop-price", 0.0)
+        order.operator = json_data.get_string_or_default("operator", "")
+        order.next_time = json_data.get_string_or_default("next-time", "")
+        return order
+
+    # 从json中解析订单对象的公共函数
+    def get_order_json_parse(self, json_wrapper):
+        data = json_wrapper.get_object("data")
+        order = self.format_order(data)
+        return order
+
+    # 从json中解析订单对象列表的公共函数
+    def get_order_list_json_parse(self, json_wrapper):
+        order_list = list()
+        data_array = json_wrapper.get_array("data")
+        for item in data_array.get_items():
+            order = self.format_order(item)
+            order_list.append(order)
+        return order_list
+
     def get_order(self, symbol, order_id):
         check_symbol(symbol)
         check_should_not_none(order_id, "order_id")
         path = "/v1/order/orders/{}"
         path = path.format(order_id)
         request = self.__create_request_by_get_with_signature(path, UrlParamsBuilder())
-
-        def parse(json_wrapper):
-            data = json_wrapper.get_object("data")
-            order = Order()
-            order.order_id = data.get_int("id")
-            order.symbol = data.get_string("symbol")
-            order.price = data.get_float("price")
-            order.amount = data.get_float("amount")
-            order.account_type = account_info_map.get_account_by_id(self.__api_key,
-                                                                    data.get_int("account-id")).account_type
-            order.created_timestamp = convert_cst_in_millisecond_to_utc(data.get_int("created-at"))
-            order.canceled_timestamp = convert_cst_in_millisecond_to_utc(data.get_int("canceled-at"))
-            order.finished_timestamp = convert_cst_in_millisecond_to_utc(data.get_int("finished-at"))
-            order.order_type = data.get_string("type")
-            order.filled_amount = data.get_float("field-amount")
-            order.filled_cash_amount = data.get_float("field-cash-amount")
-            order.filled_fees = data.get_float("field-fees")
-            order.source = data.get_string("source")
-            order.state = data.get_string("state")
-            return order
-
-        request.json_parser = parse
+        request.json_parser = self.get_order_json_parse
         return request
 
-    def get_match_results_by_order_id(self, symbol, order_id):
-        check_symbol(symbol)
+    def get_order_by_client_order_id(self, client_order_id):
+        check_should_not_none(client_order_id, "clientOrderId")
+        path = "/v1/order/orders/getClientOrder"
+        builder = UrlParamsBuilder()
+        builder.put_url("clientOrderId", client_order_id)
+        request = self.__create_request_by_get_with_signature(path, builder)
+        request.json_parser = self.get_order_json_parse
+        return request
+
+    def get_match_results_by_order_id(self, order_id):
         check_should_not_none(order_id, "order_id")
         path = "/v1/order/orders/{}/matchresults"
         path = path.format(order_id)
@@ -591,6 +678,9 @@ class RestApiRequestImpl(object):
                 match_result.source = item.get_string("source")
                 match_result.symbol = item.get_string("symbol")
                 match_result.order_type = item.get_string("type")
+                match_result.role = item.get_string("role")
+                match_result.filled_points = item.get_string("filled-points")
+                match_result.fee_deduct_currency = item.get_string("fee-deduct-currency")
                 match_result_list.append(match_result)
             return match_result_list
 
@@ -626,6 +716,9 @@ class RestApiRequestImpl(object):
                 match_result.source = item.get_string("source")
                 match_result.symbol = item.get_string("symbol")
                 match_result.order_type = item.get_string("type")
+                match_result.role = item.get_string("role")
+                match_result.filled_points = item.get_string("filled-points")
+                match_result.fee_deduct_currency = item.get_string("fee-deduct-currency")
                 match_result_list.append(match_result)
             return match_result_list
 
@@ -679,7 +772,7 @@ class RestApiRequestImpl(object):
         builder.put_url("states", order_state)
         builder.put_url("size", size)
         request = self.__create_request_by_get_with_signature("/v1/order/orders", builder)
-
+        """
         def parse(json_wrapper):
             order_list = list()
             data_array = json_wrapper.get_array("data")
@@ -702,8 +795,9 @@ class RestApiRequestImpl(object):
                 order.state = item.get_string("state")
                 order_list.append(order)
             return order_list
+        """
 
-        request.json_parser = parse
+        request.json_parser = self.get_order_list_json_parse
         return request
 
     def transfer_between_parent_and_sub(self, sub_uid, currency, amount, transfer_type):
@@ -921,3 +1015,53 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
+    def get_fee_rate(self, symbols):
+        check_symbol(symbols)
+        builder = UrlParamsBuilder()
+        builder.put_url("symbols", symbols)
+        request = self.__create_request_by_get_with_signature("/v1/fee/fee-rate/get", builder)
+
+        def parse(json_wrapper):
+            fee_list = list()
+            data_array = json_wrapper.get_array("data")
+            for item_in_data in data_array.get_items():
+                fee_rate = FeeRate()
+                fee_rate.symbol = item_in_data.get_string("symbol")
+                fee_rate.maker_fee = item_in_data.get_string("maker-fee")
+                fee_rate.symbol = item_in_data.get_string("taker-fee")
+                fee_list.append(fee_rate)
+            return fee_list
+
+
+        request.json_parser = parse
+        return request
+
+    def transfer_between_futures_and_pro(self, currency, amount, transfer_type):
+        check_currency(currency)
+        check_should_not_none(currency, "currency")
+        check_should_not_none(amount, "amount")
+        check_should_not_none(transfer_type, "transfer_type")
+        builder = UrlParamsBuilder()
+        builder.put_post("amount", amount)
+        builder.put_post("currency", currency)
+        builder.put_post("type", transfer_type)
+        request = self.__create_request_by_post_with_signature("/v1/futures/transfer", builder)
+
+        def parse(json_wrapper):
+            return json_wrapper.get_int("data")  # transfer ID
+
+        request.json_parser = parse
+        return request
+
+    def get_order_recent_48hour(self, symbol, start_time, end_time, size, direct):
+        #check_symbol(symbol)
+        builder = UrlParamsBuilder()
+        builder.put_url("symbol", symbol)
+        builder.put_url("start-time", start_time)
+        builder.put_url("end-time", end_time)
+        builder.put_url("size", size)
+        builder.put_url("direct", direct)
+        request = self.__create_request_by_get_with_signature("/v1/order/history", builder)
+
+        request.json_parser = self.get_order_list_json_parse
+        return request
