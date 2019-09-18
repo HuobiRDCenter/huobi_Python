@@ -17,9 +17,7 @@ class RequestClient(object):
         """
         api_key = None
         secret_key = None
-        url = "https://api.huobi.vn"
-        #url = "https://api.huobi.so"
-        #url = "https://api.huobi.pro"
+        url = "https://api.huobi.pro"
         if "api_key" in kwargs:
             api_key = kwargs["api_key"]
         if "secret_key" in kwargs:
@@ -372,15 +370,14 @@ class RequestClient(object):
         """
         return call_sync(self.request_impl.get_order_by_client_order_id(client_order_id))
 
-    def get_match_results_by_order_id(self, symbol: 'str', order_id: 'int') -> list:
+    def get_match_results_by_order_id(self, order_id: 'int') -> list:
         """
         Get detail match results of an order.
 
-        :param symbol: The symbol, like "btcusdt". (mandatory)
         :param order_id: The order id. (mandatory)
         :return: The list of match result.
         """
-        return call_sync(self.request_impl.get_match_results_by_order_id(symbol, order_id))
+        return call_sync(self.request_impl.get_match_results_by_order_id(order_id))
 
     def get_match_result(self, symbol: 'str', order_type: 'OrderSide' = None, start_date: 'str' = None,
                          end_date: 'str' = None,

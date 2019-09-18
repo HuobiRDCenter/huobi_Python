@@ -172,3 +172,7 @@ class QueryDirection:
 class TransferFuturesPro:
     TO_PRO = "futures-to-pro"
     TO_FETURES ="pro-to-futures"
+
+class MatchRole:
+    MAKER = "maker"
+    TAKER = "taker"

@@ -657,8 +657,7 @@ class RestApiRequestImpl(object):
         request.json_parser = self.get_order_json_parse
         return request
 
-    def get_match_results_by_order_id(self, symbol, order_id):
-        check_symbol(symbol)
+    def get_match_results_by_order_id(self, order_id):
         check_should_not_none(order_id, "order_id")
         path = "/v1/order/orders/{}/matchresults"
         path = path.format(order_id)
@@ -679,6 +678,7 @@ class RestApiRequestImpl(object):
                 match_result.source = item.get_string("source")
                 match_result.symbol = item.get_string("symbol")
                 match_result.order_type = item.get_string("type")
+                match_result.role = item.get_string("role")
                 match_result.filled_points = item.get_string("filled-points")
                 match_result.fee_deduct_currency = item.get_string("fee-deduct-currency")
                 match_result_list.append(match_result)
