@@ -32,6 +32,8 @@ class OrderType:
     SELL_IOC = "sell-ioc"
     BUY_LIMIT_MAKER = "buy-limit-maker"
     SELL_LIMIT_MAKER = "sell-limit-maker"
+    BUY_STOP_LIMIT = "buy-stop-limit"
+    SELL_STOP_LIMIT = "sell-stop-limit"
     INVALID = None
 
 

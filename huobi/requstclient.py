@@ -88,6 +88,15 @@ class RequestClient(object):
         if trade_list is not None and len(trade_list) != 0:
             return trade_list[0]
 
+    def get_market_trade(self, symbol: 'str') -> list:
+        """
+        Get the most recent trades with their price, volume and direction.
+
+        :param symbol: The symbol, like "btcusdt". (mandatory)
+        :return: The list of trade.
+        """
+        return call_sync(self.request_impl.get_market_trade(symbol))
+
     def get_historical_trade(self, symbol: 'str', size: 'int' = 1) -> list:
         """
         Get the most recent trades with their price, volume and direction.

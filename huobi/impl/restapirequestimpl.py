@@ -120,6 +120,31 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
+    def get_market_trade(self, symbol):
+        check_symbol(symbol)
+        builder = UrlParamsBuilder()
+        builder.put_url("symbol", symbol)
+        request = self.__create_request_by_get("/market/trade", builder)
+
+        def parse(json_wrapper):
+            tick_obj = json_wrapper.get_object("tick")
+            data_array = tick_obj.get_array("data")
+            trade_list = list()
+
+            for item in data_array.get_items():
+                local_trade = Trade()
+                local_trade.price = item.get_float("price")
+                local_trade.amount = item.get_float("amount")
+                local_trade.trade_id = item.get_int("id")
+                local_trade.timestamp = convert_cst_in_millisecond_to_utc(item.get_int("ts"))
+                local_trade.direction = item.get_string("direction")
+                trade_list.append(local_trade)
+
+            return trade_list
+
+        request.json_parser = parse
+        return request
+
     def get_historical_trade(self, symbol, form_id, size):
         check_symbol(symbol)
         check_range(size, 1, 2000, "size")
@@ -187,7 +212,7 @@ class RestApiRequestImpl(object):
                 local_symbol.min_order_amt = item.get_string("min-order-amt")
                 local_symbol.max_order_amt = item.get_string("max-order-amt")
                 local_symbol.min_order_value = item.get_string("min-order-value")
-                #local_symbol.leverage_ratio = item.get_string("leverage-ratio")
+                local_symbol.leverage_ratio = item.get_string_or_default("leverage-ratio", 0)
                 symbols.append(local_symbol)
             return symbols
 
@@ -654,6 +679,8 @@ class RestApiRequestImpl(object):
                 match_result.source = item.get_string("source")
                 match_result.symbol = item.get_string("symbol")
                 match_result.order_type = item.get_string("type")
+                match_result.filled_points = item.get_string("filled-points")
+                match_result.fee_deduct_currency = item.get_string("fee-deduct-currency")
                 match_result_list.append(match_result)
             return match_result_list
 
