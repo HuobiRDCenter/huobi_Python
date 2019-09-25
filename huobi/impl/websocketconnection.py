@@ -173,14 +173,16 @@ class WebsocketConnection:
             if op == "notify":
                 self.__on_receive(json_wrapper)
             elif op == "ping":
-                self.__process_ping_on_trading_line()
+                ts = json_wrapper.get_int("ts")
+                self.__process_ping_on_trading_line(ts)
             elif op == "auth":
                 if self.request.subscription_handler is not None:
                     self.request.subscription_handler(self)
         elif json_wrapper.contain_key("ch"):
             self.__on_receive(json_wrapper)
         elif json_wrapper.contain_key("ping"):
-            self.__process_ping_on_market_line()
+            ts = json_wrapper.get_int("ping")
+            self.__process_ping_on_market_line(ts)
 
     def __on_receive(self, json_wrapper):
         res = None
@@ -197,12 +199,12 @@ class WebsocketConnection:
             self.on_error("Process error: " + str(e)
                      + " You should capture the exception in your error handler")
 
-    def __process_ping_on_trading_line(self):
-        self.send("{\"op\":\"pong\",\"ts\":" + str(get_current_timestamp()) + "}")
+    def __process_ping_on_trading_line(self,ts):
+        self.send("{\"op\":\"pong\",\"ts\":" + str(ts) + "}")
         return
 
-    def __process_ping_on_market_line(self):
-        self.send("{\"pong\":" + str(get_current_timestamp()) + "}")
+    def __process_ping_on_market_line(self,ts):
+        self.send("{\"pong\":" + str(ts) + "}")
         return
 
     def close_on_error(self):
