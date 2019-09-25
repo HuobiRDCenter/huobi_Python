@@ -1,3 +1,4 @@
+from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
 from huobi.model.constant import *
 
 
@@ -43,5 +44,46 @@ class Order:
         self.next_time = 0
         self.operator=""
 
+    @staticmethod
+    def json_parse(json_data, account_type):
+        order = Order()
+        order.order_id = json_data.get_int("id")
+        order.symbol = json_data.get_string("symbol")
+        order.price = json_data.get_float("price")
+        order.amount = json_data.get_float("amount")
+        order.created_timestamp = convert_cst_in_millisecond_to_utc(json_data.get_int("created-at"))
+        order.canceled_timestamp = convert_cst_in_millisecond_to_utc(json_data.get_int("canceled-at"))
+        order.finished_timestamp = convert_cst_in_millisecond_to_utc(json_data.get_int("finished-at"))
+        order.order_type = json_data.get_string("type")
+        order.filled_amount = json_data.get_float_or_default("field-amount", json_data.get_float_or_default("filled-amount", 0))
+        order.filled_cash_amount = json_data.get_float_or_default("field-cash-amount", json_data.get_float_or_default("filled-cash-amount", 0))
+        order.filled_fees = json_data.get_float_or_default("field-fees", json_data.get_float_or_default("filled-fees", 0))
+        order.account_type = account_type
+        order.source = json_data.get_string("source")
+        order.state = json_data.get_string("state")
+        order.stop_price = json_data.get_float_or_default("stop-price", 0.0)
+        order.operator = json_data.get_string_or_default("operator", "")
+        order.next_time = json_data.get_string_or_default("next-time", "")
+        return order
+
+    def print_object(self, format_data=""):
+        from huobi.base.printobject import PrintBasic
+        PrintBasic.print_basic(self.order_id, format_data + "Order Id")
+        PrintBasic.print_basic(self.symbol, format_data + "Symbol")
+        PrintBasic.print_basic(self.price, format_data + "Price")
+        PrintBasic.print_basic(self.amount, format_data + "Amount")
+        PrintBasic.print_basic(self.created_timestamp, format_data + "Create Time")
+        PrintBasic.print_basic(self.canceled_timestamp, format_data + "Cancel Time")
+        PrintBasic.print_basic(self.finished_timestamp, format_data + "Finish Time")
+        PrintBasic.print_basic(self.order_type, format_data + "Order Type")
+        PrintBasic.print_basic(self.filled_amount, format_data + "Filled Amount")
+        PrintBasic.print_basic(self.filled_cash_amount, format_data + "Filled Cash Amount")
+        PrintBasic.print_basic(self.filled_fees, format_data + "Filled Fees")
+        PrintBasic.print_basic(self.account_type, format_data + "Account Type")
+        PrintBasic.print_basic(self.source, format_data + "Order Source")
+        PrintBasic.print_basic(self.state, format_data + "Order State")
+        PrintBasic.print_basic(self.stop_price, format_data + "Stop Price")
+        PrintBasic.print_basic(self.operator, format_data + "Operator")
+        PrintBasic.print_basic(self.next_time, format_data + "Next Time")
 
 

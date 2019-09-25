@@ -1,4 +1,6 @@
 import urllib.parse
+
+from huobi.constant.system import WebSocketDefine
 from huobi.impl.websocketrequestimpl import WebsocketRequestImpl
 from huobi.impl.websocketconnection import WebsocketConnection
 from huobi.impl.websocketwatchdog import WebSocketWatchDog
@@ -35,7 +37,7 @@ class SubscriptionClient(object):
         self.__secret_key = secret_key
         self.websocket_request_impl = WebsocketRequestImpl(self.__api_key)
         self.connections = list()
-        self.uri = "wss://api.huobi.pro/"
+        self.uri = WebSocketDefine.Uri
         is_auto_connect = True
         receive_limit_ms = 60000
         connection_delay_failure = 15
@@ -79,7 +81,26 @@ class SubscriptionClient(object):
         request = self.websocket_request_impl.subscribe_candlestick_event(symbol_list, interval, callback, error_handler)
         self.__create_connection(request)
 
-    def subscribe_price_depth_event(self, symbols: 'str', callback, error_handler=None):
+    def subscribe_price_depth_event(self, symbols: 'str', depth_step: 'str', callback, error_handler=None):
+        """
+        Subscribe price depth event. If the price depth is updated, server will send the data to client and onReceive in callback will be called.
+
+        :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
+        :param depth_step: The depth precision, string from step0 to step5.
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(price_depth_event: 'PriceDepthEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+
+        :return:  No return
+        """
+        symbol_list = symbols.split(",")
+        request = self.websocket_request_impl.subscribe_price_depth_event(symbol_list, depth_step, callback, error_handler)
+        self.__create_connection(request)
+
+    def subscribe_price_depth_bbo_event(self, symbols: 'str', callback, error_handler=None):
         """
         Subscribe price depth event. If the price depth is updated, server will send the data to client and onReceive in callback will be called.
 
@@ -90,10 +111,11 @@ class SubscriptionClient(object):
         :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
             example: def error_handler(exception: 'HuobiApiException')
                         pass
+
         :return:  No return
         """
         symbol_list = symbols.split(",")
-        request = self.websocket_request_impl.subscribe_price_depth_event(symbol_list, callback, error_handler)
+        request = self.websocket_request_impl.subscribe_price_depth_bbo_event(symbol_list, callback, error_handler)
         self.__create_connection(request)
 
     def subscribe_order_update_event(self, symbols: 'str', callback, error_handler=None):
@@ -180,7 +202,134 @@ class SubscriptionClient(object):
         request = self.websocket_request_impl.subscribe_account_event(mode, callback, error_handler)
         self.__create_connection(request)
 
+    def request_account_balance_event(self, callback, client_req_id = None, auto_close = True, error_handler=None):
+        """
+        Subscribe account changing event. If the balance is updated, server will send the data to client and onReceive in callback will be called.
+
+        :param mode: when mode is AVAILABLE, balance refers to available balance; when mode is TOTAL, balance refers to TOTAL balance for trade sub account (available+frozen).
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(account_event: 'AccountEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+        :return:  No return
+        """
+        request = self.websocket_request_impl.request_account_balance_event(callback, client_req_id, auto_close, error_handler)
+        self.__create_connection(request)
+
+    def request_candlestick_event(self, symbols: 'str', interval: 'CandlestickInterval', callback,
+                                    from_ts_second = None, end_ts_second = None, auto_close = True, error_handler=None):
+        """
+        Subscribe candlestick/kline event. If the candlestick/kline is updated, server will send the data to client and onReceive in callback will be called.
+
+        :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
+        :param interval: The candlestick/kline interval, MIN1, MIN5, DAY1 etc.
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(candlestick_event: 'CandlestickEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+        :return: No return
+        """
+        symbol_list = symbols.split(",")
+        request = self.websocket_request_impl.request_candlestick_event(symbol_list, interval, callback,
+                                                                          from_ts_second, end_ts_second, auto_close, error_handler)
+        self.__create_connection(request)
+
+    def request_price_depth_event(self, symbols: 'str', depth_step: 'str', callback, auto_close = True, error_handler=None):
+        """
+        Subscribe price depth event. If the price depth is updated, server will send the data to client and onReceive in callback will be called.
+
+        :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
+        :param depth_step: The depth precision, string from step0 to step5.
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(price_depth_event: 'PriceDepthEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+
+        :return:  No return
+        """
+        symbol_list = symbols.split(",")
+        request = self.websocket_request_impl.request_price_depth_event(symbol_list, depth_step, callback,
+                                                                          auto_close, error_handler)
+        self.__create_connection(request)
+
+    def request_trade_event(self, symbols: 'str', callback, auto_close = True, error_handler=None):
+        """
+        Subscribe price depth event. If the price depth is updated, server will send the data to client and onReceive in callback will be called.
+
+        :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(trade_event: 'TradeEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+        :return:  No return
+        """
+        symbol_list = symbols.split(",")
+        request = self.websocket_request_impl.request_trade_event(symbol_list, callback, auto_close, error_handler)
+        self.__create_connection(request)
+
+    def request_24h_trade_statistics_event(self, symbols: 'str', callback, auto_close = True, error_handler=None):
+        """
+        Subscribe 24 hours trade statistics event. If statistics is generated, server will send the data to client and onReceive in callback will be called.
+
+        :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(trade_statistics_event: 'TradeStatisticsEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+        :return:  No return
+        """
+        symbol_list = symbols.split(",")
+        request = self.websocket_request_impl.request_24h_trade_statistics_event(symbol_list, callback, auto_close, error_handler)
+        self.__create_connection(request)
+
+
+    def request_order_list_event(self, symbol: 'str', account_id: int, callback, order_states = None, client_req_id = True, auto_close = True, error_handler=None):
+        """
+        Subscribe candlestick/kline event. If the candlestick/kline is updated, server will send the data to client and onReceive in callback will be called.
+
+        :param symbol: The symbol, like "btcusdt".
+        :param order_states: order status, can be one state or many state sepearted by comma, such as "submitted,partial-filled,partial-canceled,filled,canceled,created"
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(candlestick_event: 'CandlestickEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+        :return: No return
+        """
+        request = self.websocket_request_impl.request_order_list_event(symbol, account_id, callback, order_states, client_req_id, auto_close, error_handler)
+        self.__create_connection(request)
+
+    def request_order_detail_event(self, order_id: 'str', callback,
+                                    client_req_id = None, auto_close = True, error_handler=None):
+        """
+        Subscribe candlestick/kline event. If the candlestick/kline is updated, server will send the data to client and onReceive in callback will be called.
+
+        :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
+        :param interval: The candlestick/kline interval, MIN1, MIN5, DAY1 etc.
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(candlestick_event: 'CandlestickEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+        :return: No return
+        """
+        request = self.websocket_request_impl.request_order_detail_event(order_id, callback,
+                                                                          client_req_id, auto_close, error_handler)
+        self.__create_connection(request)
     def unsubscribe_all(self):
         for conn in self.connections:
             conn.close()
         self.connections.clear()
+

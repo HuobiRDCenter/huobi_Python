@@ -26,4 +26,4 @@ def error(e: 'HuobiApiException'):
     print(e.error_code + e.error_message)
 
 
-sub_client.subscribe_candlestick_event("btcusdt", CandlestickInterval.MIN15, callback, error)
+sub_client.subscribe_candlestick_event("btcusdt", CandlestickInterval.MIN1, callback, error)

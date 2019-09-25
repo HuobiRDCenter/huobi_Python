@@ -1,12 +1,11 @@
 from huobi.constant.result import OutputKey
 from huobi.impl.utils import *
 from huobi.impl.utils.channelparser import ChannelParser
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
 from huobi.model.constant import *
 from huobi.model.candlestick import Candlestick
 
 
-class CandlestickEvent:
+class CandlestickRequest:
     """
     The candlestick/kline data received by subscription of candlestick/kline.
 
@@ -22,17 +21,20 @@ class CandlestickEvent:
         self.symbol = ""
         self.timestamp = 0
         self.interval = CandlestickInterval.INVALID
-        self.data = Candlestick()
+        self.data = list()
 
     @staticmethod
     def json_parse(json_wrapper):
-        ch = json_wrapper.get_string(OutputKey.KeyChannelCh)
+        ch = json_wrapper.get_string(OutputKey.KeyChannelRep)
         parse = ChannelParser(ch)
-        candlestick_event = CandlestickEvent()
+        candlestick_event = CandlestickRequest()
         candlestick_event.symbol = parse.symbol
         candlestick_event.interval = ""
-        candlestick_event.timestamp = convert_cst_in_millisecond_to_utc(json_wrapper.get_int("ts"))
-        tick = json_wrapper.get_object(OutputKey.KeyTick)
-        data = Candlestick.json_parse(tick)
-        candlestick_event.data = data
+        tick = json_wrapper.get_array(OutputKey.KeyData)
+        candlestick_list = list()
+        for item in tick.get_items():
+            data = Candlestick.json_parse(item)
+            candlestick_list.append(data)
+
+        candlestick_event.data = candlestick_list
         return candlestick_event

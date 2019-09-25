@@ -1,3 +1,6 @@
+from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
+
 class Trade:
     """
     The trade information with price and amount etc.
@@ -16,3 +19,21 @@ class Trade:
         self.trade_id = 0
         self.timestamp = 0
         self.direction = ""
+
+    @staticmethod
+    def json_parse(json_data):
+        trade = Trade()
+        trade.amount = json_data.get_float("amount")
+        trade.price = json_data.get_float("price")
+        trade.trade_id = json_data.get_string("id")
+        trade.direction = json_data.get_string("direction")
+        trade.timestamp = convert_cst_in_millisecond_to_utc(json_data.get_int("ts"))
+        return trade
+
+    def print_object(self, format_data=""):
+        from huobi.base.printobject import PrintBasic
+        PrintBasic.print_basic(self.trade_id, format_data + "Trade Id")
+        PrintBasic.print_basic(self.timestamp, format_data + "Trade Time")
+        PrintBasic.print_basic(self.price, format_data + "Price")
+        PrintBasic.print_basic(self.amount, format_data + "Amount")
+        PrintBasic.print_basic(self.direction, format_data + "Direction")

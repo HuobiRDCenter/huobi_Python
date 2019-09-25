@@ -1,5 +1,6 @@
 import logging
 from huobi import SubscriptionClient
+from huobi.constant.test import *
 from huobi.model import *
 from huobi.base.printobject import PrintMix,PrintBasic
 
@@ -9,13 +10,12 @@ handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 logger.addHandler(handler)
 
-sub_client = SubscriptionClient(api_key="xxxxxx", secret_key="xxxxxx")
+sub_client = SubscriptionClient(api_key=g_api_key, secret_key=g_secret_key)
 
 
 def callback(upd_event: 'OrderUpdateNewEvent'):
-    print("---- order update : ")
-    PrintBasic.print_basic(upd_event.symbol, "Symbol")
-    PrintBasic.print_basic(upd_event.timestamp, "Timestamp")
-    PrintMix.print_data(upd_event.data)
+    print("---- order update : ----")
+    upd_event.print_object()
 
-sub_client.subscribe_order_update_new_event("eosht", callback)
+
+sub_client.subscribe_order_update_new_event("eosusdt", callback)

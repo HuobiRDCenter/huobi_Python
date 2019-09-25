@@ -88,6 +88,12 @@ class JsonWrapper:
         self.__check_mandatory_field(name)
         return JsonWrapper(self.json_object[name])
 
+    def get_object_or_default(self, name, defalut_value):
+        if name not in self.json_object:
+            return defalut_value
+        else:
+            return JsonWrapper(self.json_object[name])
+
     def get_array(self, name):
         self.__check_mandatory_field(name)
         return JsonWrapperArray(self.json_object[name])

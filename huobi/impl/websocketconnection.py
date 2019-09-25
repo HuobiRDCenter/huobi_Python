@@ -5,6 +5,8 @@ import ssl
 import logging
 from urllib import parse
 import urllib.parse
+
+from huobi.base.printtime import PrintDate
 from huobi.impl.utils.timeservice import get_current_timestamp
 from huobi.impl.utils.urlparamsbuilder import UrlParamsBuilder
 from huobi.impl.utils.apisignature import create_signature
@@ -168,19 +170,31 @@ class WebsocketConnection:
             error_code = json_wrapper.get_string_or_default("err-code", "Unknown error")
             error_msg = json_wrapper.get_string_or_default("err-msg", "Unknown error")
             self.on_error(error_code + ": " + error_msg)
+        elif json_wrapper.contain_key("err-code") and json_wrapper.get_int("err-code") != 0:
+            error_code = json_wrapper.get_string_or_default("err-code", "Unknown error")
+            error_msg = json_wrapper.get_string_or_default("err-msg", "Unknown error")
+            self.on_error(error_code + ": " + error_msg)
         elif json_wrapper.contain_key("op"):
             op = json_wrapper.get_string("op")
             if op == "notify":
                 self.__on_receive(json_wrapper)
             elif op == "ping":
-                self.__process_ping_on_trading_line()
+                ping_ts = json_wrapper.get_string("ts")
+                self.__process_ping_on_trading_line(ping_ts)
             elif op == "auth":
                 if self.request.subscription_handler is not None:
                     self.request.subscription_handler(self)
+            elif op == "req":
+                self.__on_receive(json_wrapper)
         elif json_wrapper.contain_key("ch"):
             self.__on_receive(json_wrapper)
+        elif json_wrapper.contain_key("rep"):
+            self.__on_receive(json_wrapper)
         elif json_wrapper.contain_key("ping"):
-            self.__process_ping_on_market_line()
+            ping_ts = json_wrapper.get_string("ping")
+            self.__process_ping_on_market_line(ping_ts)
+        else:
+            print("unknown data process, RX: " + gzip.decompress(message).decode("utf-8"))
 
     def __on_receive(self, json_wrapper):
         res = None
@@ -197,12 +211,19 @@ class WebsocketConnection:
             self.on_error("Process error: " + str(e)
                      + " You should capture the exception in your error handler")
 
-    def __process_ping_on_trading_line(self):
-        self.send("{\"op\":\"pong\",\"ts\":" + str(get_current_timestamp()) + "}")
+        if self.request.auto_close:
+            self.close()
+
+    def __process_ping_on_trading_line(self, ping_ts):
+        #self.send("{\"op\":\"pong\",\"ts\":" + str(get_current_timestamp()) + "}")
+        #PrintDate.timestamp_to_date(ping_ts)
+        self.send("{\"op\":\"pong\",\"ts\":" + str(ping_ts) + "}")
         return
 
-    def __process_ping_on_market_line(self):
-        self.send("{\"pong\":" + str(get_current_timestamp()) + "}")
+    def __process_ping_on_market_line(self, ping_ts):
+        #self.send("{\"pong\":" + str(get_current_timestamp()) + "}")
+        #PrintDate.timestamp_to_date(ping_ts)
+        self.send("{\"pong\":" + str(ping_ts) + "}")
         return
 
     def close_on_error(self):

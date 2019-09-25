@@ -16,3 +16,11 @@ class OrderUpdateEvent:
         self.symbol = ""
         self.timestamp = 0
         self.data = Order()
+
+    def print_object(self, format_data=""):
+        from huobi.base.printobject import PrintBasic
+        PrintBasic.print_basic(self.symbol, "Symbol")
+        PrintBasic.print_basic(self.timestamp, "Timestamp")
+
+        order = self.data
+        order.print_object()
