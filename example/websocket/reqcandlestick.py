@@ -37,4 +37,6 @@ def error(e: 'HuobiApiException'):
 
 #sub_client.request_candlestick_event("btcusdt", CandlestickInterval.MIN1, callback, from_ts_second=None, end_ts_second=None, auto_close=True, error_handler=None)
 #sub_client.request_candlestick_event("btcusdt", CandlestickInterval.MIN1, callback, from_ts_second=1569361140, end_ts_second=1569366420)
+#sub_client.request_candlestick_event("btcusdt", CandlestickInterval.MIN1, callback, from_ts_second=1569361140, end_ts_second=0)
+#sub_client.request_candlestick_event("btcusdt", CandlestickInterval.MIN1, callback, from_ts_second=1569379980)
 sub_client.request_candlestick_event("btcusdt", CandlestickInterval.MIN1, callback)

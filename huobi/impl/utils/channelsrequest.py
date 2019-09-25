@@ -7,9 +7,9 @@ def request_kline_channel(symbol, interval, from_ts_second = None, to_ts_second 
     channel["req"] = "market." + symbol + ".kline." + interval
     channel["id"] = str(get_current_timestamp())
     if from_ts_second:
-        channel["from"] = str(from_ts_second)
+        channel["from"] = int(from_ts_second)
     if to_ts_second:
-        channel["to"] = str(to_ts_second)
+        channel["to"] = int(to_ts_second)
     return json.dumps(channel)
 
 

@@ -184,4 +184,3 @@ class DepthStep:
     STEP3 = "step3"
     STEP4 = "step4"
     STEP5 = "step5"
-
