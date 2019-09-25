@@ -210,3 +210,7 @@ class WebsocketConnection:
             self.ws.close()
             self.state = ConnectionState.CLOSED_ON_ERROR
             self.logger.error("[Sub][" + str(self.id) + "] Connection is closing due to error")
+
+    def on_close(self):
+
+        self.logger.warning("[Sub][" + str(self.id) + "] Connection closed")
