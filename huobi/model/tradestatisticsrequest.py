@@ -5,7 +5,7 @@ from huobi.model.tradestatistics import TradeStatistics
 
 class TradeStatisticsRequest:
     """
-    The 24H trade statistics received by subscription of trade statistics.
+    The 24H trade statistics received by request of trade statistics only once.
 
     :member
         symbol: The symbol you subscribed.

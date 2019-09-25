@@ -20,14 +20,7 @@ def callback(candlestick_event: 'CandlestickRequest'):
 
     if len(candlestick_event.data):
         for candlestick in candlestick_event.data:
-            print("Timestamp: " + str(candlestick.timestamp))
-            print("High: " + str(candlestick.high))
-            print("Low: " + str(candlestick.low))
-            print("Open: " + str(candlestick.open))
-            print("Close: " + str(candlestick.close))
-            print("Amount: " + str(candlestick.amount))
-            print("Volume: " + str(candlestick.volume))
-            print("Count: " + str(candlestick.count))
+            candlestick.print_object()
             print()
 
 

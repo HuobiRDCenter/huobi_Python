@@ -206,7 +206,8 @@ class SubscriptionClient(object):
         """
         Subscribe account changing event. If the balance is updated, server will send the data to client and onReceive in callback will be called.
 
-        :param mode: when mode is AVAILABLE, balance refers to available balance; when mode is TOTAL, balance refers to TOTAL balance for trade sub account (available+frozen).
+        :param client_req_id: client request ID
+        :param auto_close : close websocket connection after get data
         :param callback: The implementation is required. onReceive will be called if receive server's update.
             example: def callback(account_event: 'AccountEvent'):
                         pass
@@ -228,6 +229,9 @@ class SubscriptionClient(object):
         :param callback: The implementation is required. onReceive will be called if receive server's update.
             example: def callback(candlestick_event: 'CandlestickEvent'):
                         pass
+        :param from_ts_second : data from timestamp [it's second]
+        :param end_ts_second : data util timestamp [it's second]
+        :param auto_close : close websocket connection after get data
         :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
             example: def error_handler(exception: 'HuobiApiException')
                         pass
@@ -247,6 +251,7 @@ class SubscriptionClient(object):
         :param callback: The implementation is required. onReceive will be called if receive server's update.
             example: def callback(price_depth_event: 'PriceDepthEvent'):
                         pass
+        :param auto_close : close websocket connection after get data
         :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
             example: def error_handler(exception: 'HuobiApiException')
                         pass
@@ -266,6 +271,7 @@ class SubscriptionClient(object):
         :param callback: The implementation is required. onReceive will be called if receive server's update.
             example: def callback(trade_event: 'TradeEvent'):
                         pass
+        :param auto_close : close websocket connection after get data
         :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
             example: def error_handler(exception: 'HuobiApiException')
                         pass
@@ -283,6 +289,7 @@ class SubscriptionClient(object):
         :param callback: The implementation is required. onReceive will be called if receive server's update.
             example: def callback(trade_statistics_event: 'TradeStatisticsEvent'):
                         pass
+        :param auto_close : close websocket connection after get data
         :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
             example: def error_handler(exception: 'HuobiApiException')
                         pass
@@ -302,6 +309,8 @@ class SubscriptionClient(object):
         :param callback: The implementation is required. onReceive will be called if receive server's update.
             example: def callback(candlestick_event: 'CandlestickEvent'):
                         pass
+        :param client_req_id: client request ID
+        :param auto_close : close websocket connection after get data
         :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
             example: def error_handler(exception: 'HuobiApiException')
                         pass
@@ -320,6 +329,8 @@ class SubscriptionClient(object):
         :param callback: The implementation is required. onReceive will be called if receive server's update.
             example: def callback(candlestick_event: 'CandlestickEvent'):
                         pass
+        :param client_req_id: client request ID
+        :param auto_close : close websocket connection after get data
         :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
             example: def error_handler(exception: 'HuobiApiException')
                         pass

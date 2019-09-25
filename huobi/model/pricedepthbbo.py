@@ -7,8 +7,13 @@ class PriceDepthBbo:
 
     :member
         timestamp: The UNIX formatted timestamp in UTC.
-        bids: The list of the bid depth. The content is DepthEntry class.
-        asks: The list of the ask depth. The content is DepthEntry class.
+        bid: the first bid near trade value.
+        bid_size: the bid size.
+        ask: The first ask near trade value.
+        ask_size: the ask size.
+        quote_time : quote time
+        symbol : trade symbol
+
 
     """
     def __init__(self):
