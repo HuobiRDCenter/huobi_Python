@@ -58,6 +58,7 @@ market.$symbol.bbo
 ## Huobi Global API Python SDK version 1.0.1
 
 [***version 1.0.1***](https://github.com/HuobiRDCenter/huobi_Python/releases)
+
  ***2019-09-19***
 
 1. **Supported following REST endpoints:**
