@@ -22,3 +22,27 @@ class TradeStatistics:
         self.low = 0.0
         self.count = 0
         self.volume = 0.0
+
+    @staticmethod
+    def json_parse(json_data, ts):
+        statistics = TradeStatistics()
+        statistics.amount = json_data.get_float("amount")
+        statistics.open = json_data.get_float("open")
+        statistics.close = json_data.get_float("close")
+        statistics.high = json_data.get_float("high")
+        statistics.timestamp = ts
+        statistics.count = json_data.get_int("count")
+        statistics.low = json_data.get_float("low")
+        statistics.volume = json_data.get_float("vol")
+        return statistics
+
+    def print_object(self, format_data=""):
+        from huobi.base.printobject import PrintBasic
+        PrintBasic.print_basic(self.timestamp, format_data + "Timestamp")
+        PrintBasic.print_basic(self.open, format_data + "Open")
+        PrintBasic.print_basic(self.close, format_data + "Close")
+        PrintBasic.print_basic(self.amount, format_data + "Amount")
+        PrintBasic.print_basic(self.high, format_data + "High")
+        PrintBasic.print_basic(self.low, format_data + "Low")
+        PrintBasic.print_basic(self.count, format_data + "Count")
+        PrintBasic.print_basic(self.volume, format_data + "Volume")

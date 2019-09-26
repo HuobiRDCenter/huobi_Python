@@ -1,3 +1,4 @@
+from huobi.constant.system import RestApiDefine
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
 from huobi.impl.restapiinvoker import call_sync
 from huobi.impl.accountinfomap import account_info_map
@@ -17,7 +18,7 @@ class RequestClient(object):
         """
         api_key = None
         secret_key = None
-        url = "https://api.huobi.pro"
+        url = RestApiDefine.Url
         if "api_key" in kwargs:
             api_key = kwargs["api_key"]
         if "secret_key" in kwargs:

@@ -3,9 +3,9 @@ from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
 from huobi.model.tradestatistics import TradeStatistics
 
 
-class TradeStatisticsEvent:
+class TradeStatisticsRequest:
     """
-    The 24H trade statistics received by subscription of trade statistics.
+    The 24H trade statistics received by request of trade statistics only once.
 
     :member
         symbol: The symbol you subscribed.
@@ -19,17 +19,16 @@ class TradeStatisticsEvent:
 
     @staticmethod
     def json_parse(json_wrapper):
-        ch = json_wrapper.get_string("ch")
+        ch = json_wrapper.get_string("rep")
         parse = ChannelParser(ch)
-        trade_statistics_event = TradeStatisticsEvent()
+        trade_statistics_event = TradeStatisticsRequest()
         trade_statistics_event.symbol = parse.symbol
         ts = convert_cst_in_millisecond_to_utc(json_wrapper.get_int("ts"))
         trade_statistics_event.timestamp = ts
-        tick = json_wrapper.get_object("tick")
+        tick = json_wrapper.get_object("data")
         statistics = TradeStatistics.json_parse(tick, ts)
         trade_statistics_event.trade_statistics = statistics
         return trade_statistics_event
-
 
     def print_object(self, format_data=""):
         from huobi.base.printobject import PrintBasic

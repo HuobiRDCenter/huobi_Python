@@ -1,3 +1,5 @@
+
+from huobi.model.balance import Balance
 from huobi.model.constant import *
 
 
@@ -31,3 +33,20 @@ class Account:
             if currency == balance.currency:
                 result.append(balance)
         return result
+
+    @staticmethod
+    def json_parse(json_data, account_type = None):
+        account = Account()
+        account.id = json_data.get_string("id")
+        account.account_type = account_type if account_type else json_data.get_string("type")
+        account.account_state = json_data.get_string("state")
+        list_array = json_data.get_array("list")
+        balance_list = list()
+        for item in list_array.get_items():
+            balance = Balance.json_parse(item)
+            balance_list.append(balance)
+
+        account.balances = balance_list
+
+        return account
+

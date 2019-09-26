@@ -1,13 +1,22 @@
 import time
 from huobi.impl.websocketrequest import WebsocketRequest
 from huobi.impl.utils.channels import *
+from huobi.impl.utils.channelsrequest import *
 from huobi.impl.utils.channelparser import ChannelParser
 from huobi.impl.accountinfomap import account_info_map
 from huobi.impl.utils.timeservice import *
 from huobi.impl.utils.inputchecker import *
 from huobi.model import *
+from huobi.model.accountbalancerequest import AccountBalanceRequest
+from huobi.model.candlestickrequest import CandlestickRequest
+from huobi.model.orderdetailrequest import OrderDetailRequest
+from huobi.model.orderlistrequest import OrderListRequest
 from huobi.model.orderupdatenew import OrderUpdateNew
 from huobi.model.orderupdatenewevent import OrderUpdateNewEvent
+from huobi.model.pricedepthbboevent import PriceDepthBboEvent
+from huobi.model.pricedepthrequest import PriceDepthRequest
+from huobi.model.traderequest import TradeRequest
+from huobi.model.tradestatisticsrequest import TradeStatisticsRequest
 
 
 class WebsocketRequestImpl(object):
@@ -26,27 +35,36 @@ class WebsocketRequestImpl(object):
                 time.sleep(0.01)
 
         def json_parse(json_wrapper):
-            ch = json_wrapper.get_string("ch")
-            parse = ChannelParser(ch)
-            candlestick_event = CandlestickEvent()
-            candlestick_event.symbol = parse.symbol
-            candlestick_event.interval = interval
-            candlestick_event.timestamp = convert_cst_in_millisecond_to_utc(json_wrapper.get_int("ts"))
-            tick = json_wrapper.get_object("tick")
-            data = Candlestick()
-            data.timestamp = convert_cst_in_second_to_utc(tick.get_int("id"))
-            data.open = tick.get_float("open")
-            data.close = tick.get_float("close")
-            data.low = tick.get_float("low")
-            data.high = tick.get_float("high")
-            data.amount = tick.get_float("amount")
-            data.count = tick.get_int("count")
-            data.volume = tick.get_float("vol")
-            candlestick_event.data = data
-            return candlestick_event
+            candle_stick_event_obj = CandlestickEvent.json_parse(json_wrapper)
+            candle_stick_event_obj.interval = interval
+            return candle_stick_event_obj
 
         request = WebsocketRequest()
         request.subscription_handler = subscription_handler
+        request.is_trading = False
+        request.json_parser = json_parse
+        request.update_callback = callback
+        request.error_handler = error_handler
+        return request
+
+    def request_candlestick_event(self, symbols, interval, callback, from_ts_second, end_ts_second, auto_close, error_handler=None):
+        check_symbol_list(symbols)
+        check_should_not_none(interval, "interval")
+        check_should_not_none(callback, "callback")
+
+        def subscription_handler(connection):
+            for val in symbols:
+                connection.send(request_kline_channel(val, interval, from_ts_second, end_ts_second))
+                time.sleep(0.01)
+
+        def json_parse(json_wrapper):
+            candle_stick_event_obj = CandlestickRequest.json_parse(json_wrapper)
+            candle_stick_event_obj.interval = interval
+            return candle_stick_event_obj
+
+        request = WebsocketRequest()
+        request.subscription_handler = subscription_handler
+        request.auto_close = auto_close
         request.is_trading = False
         request.json_parser = json_parse
         request.update_callback = callback
@@ -62,30 +80,28 @@ class WebsocketRequestImpl(object):
                 connection.send(trade_statistics_channel(val))
                 time.sleep(0.01)
 
-        def json_parse(json_wrapper):
-            ch = json_wrapper.get_string("ch")
-            parse = ChannelParser(ch)
-            trade_statistics_event = TradeStatisticsEvent()
-            trade_statistics_event.symbol = parse.symbol
-            ts = convert_cst_in_millisecond_to_utc(json_wrapper.get_int("ts"))
-            trade_statistics_event.timestamp = ts
-            tick = json_wrapper.get_object("tick")
-            statistics = TradeStatistics()
-            statistics.amount = tick.get_float("amount")
-            statistics.open = tick.get_float("open")
-            statistics.close = tick.get_float("close")
-            statistics.high = tick.get_float("high")
-            statistics.timestamp = ts
-            statistics.count = tick.get_int("count")
-            statistics.low = tick.get_float("low")
-            statistics.volume = tick.get_float("vol")
-            trade_statistics_event.trade_statistics = statistics
-            return trade_statistics_event
-
         request = WebsocketRequest()
         request.subscription_handler = subscription_handler
         request.is_trading = False
-        request.json_parser = json_parse
+        request.json_parser = TradeStatisticsEvent.json_parse
+        request.update_callback = callback
+        request.error_handler = error_handler
+        return request
+
+    def request_24h_trade_statistics_event(self, symbols, callback, auto_close, error_handler=None):
+        check_symbol_list(symbols)
+        check_should_not_none(callback, "callback")
+
+        def subscription_handler(connection):
+            for val in symbols:
+                connection.send(request_trade_statistics_channel(val))
+                time.sleep(0.01)
+
+        request = WebsocketRequest()
+        request.subscription_handler = subscription_handler
+        request.auto_close = auto_close
+        request.is_trading = False
+        request.json_parser = TradeStatisticsRequest.json_parse
         request.update_callback = callback
         request.error_handler = error_handler
         return request
@@ -127,46 +143,74 @@ class WebsocketRequestImpl(object):
         request.error_handler = error_handler
         return request
 
-    def subscribe_price_depth_event(self, symbols, callback, error_handler=None):
+    def request_trade_event(self, symbols, callback, auto_close, error_handler=None):
         check_symbol_list(symbols)
         check_should_not_none(callback, "callback")
 
         def subscription_handler(connection):
             for val in symbols:
-                connection.send(price_depth_channel(val))
+                connection.send(request_trade_channel(val))
                 time.sleep(0.01)
 
-        def json_parse(json_wrapper):
-            ch = json_wrapper.get_string("ch")
-            parse = ChannelParser(ch)
-            price_depth_event = PriceDepthEvent()
-            price_depth_event.symbol = parse.symbol
-            price_depth_event.timestamp = convert_cst_in_millisecond_to_utc(json_wrapper.get_int("ts"))
-            price_depth = PriceDepth()
-            tick = json_wrapper.get_object("tick")
-            bid_list = list()
-            bids_array = tick.get_array("bids")
-            for item in bids_array.get_items_as_array():
-                depth_entry = DepthEntry()
-                depth_entry.price = item.get_float_at(0)
-                depth_entry.amount = item.get_float_at(1)
-                bid_list.append(depth_entry)
-            ask_list = list()
-            asks_array = tick.get_array("asks")
-            for item in asks_array.get_items_as_array():
-                depth_entry = DepthEntry()
-                depth_entry.price = item.get_float_at(0)
-                depth_entry.amount = item.get_float_at(1)
-                ask_list.append(depth_entry)
-            price_depth.bids = bid_list
-            price_depth.asks = ask_list
-            price_depth_event.data = price_depth
-            return price_depth_event
+        request = WebsocketRequest()
+        request.subscription_handler = subscription_handler
+        request.auto_close = auto_close
+        request.is_trading = False
+        request.json_parser = TradeRequest.json_parse
+        request.update_callback = callback
+        request.error_handler = error_handler
+        return request
+
+    def subscribe_price_depth_event(self, symbols, depth_step, callback, error_handler=None):
+        check_symbol_list(symbols)
+        new_step = PriceDepth.get_valid_depth_step(value=depth_step, defalut_value=DepthStep.STEP0)
+        check_should_not_none(callback, "callback")
+
+        def subscription_handler(connection):
+            for val in symbols:
+                connection.send(price_depth_channel(val, new_step))
+                time.sleep(0.01)
 
         request = WebsocketRequest()
         request.subscription_handler = subscription_handler
         request.is_trading = False
-        request.json_parser = json_parse
+        request.json_parser = PriceDepthEvent.json_parse
+        request.update_callback = callback
+        request.error_handler = error_handler
+        return request
+
+    def subscribe_price_depth_bbo_event(self, symbols, callback, error_handler=None):
+        check_symbol_list(symbols)
+        check_should_not_none(callback, "callback")
+
+        def subscription_handler(connection):
+            for val in symbols:
+                connection.send(price_depth_bbo_channel(val))
+                time.sleep(0.01)
+
+        request = WebsocketRequest()
+        request.subscription_handler = subscription_handler
+        request.is_trading = False
+        request.json_parser = PriceDepthBboEvent.json_parse
+        request.update_callback = callback
+        request.error_handler = error_handler
+        return request
+
+    def request_price_depth_event(self, symbols, depth_step, callback, auto_close, error_handler=None):
+        check_symbol_list(symbols)
+        new_step = PriceDepth.get_valid_depth_step(value=depth_step, defalut_value=DepthStep.STEP0)
+        check_should_not_none(callback, "callback")
+
+        def subscription_handler(connection):
+            for val in symbols:
+                connection.send(request_price_depth_channel(val, new_step))
+                time.sleep(0.01)
+
+        request = WebsocketRequest()
+        request.subscription_handler = subscription_handler
+        request.auto_close = auto_close
+        request.is_trading = False
+        request.json_parser = PriceDepthRequest.json_parse
         request.update_callback = callback
         request.error_handler = error_handler
         return request
@@ -228,18 +272,7 @@ class WebsocketRequestImpl(object):
             order_update_event.symbol = parse.symbol
             order_update_event.timestamp = convert_cst_in_millisecond_to_utc(json_wrapper.get_int("ts"))
             data = json_wrapper.get_object("data")
-            order = OrderUpdateNew()
-
-            order.match_id = data.get_int("match-id")
-            order.order_id = data.get_int("order-id")
-            order.symbol = parse.symbol
-            order.state = data.get_string("order-state")
-            order.role = data.get_string("role")
-            order.price = data.get_float("price")
-            order.filled_amount = data.get_float("filled-amount")
-            order.filled_cash_amount = data.get_float("filled-cash-amount")
-            order.unfilled_amount = data.get_float("unfilled-amount")
-            order.client_order_id = data.get_string("client-order-id")
+            order = OrderUpdateNew.json_parse(data)
 
             order_update_event.data = order
             return order_update_event
@@ -279,6 +312,86 @@ class WebsocketRequestImpl(object):
 
         request = WebsocketRequest()
         request.subscription_handler = subscription_handler
+        request.is_trading = True
+        request.json_parser = json_parse
+        request.update_callback = callback
+        request.error_handler = error_handler
+        return request
+
+
+    def request_account_balance_event(self, callback, client_req_id, auto_close, error_handler=None):
+        check_should_not_none(callback, "callback")
+
+        def subscription_handler(connection):
+            connection.send(request_account_list_channel(client_req_id))
+
+        request = WebsocketRequest()
+        request.subscription_handler = subscription_handler
+        request.auto_close = auto_close
+        request.is_trading = True
+        request.json_parser = AccountBalanceRequest.json_parse
+        request.update_callback = callback
+        request.error_handler = error_handler
+        return request
+
+    def request_order_list_event(self, symbol, account_id, callback, order_states, client_req_id, auto_close, error_handler=None):
+        check_should_not_none(symbol, "symbol")
+        check_should_not_none(callback, "callback")
+
+        def subscription_handler(connection):
+            connection.send(request_order_list_channel(symbol=symbol, account_id=account_id, states_str=order_states, client_req_id=client_req_id))
+
+        def get_account_type_map(json_wrapper):
+            #get account type mapping
+            account_id_type_map = {}
+            error_code = json_wrapper.get_int("err-code")
+            if error_code == 0:
+                order_list_json = json_wrapper.get_array("data")
+                for order_json in order_list_json.get_items():
+                    account_id = order_json.get_int("account-id")
+                    account_type = account_info_map.get_account_by_id(self.__api_key, account_id).account_type
+                    account_id_type_map[account_id] = account_type
+            return account_id_type_map
+
+        def json_parse(json_wrapper):
+            account_type_map = get_account_type_map(json_wrapper)
+            req_obj = OrderListRequest.json_parse(json_wrapper, account_type_map)
+            req_obj = OrderListRequest.update_symbol(req_obj)
+            return req_obj
+
+        request = WebsocketRequest()
+        request.subscription_handler = subscription_handler
+        request.auto_close = auto_close
+        request.is_trading = True
+        request.json_parser = json_parse
+        request.update_callback = callback
+        request.error_handler = error_handler
+        return request
+
+    def request_order_detail_event(self, order_id, callback, client_req_id, auto_close, error_handler=None):
+        check_should_not_none(order_id, "order_id")
+        check_should_not_none(callback, "callback")
+
+        def subscription_handler(connection):
+            connection.send(request_order_detail_channel(order_id, client_req_id))
+
+        def get_account_type_map(json_wrapper):
+            #get account type mapping
+            account_id_type_map = {}
+            data = json_wrapper.get_object("data")
+            account_id = data.get_int("account-id")
+            account_type = account_info_map.get_account_by_id(self.__api_key, account_id).account_type
+            account_id_type_map[account_id] = account_type
+            return account_id_type_map
+
+        def json_parse(json_wrapper):
+            account_type_map = get_account_type_map(json_wrapper)
+            req_obj = OrderDetailRequest.json_parse(json_wrapper, account_type_map)
+            return req_obj
+
+        request = WebsocketRequest()
+        request.subscription_handler = subscription_handler
+        request.auto_close = auto_close
         request.is_trading = True
         request.json_parser = json_parse
         request.update_callback = callback

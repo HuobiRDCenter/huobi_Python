@@ -11,8 +11,9 @@ logger.addHandler(handler)
 sub_client = SubscriptionClient()
 
 
-def callback(price_depth_event: 'PriceDepthEvent'):
+def callback(price_depth_event: 'PriceDepthRequest'):
     print("Timestamp: " + str(price_depth_event.timestamp))
+    print("Channel : " + price_depth_event.ch)
     depth = price_depth_event.data
     for entry in depth.bids:
         print("Bids: " + " price: " + str(entry.price) + ", amount: " + str(entry.amount))
@@ -25,4 +26,4 @@ def error(e: 'HuobiApiException'):
     print(e.error_code + e.error_message)
 
 
-sub_client.subscribe_price_depth_event("btcusdt", callback, error)
+sub_client.request_price_depth_event("btcusdt", DepthStep.STEP0, callback, error)

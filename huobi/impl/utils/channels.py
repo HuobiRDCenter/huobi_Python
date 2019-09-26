@@ -1,5 +1,6 @@
 import json
 from huobi.impl.utils.timeservice import get_current_timestamp
+from huobi.model import DepthStep
 
 
 def kline_channel(symbol, interval):
@@ -16,9 +17,15 @@ def trade_channel(symbol):
     return json.dumps(channel)
 
 
-def price_depth_channel(symbol):
+def price_depth_channel(symbol, step_type = DepthStep.STEP0):
     channel = dict()
-    channel["sub"] = "market." + symbol + ".depth.step0"
+    channel["sub"] = "market." + symbol + ".depth." + step_type
+    channel["id"] = str(get_current_timestamp())
+    return json.dumps(channel)
+
+def price_depth_bbo_channel(symbol):
+    channel = dict()
+    channel["sub"] = "market." + symbol + ".bbo"
     channel["id"] = str(get_current_timestamp())
     return json.dumps(channel)
 
