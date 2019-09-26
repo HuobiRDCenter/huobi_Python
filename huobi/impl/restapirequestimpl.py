@@ -70,15 +70,7 @@ class RestApiRequestImpl(object):
             candlestick_list = list()
             data_list = json_wrapper.get_array("data")
             for item in data_list.get_items():
-                candlestick = Candlestick()
-                candlestick.timestamp = convert_cst_in_second_to_utc(item.get_int("id"))
-                candlestick.low = item.get_float("low")
-                candlestick.high = item.get_float("high")
-                candlestick.amount = item.get_float("amount")
-                candlestick.open = item.get_float("open")
-                candlestick.close = item.get_float("close")
-                candlestick.volume = item.get_float("vol")
-                candlestick.count = item.get_int("count")
+                candlestick = Candlestick.json_parse(item)
                 candlestick_list.append(candlestick)
             return candlestick_list
 
