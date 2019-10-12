@@ -6,6 +6,7 @@ from huobi.impl.utils.apisignature import utc_now
 from huobi.impl.utils.urlparamsbuilder import UrlParamsBuilder
 
 
+
 class TestApi(unittest.TestCase):
     def test_request(self):
         builder = UrlParamsBuilder()
