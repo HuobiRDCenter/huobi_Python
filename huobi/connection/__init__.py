@@ -1,0 +1,2 @@
+from huobi.connection.restapi_sync_client import RestApiSyncClient
+from huobi.connection.subscribe_client import SubscribeClient

@@ -30,3 +30,19 @@ class Symbol:
         self.max_order_amt = ""
         self.min_order_value = ""
         self.leverage_ratio = 0
+
+
+    def print_object(self, format_data=""):
+        from huobi.utils.printobject import PrintBasic
+        PrintBasic.print_basic(self.base_currency, format_data + "Base Currency")
+        PrintBasic.print_basic(self.quote_currency, format_data + "Quote Currency")
+        PrintBasic.print_basic(self.price_precision, format_data + "Price Precision")
+        PrintBasic.print_basic(self.amount_precision, format_data + "Amount Precision")
+        PrintBasic.print_basic(self.symbol_partition, format_data + "Symbol Partition")
+        PrintBasic.print_basic(self.symbol, format_data + "Symbol")
+        PrintBasic.print_basic(self.state, format_data + "State")
+        PrintBasic.print_basic(self.value_precision, format_data + "Value Precision")
+        PrintBasic.print_basic(self.min_order_amt, format_data + "Min Order Amount")
+        PrintBasic.print_basic(self.max_order_amt, format_data + "Max Order Amount")
+        PrintBasic.print_basic(self.min_order_value, format_data + "Min Order Value")
+        PrintBasic.print_basic(self.leverage_ratio, format_data + "Leverage Ratio")
