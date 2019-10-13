@@ -42,9 +42,18 @@ connection_id = 0
 
 
 class ConnectionState:
+    """
+    IDLE -> CONNECTING -> CONNECTED(call on_open from WebSocketApp) -> CLOSED_ON_ERROR(websocket_func)
+                ^                                                   |
+                |                                                   |
+                |                                                   |
+    DELAY_CONNECTING(call re_connect_in_delay from watch_dog_job) <-|
+    """
     IDLE = 0
     CONNECTED = 1
-    CLOSED_ON_ERROR = 2
+    DELAY_CONNECTING = 2
+    CONNECTING = 3
+    CLOSED_ON_ERROR = 4
 
 
 def websocket_func(*args):
@@ -60,8 +69,9 @@ def websocket_func(*args):
     connection_instance.ws.on_open = on_open
     connection_instance.ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
     connection_instance.logger.info("[Sub][" + str(connection_instance.id) + "] Connection event loop down")
-    if connection_instance.state == ConnectionState.CONNECTED:
-        connection_instance.state = ConnectionState.IDLE
+    with connection_instance.state_lock.acquire():
+        if connection_instance.state == ConnectionState.CONNECTED:
+            connection_instance.state = ConnectionState.IDLE
 
 
 class WebsocketConnection:
@@ -80,6 +90,7 @@ class WebsocketConnection:
         self.last_receive_time = 0
         self.logger = logging.getLogger("huobi-client")
         self.state = ConnectionState.IDLE
+        self.state_lock = threading.Lock()
         global connection_id
         connection_id += 1
         self.id = connection_id
@@ -95,14 +106,12 @@ class WebsocketConnection:
         else:
             self.url = self.__market_url
 
-    def in_delay_connection(self):
-        return self.delay_in_second != -1
-
     def re_connect_in_delay(self, delay_in_second):
         if self.ws is not None:
             self.ws.close()
             self.ws = None
         self.delay_in_second = delay_in_second
+        self.state = ConnectionState.DELAY_CONNECTING
         self.logger.warning("[Sub][" + str(self.id) + "] Reconnecting after "
                             + str(self.delay_in_second) + " seconds later")
 
@@ -116,7 +125,8 @@ class WebsocketConnection:
     def connect(self):
         if self.state == ConnectionState.CONNECTED:
             self.logger.info("[Sub][" + str(self.id) + "] Already connected")
-        else:
+        elif self.state != ConnectionState.CONNECTING:  # from IDLE/DELAY_CONNECTING, make sure only one new thread launch
+            self.state = ConnectionState.CONNECTING
             self.__thread = threading.Thread(target=websocket_func, args=[self])
             self.__thread.start()
 
@@ -130,12 +140,17 @@ class WebsocketConnection:
         self.__watch_dog.on_connection_closed(self)
         self.logger.error("[Sub][" + str(self.id) + "] Closing normally")
 
+    def on_close(self):
+        del websocket_connection_handler[self.ws]
+        self.logger.error("[Sub][" + str(self.id) + "] Closing requested from WebSocketApp")
+
     def on_open(self, ws):
         #print("### open ###")
         self.logger.info("[Sub][" + str(self.id) + "] Connected to server")
         self.ws = ws
         self.last_receive_time = get_current_timestamp()
-        self.state = ConnectionState.CONNECTED
+        with self.state_lock.acquire():
+            self.state = ConnectionState.CONNECTED
         self.__watch_dog.on_connection_created(self)
         if self.request.is_trading:
             try:
@@ -228,6 +243,7 @@ class WebsocketConnection:
 
     def close_on_error(self):
         if self.ws is not None:
-            self.ws.close()
-            self.state = ConnectionState.CLOSED_ON_ERROR
-            self.logger.error("[Sub][" + str(self.id) + "] Connection is closing due to error")
+            with self.state_lock.acquire():
+                self.ws.close()
+                self.state = ConnectionState.CLOSED_ON_ERROR
+                self.logger.error("[Sub][" + str(self.id) + "] Connection is closing due to error")
