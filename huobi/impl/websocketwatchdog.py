@@ -15,7 +15,6 @@ def watch_dog_job(*args):
                     if ts > watch_dog_instance.receive_limit_ms:
                         watch_dog_instance.logger.warning("[Sub][" + str(connection.id) + "] No response from server")
                         connection.re_connect_in_delay(watch_dog_instance.connection_delay_failure)
-                        connection.ws.keep_running = False  # Make sure old ws instance to end by itself
             elif connection.state == ConnectionState.DELAY_CONNECTING:
                 watch_dog_instance.logger.warning("[Sub] call re_connect")
                 connection.re_connect()
