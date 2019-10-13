@@ -41,7 +41,6 @@ class TestGetPriceDepth(unittest.TestCase):
     def test_request(self):
         impl = RestApiRequestImpl("", "")
         request = impl.get_price_depth("btcustd", 10)
-        print(request.url)
         self.assertEqual("GET", request.method)
         self.assertTrue(request.url.find("/market/depth") != -1)
         self.assertTrue(request.url.find("symbol=btcustd") != -1)
