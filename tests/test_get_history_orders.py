@@ -36,9 +36,11 @@ data = '''
             "field-amount":"0.0",
             "field-cash-amount":"0.0",
             "field-fees":"0.0",
+            "finished-at":0,
             "source":"api",
-            "state":"canceled"
-                }
+            "state":"canceled",
+            "canceled-at":0
+        }
     ]
 }
 '''

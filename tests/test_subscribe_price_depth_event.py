@@ -36,7 +36,7 @@ class TestSubscribePriceDepthEvent(unittest.TestCase):
         def callback(event):
             pass
 
-        request = impl.subscribe_price_depth_event(symbols, callback)
+        request = impl.subscribe_price_depth_event(symbols, DepthStep.STEP0, callback)
         mock_connection = MockWebsocketConnection(request)
         request.subscription_handler(mock_connection)
         subscription = mock_connection.pop_output_message()
@@ -50,7 +50,7 @@ class TestSubscribePriceDepthEvent(unittest.TestCase):
         def callback(event):
             pass
 
-        request = impl.subscribe_price_depth_event(symbols, callback)
+        request = impl.subscribe_price_depth_event(symbols, DepthStep.STEP0, callback)
         event = request.json_parser(parse_json_from_string(data))
         self.assertEqual("btcusdt", event.symbol)
         self.assertEqual(convert_cst_in_millisecond_to_utc(1550558788054), event.timestamp)

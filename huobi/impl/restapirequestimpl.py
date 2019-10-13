@@ -258,7 +258,7 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
-    def get_withdraw_history(self, currency, from_id, size, direct):
+    def get_withdraw_history(self, currency, from_id, size, direct="prev"):
         check_currency(currency)
         check_should_not_none(from_id, "from_id")
         check_should_not_none(size, "size")
@@ -292,7 +292,7 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
-    def get_deposit_history(self, currency, from_id, size, direct):
+    def get_deposit_history(self, currency, from_id, size, direct='prev'):
         check_symbol(currency)
         check_should_not_none(from_id, "from_id")
         check_should_not_none(size, "size")
@@ -564,10 +564,10 @@ class RestApiRequestImpl(object):
         user = account_info_map.get_user(self.__api_key)
         account = user.get_account_by_type(account_type)
         builder = UrlParamsBuilder()
-        builder.put_post("account-id", account.id)
-        builder.put_post("symbol", symbol)
-        builder.put_post("side", side)
-        builder.put_post("size", size)
+        builder.put_url("account-id", account.id)
+        builder.put_url("symbol", symbol)
+        builder.put_url("side", side)
+        builder.put_url("size", size)
         request = self.__create_request_by_post_with_signature("/v1/order/orders/batchCancelOpenOrders", builder)
 
         def parse(json_wrapper):

@@ -7,23 +7,35 @@ from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
 
 data = '''
 {
-	"status": "ok",
-	"data": [{
-		"base-currency": "btc",
-		"quote-currency": "usdt",
-		"price-precision": 2,
-		"amount-precision": 4,
-		"symbol-partition": "main",
-		"symbol": "btcusdt"
-	}, {
-		"base-currency": "bch",
-		"quote-currency": "usdt",
-		"price-precision": 3,
-		"amount-precision": 5,
-		"symbol-partition": "main",
-		"symbol": "bchusdt"
-	}]
+    "status": "ok",
+    "data": [{
+        "base-currency": "btc",
+        "quote-currency": "usdt",
+        "price-precision": 2,  
+        "amount-precision": 4,
+        "symbol-partition": "main",
+        "symbol": "btcusdt",
+        "state": "online",
+        "value-precision": 2,
+        "min-order-amt": 1,
+        "max-order-amt": 10,
+        "min-order-value": 1
+    }, 
+    {
+        "base-currency": "bch",
+        "quote-currency": "usdt",
+        "price-precision": 3,
+        "amount-precision": 5,
+        "symbol-partition": "main",
+        "symbol": "bchusdt",
+        "state": "online",
+        "value-precision": 2,
+        "min-order-amt": 1,
+        "max-order-amt": 10,
+        "min-order-value": 1
+    }]
 }'''
+
 
 class TestGetSymbols(unittest.TestCase):
     def test_request(self):

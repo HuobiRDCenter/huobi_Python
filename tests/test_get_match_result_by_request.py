@@ -21,7 +21,9 @@ data = '''
             "filled-amount":"1",
             "match-id":100047439757,
             "id":4192759683,
-            "type":"sell-market"
+            "type":"sell-market",
+            "role":"maker",
+            "fee-deduct-currency":""
         },
         {
             "symbol":"htbtc",
@@ -34,7 +36,9 @@ data = '''
             "filled-amount":"1.89",
             "match-id":100047251154,
             "id":4191225853,
-            "type":"sell-market"
+            "type":"sell-market",
+            "role":"maker",
+            "fee-deduct-currency":""
         }
     ]
 }

@@ -7,38 +7,43 @@ from huobi.impl.restapirequestimpl import account_info_map
 
 data = '''
 {
-	"status": "ok",
-	"data": [{
-			"created-at": 1550628731111,
-			"symbol": "htbtc",
-			"source": "api",
-			"amount": "1.000000000000000000",
-			"account-id": 123,
-			"filled-amount": "0.1",
-			"filled-cash-amount": "0.2",
-			"filled-fees": "0.3",
-			"price": "1.100000000000000000",
-			"id": 24963751000,
-			"state": "submitted",
-			"type": "sell-limit"
-		},
-		{
-			"created-at": 1550628730000,
-			"symbol": "htbtc",
-			"source": "api",
-			"amount": "2.000000000000000000",
-			"account-id": 456,
-			"filled-amount": "2.0",
-			"filled-cash-amount": "2.1",
-			"filled-fees": "2.2",
-			"price": "2.100000000000000000",
-			"id": 24963751111,
-			"state": "submitted",
-			"type": "buy-limit"
-		}
-	]
+    "status": "ok",
+    "data": [{
+            "created-at": 1550628731111,
+            "symbol": "htbtc",
+            "source": "api",
+            "amount": "1.000000000000000000",
+            "account-id": 123,
+            "filled-amount": "0.1",
+            "filled-cash-amount": "0.2",
+            "filled-fees": "0.3",
+            "price": "1.100000000000000000",
+            "id": 24963751000,
+            "state": "submitted",
+            "type": "sell-limit",
+            "canceled-at":1550630155568,
+            "finished-at":1550630155647
+        },
+        {
+            "created-at": 1550628730000,
+            "symbol": "htbtc",
+            "source": "api",
+            "amount": "2.000000000000000000",
+            "account-id": 456,
+            "filled-amount": "2.0",
+            "filled-cash-amount": "2.1",
+            "filled-fees": "2.2",
+            "price": "2.100000000000000000",
+            "id": 24963751111,
+            "state": "submitted",
+            "type": "buy-limit",
+            "canceled-at":1550630155568,
+            "finished-at":1550630155647
+        }
+    ]
 }
 '''
+
 
 class TestGetOpenOrders(unittest.TestCase):
     @classmethod
