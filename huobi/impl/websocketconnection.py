@@ -69,7 +69,7 @@ def websocket_func(*args):
     connection_instance.ws.on_open = on_open
     connection_instance.ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
     connection_instance.logger.info("[Sub][" + str(connection_instance.id) + "] Connection event loop down")
-    with connection_instance.state_lock.acquire():
+    with connection_instance.state_lock:
         if connection_instance.state == ConnectionState.CONNECTED:
             connection_instance.state = ConnectionState.IDLE
 
@@ -149,7 +149,7 @@ class WebsocketConnection:
         self.logger.info("[Sub][" + str(self.id) + "] Connected to server")
         self.ws = ws
         self.last_receive_time = get_current_timestamp()
-        with self.state_lock.acquire():
+        with self.state_lock:
             self.state = ConnectionState.CONNECTED
         self.__watch_dog.on_connection_created(self)
         if self.request.is_trading:
@@ -243,7 +243,7 @@ class WebsocketConnection:
 
     def close_on_error(self):
         if self.ws is not None:
-            with self.state_lock.acquire():
+            with self.state_lock:
                 self.ws.close()
                 self.state = ConnectionState.CLOSED_ON_ERROR
                 self.logger.error("[Sub][" + str(self.id) + "] Connection is closing due to error")
