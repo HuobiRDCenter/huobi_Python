@@ -20,6 +20,9 @@ def create_signature(api_key, secret_key, method, url, builder):
     host = urllib.parse.urlparse(url).hostname
     path = urllib.parse.urlparse(url).path
 
+    if path is not None and path.startswith("/api") is True:
+        path = path.replace("/api", "")
+
     # 对参数进行排序:
     keys = sorted(builder.param_map.keys())
     # 加入&
