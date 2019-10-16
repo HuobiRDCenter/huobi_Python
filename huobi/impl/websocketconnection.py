@@ -109,7 +109,7 @@ class WebsocketConnection:
     def re_connect_in_delay(self, delay_in_second):
         if self.ws is not None:
             self.ws.close()
-            self.ws = None
+            # self.ws = None    # self.on_close need this to delete
         self.delay_in_second = delay_in_second
         self.state = ConnectionState.DELAY_CONNECTING
         self.logger.warning("[Sub][" + str(self.id) + "] Reconnecting after "
