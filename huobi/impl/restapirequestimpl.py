@@ -597,6 +597,11 @@ class RestApiRequestImpl(object):
     def format_order(self, json_data):
         account_type = account_info_map.get_account_by_id(self.__api_key,
                                                                 json_data.get_int("account-id")).account_type
+        # 检查是否有canceled-at and finished-at
+        if "finished-at" not in json_data.json_object:
+            json_data.json_object["finished-at"] = 0
+        if "canceled-at" not in json_data.json_object:
+            json_data.json_object["canceled-at"] = 0
         order = Order.json_parse(json_data, account_type)
 
         return order
