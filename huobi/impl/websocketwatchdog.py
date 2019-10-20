@@ -44,7 +44,8 @@ class WebSocketWatchDog(threading.Thread):
 
     def on_connection_created(self, connection):
         self.mutex.acquire()
-        self.connection_list.append(connection)
+        if not connection in self.connection_list:
+            self.connection_list.append(connection)
         self.mutex.release()
 
     def on_connection_closed(self, connection):

@@ -69,9 +69,6 @@ def websocket_func(*args):
     connection_instance.ws.on_open = on_open
     connection_instance.ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
     connection_instance.logger.info("[Sub][" + str(connection_instance.id) + "] Connection event loop down")
-    with connection_instance.state_lock:
-        if connection_instance.state == ConnectionState.CONNECTED:
-            connection_instance.state = ConnectionState.IDLE
 
 
 class WebsocketConnection:
@@ -138,6 +135,9 @@ class WebsocketConnection:
         self.ws.close()
         del websocket_connection_handler[self.ws]
         self.__watch_dog.on_connection_closed(self)
+        with self.state_lock:
+            if self.state == ConnectionState.CONNECTED:
+                self.state = ConnectionState.IDLE
         self.logger.error("[Sub][" + str(self.id) + "] Closing normally")
 
     def on_close(self):
