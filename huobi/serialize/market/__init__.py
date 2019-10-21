@@ -1,10 +1,11 @@
-from huobi.serialize.market.candlestick import CandlestickSerial
-from huobi.serialize.market.candlestick_event import CandlestickEventSerial
-from huobi.serialize.market.candlestick_req import CandlestickReqSerial
+
 from huobi.serialize.market.depthentry import DepthEntrySerial
 from huobi.serialize.market.last_trade_bestquote import LastTradeAndBestQuoteSerial
 from huobi.serialize.market.pricedepth import PriceDepthSerial
+from huobi.serialize.market.pricedepth_event import PriceDepthEventSerial
+from huobi.serialize.market.pricedepth_req import PriceDepthReqSerial
 from huobi.serialize.market.pricedepth_bbo import PriceDepthBboSerial
 from huobi.serialize.market.pricedepth_bbo_event import PriceDepthBboEventSerial
 from huobi.serialize.market.pricedepth_event import PriceDepthEventSerial
 from huobi.serialize.market.pricedepth_req import PriceDepthReqSerial
+from huobi.serialize.market.trade_detail import TradeDetailSerial

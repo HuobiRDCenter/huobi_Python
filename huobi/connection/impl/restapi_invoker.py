@@ -1,26 +1,24 @@
 import requests
-from huobi.exception.huobiapiexception import HuobiApiException
-from huobi.utils.etfresult import etf_result_check
+from huobi.exception.huobi_api_exception import HuobiApiException
+from huobi.utils.etf_result import etf_result_check
 from huobi.utils import *
 
-from huobi.utils import parse_json_from_string
 
-
-def check_response(json_wrapper):
-    if json_wrapper.contain_key("status"):
-        status = json_wrapper.get_string("status")
+def check_response(dict_data):
+    status = dict_data.get("status", "")
+    success = bool(dict_data.get("success", False))
+    if status and len(status):
         if status == "error":
-            err_code = json_wrapper.get_string("err-code")
-            err_msg = json_wrapper.get_string("err-msg")
+            err_code = dict_data.get("err-code", "")
+            err_msg = dict_data.get("err-msg", "")
             raise HuobiApiException(HuobiApiException.EXEC_ERROR,
                                     "[Executing] " + err_code + ": " + err_msg)
         elif status != "ok":
             raise HuobiApiException(HuobiApiException.RUNTIME_ERROR, "[Invoking] Response is not expected: " + status)
-    elif json_wrapper.contain_key("success"):
-        success = json_wrapper.get_boolean("success")
+    elif success:
         if success is False:
-            err_code = etf_result_check(json_wrapper.get_int("code"))
-            err_msg = json_wrapper.get_string("message")
+            err_code = etf_result_check(dict_data.get("code"))
+            err_msg = dict_data.get("message", "")
             if err_code == "":
                 raise HuobiApiException(HuobiApiException.EXEC_ERROR, "[Executing] " + err_msg)
             else:
@@ -32,12 +30,15 @@ def check_response(json_wrapper):
 def call_sync(request):
     if request.method == "GET":
         response = requests.get(request.host + request.url, headers=request.header)
-        json_wrapper = parse_json_from_string(response.text)
-        check_response(json_wrapper)
-        return request.json_parser(json_wrapper)
+        dict_data = json.loads(response.text, encoding="utf-8")
+        print("call_sync  === recv data : ", dict_data)
+        return request.json_parser(dict_data)
+
+
     elif request.method == "POST":
         response = requests.post(request.host + request.url, data=json.dumps(request.post_body), headers=request.header)
-        json_wrapper = parse_json_from_string(response.text)
-        check_response(json_wrapper)
-        return request.json_parser(json_wrapper)
+        dict_data = json.loads(response.text, encoding="utf-8")
+        print("call_sync  === recv data : ", dict_data)
+        check_response(dict_data)
+        return request.json_parser(dict_data)
 

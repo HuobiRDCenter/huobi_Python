@@ -3,10 +3,10 @@ import json
 from huobi.model import *
 from huobi.impl.utils import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+from huobi.impl.utils.time_service import convert_cst_in_millisecond_to_utc
 from huobi.impl.restapirequestimpl import account_info_map
 from huobi.impl.restapiinvoker import check_response
-from huobi.exception.huobiapiexception import HuobiApiException
+from huobi.exception.huobi_api_exception import HuobiApiException
 
 
 data = '''

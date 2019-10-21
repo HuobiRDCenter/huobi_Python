@@ -16,7 +16,7 @@ class FeeRate:
         self.taker_fee = ""
 
     def print_object(self, format_data=""):
-        from huobi.utils.printobject import PrintBasic
+        from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.symbol, format_data + "Symbol")
         PrintBasic.print_basic(self.maker_fee, format_data + "Maker Fee")
         PrintBasic.print_basic(self.taker_fee, format_data + "Taker Fee")

@@ -2,7 +2,7 @@ import unittest
 from huobi.impl.utils import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
 from huobi.model.constant import *
-from huobi.impl.utils.timeservice import convert_cst_in_second_to_utc
+from huobi.impl.utils.time_service import convert_cst_in_second_to_utc
 
 data = '''{
   "status": "ok",

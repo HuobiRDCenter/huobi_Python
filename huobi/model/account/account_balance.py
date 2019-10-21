@@ -35,7 +35,7 @@ class AccountBalance:
 
 
     def print_object(self, format_data=""):
-        from huobi.utils.printobject import PrintBasic
+        from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.id, format_data + "ID")
         PrintBasic.print_basic(self.account_type, format_data + "Account Type")
         PrintBasic.print_basic(self.account_state, format_data + "Account State")

@@ -1,7 +1,7 @@
-from huobi.utils.channelparser import ChannelParser
-from huobi.utils.timeservice import convert_cst_in_millisecond_to_utc
+from huobi.utils.channel_parser import ChannelParser
+from huobi.utils.time_service import convert_cst_in_millisecond_to_utc
 from huobi.model import *
-
+from huobi.model.trade import *
 
 
 class OrderUpdateEventV2Serial:

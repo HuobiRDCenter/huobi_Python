@@ -14,7 +14,7 @@ class MarginBalanceDetail:
         self.sub_account_balance_list = list()
 
     def print_object(self, format_data=""):
-        from huobi.utils.printobject import PrintBasic
+        from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.id, format_data + "ID")
         PrintBasic.print_basic(self.type, format_data + "Account Type")
         PrintBasic.print_basic(self.symbol, format_data + "Symbol")

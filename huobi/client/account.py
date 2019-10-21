@@ -1,21 +1,9 @@
-"""
-from huobi.constant.system import RestApiDefine, HttpMethod
-from huobi.utils import RestApiRequest
-from huobi.utils.restapirequestimpl import RestApiRequestImpl
-from huobi.utils.restapiinvoker import call_sync
-from huobi.utils.accountinfomap import account_info_map
-from huobi.utils.apisignature import create_signature
-from huobi.utils.inputchecker import *
-from huobi.utils.urlparamsbuilder import UrlParamsBuilder
-from huobi.model import *
-"""
-from huobi.constant.system import RestApiDefine
-from huobi.service.candlestickget import CandleStickServiceGet
-from huobi.service.candlesticksub import CandleStickServiceSub
-from huobi.utils.inputchecker import *
+from huobi.constant import *
+from huobi.service.account import *
+from huobi.utils import *
 
 
-class TradeClient(object):
+class AccountClient(object):
     __server_url = RestApiDefine.Url
     args_config = {}
 
@@ -27,59 +15,57 @@ class TradeClient(object):
             secret_key: The private key applied from Huobi.
             server_url: The URL name like "https://api.huobi.pro".
         """
-        self.args_config = kwargs
+        self.__kwargs = kwargs
 
+    def get_accounts(self):
         """
-        if "api_key" in kwargs:
-            self.__api_key = kwargs["api_key"]
-        if "secret_key" in kwargs:
-            self.__secret_key = kwargs["secret_key"]
-        if "url" in kwargs:
-            self.__server_url = kwargs["url"]
+        Get the account list.
+        :return: The list of accounts data.
         """
 
-        """   
-        for request has bind subscription_handler and parse_handler to connection, so connection can't be reused
-        if "reuse_sub_connection" in kwargs:
-            self.__reuse_sub_connection = kwargs["reuse_sub_connection"]
-            if self.__reuse_sub_connection and self.__reuse_sub_connection == True:
-                self.__reuse_sub_connection = True
+        return GetAccountsService({}).request(**self.__kwargs)
+
+    def sub_account_change(self, mode: 'BalanceMode', callback, error_handler=None):
+        """
+        Subscribe account changing event. If the balance is updated, server will send the data to client and onReceive in callback will be called.
+
+        :param mode: when mode is AVAILABLE, balance refers to available balance; when mode is TOTAL, balance refers to TOTAL balance for trade sub account (available+frozen).
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(account_event: 'AccountEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+        :return:  No return
         """
 
-
-    def get_candlestick(self, symbol, interval, size, startTime=None, endTime=None):
-        """
-        Get the candlestick/kline for the specified symbol. The data number is 150 as default.
-
-        :param symbol: The symbol, like "btcusdt". To query hb10, put "hb10" at here. (mandatory)
-        :param interval: The candlestick/kline interval, MIN1, MIN5, DAY1 etc. (mandatory)
-        :param size: The start time of of requested candlestick/kline data. (optional)
-        :param start_time: The start time of of requested candlestick/kline data. (optional)
-        :param end_time: The end time of of requested candlestick/kline data. (optional)
-        :return: The list of candlestick/kline data.
-        """
-        check_symbol(symbol)
-        check_should_not_none(interval, "interval")
+        check_should_not_none(mode, "mode")
+        check_should_not_none(callback, "callback")
 
         params = {
-            "symbol": symbol,
-            "interval": interval,
-            "size": size
+            "mode" : mode,
         }
-        if startTime:
-            params["start_time"] = startTime
-        if endTime:
-            params["end_time"] = endTime
 
-        return CandleStickServiceGet(params).request(self.args_config)
+        SubAccountChangeEventService(params).subscribe(callback, error_handler, **self.__kwargs)
 
-    def sub_candlestick(self, symbols: 'str', interval: 'CandlestickInterval', callback, error_handler):
+    def req_candlestick(self, symbols: 'str', interval: 'CandlestickInterval', callback,
+                                    from_ts_second = None, end_ts_second = None, error_handler=None):
         """
-        Get the candlestick/kline for the specified symbol. The data number is 150 as default.
+        Subscribe candlestick/kline event. If the candlestick/kline is updated, server will send the data to client and onReceive in callback will be called.
 
-        :param symbol: The symbol, like "btcusdt". To query hb10, put "hb10" at here. (mandatory)
-        :param interval: The candlestick/kline interval, MIN1, MIN5, DAY1 etc. (mandatory)
-        :return: The list of candlestick/kline data.
+        :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
+        :param interval: The candlestick/kline interval, MIN1, MIN5, DAY1 etc.
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(candlestick_event: 'CandlestickEvent'):
+                        pass
+        :param from_ts_second : data from timestamp [it's second]
+        :param end_ts_second : data util timestamp [it's second]
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+        :return: No return
+        """
+
         """
         symbol_list = symbols.split(",")
         check_symbol_list(symbol_list)
@@ -91,4 +77,14 @@ class TradeClient(object):
             "interval" : interval
         }
 
-        CandleStickServiceSub(params).subscribe(self.args_config, callback, error_handler)
+        if from_ts_second:
+            params["from_ts_second"] = from_ts_second
+
+        if end_ts_second:
+            params["end_ts_second"] = end_ts_second
+
+        self.__kwargs = fill_auto_close(self.__kwargs)  # for websocket need set auto_close to True as default, with strict check in fill_auto_close
+
+        ReqCandleStickService(params).subscribe(callback, error_handler, **self.__kwargs)
+        """
+        pass

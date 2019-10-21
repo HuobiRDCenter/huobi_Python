@@ -13,15 +13,13 @@ class PriceDepthBboEvent:
     """
 
     def __init__(self):
-        self.symbol = ""
-        self.timestamp = 0
+        self.ts = 0
         self.ch = ""
-        self.data = PriceDepthBbo()
+        self.tick = PriceDepthBbo()
 
 
     def print_object(self, format_data=""):
-        from huobi.utils.printobject import PrintBasic
-        PrintBasic.print_basic(self.symbol, format_data + "Symbol")
-        PrintBasic.print_basic(self.timestamp, format_data + "Time")
+        from huobi.utils.print_mix_object import PrintBasic
+        PrintBasic.print_basic(self.ts, format_data + "Time")
         PrintBasic.print_basic(self.ch, format_data + "Channel")
-        self.data.print_object(format_data)
+        self.tick.print_object(format_data)

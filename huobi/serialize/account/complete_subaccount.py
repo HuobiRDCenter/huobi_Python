@@ -32,7 +32,7 @@ class CompleteSubAccountSerial:
 
     @staticmethod
     def print_object_list(data_list, format_data=""):
-        from huobi.utils.printobject import PrintBasic
+        from huobi.utils.print_mix_object import PrintBasic
         if len(data_list):
             for row in data_list:
                 row.print_object(format_data)

@@ -37,7 +37,7 @@ class MatchResult:
         self.fee_deduct_currency = ""
 
     def print_object(self, format_data=""):
-        from huobi.utils.printobject import PrintBasic
+        from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.id, format_data + "ID")
         PrintBasic.print_basic(self.created_timestamp, format_data + "Create Time")
         PrintBasic.print_basic(self.filled_amount, format_data + "Fill Amount")

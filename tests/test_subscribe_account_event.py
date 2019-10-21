@@ -5,7 +5,7 @@ from huobi.model import *
 from huobi.impl.utils import *
 from huobi.model import *
 from tests.mock_websocket_connection import MockWebsocketConnection
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+from huobi.impl.utils.time_service import convert_cst_in_millisecond_to_utc
 from huobi.impl.restapirequestimpl import account_info_map
 
 

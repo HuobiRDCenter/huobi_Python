@@ -15,20 +15,18 @@ class Account:
 
     def __init__(self):
         self.id = 0
-        self.account_type = AccountType.INVALID
-        self.account_state = AccountState.INVALID
+        self.type = AccountType.INVALID
+        self.state = AccountState.INVALID
+        self.subtype = ""
 
 
 
     def print_object(self, format_data=""):
-        from huobi.utils.printobject import PrintBasic
+        from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.id, format_data + "ID")
-        PrintBasic.print_basic(self.account_type, format_data + "Account Type")
-        PrintBasic.print_basic(self.account_state, format_data + "Account State")
-        print()
-        if len(self.balances):
-            for row in self.balances:
-                row.print_object()
-                print()
+        PrintBasic.print_basic(self.type, format_data + "Account Type")
+        PrintBasic.print_basic(self.state, format_data + "Account State")
+        PrintBasic.print_basic(self.subtype, format_data + "Subtype")
+
 
 

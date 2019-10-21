@@ -1,5 +1,5 @@
 from huobi.constant import *
-
+from huobi.model.trade import *
 
 class OrderUpdateV2Serial:
 

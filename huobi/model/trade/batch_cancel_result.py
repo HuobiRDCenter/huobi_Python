@@ -13,6 +13,6 @@ class BatchCancelResult:
         self.failed_count = 0
 
     def print_object(self, format_data=""):
-        from huobi.utils.printobject import PrintBasic
+        from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.success_count, format_data + "Success Count")
         PrintBasic.print_basic(self.failed_count, format_data + "Failed Count")

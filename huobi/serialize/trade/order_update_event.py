@@ -1,6 +1,7 @@
-from huobi.utils.channelparser import ChannelParser
-from huobi.utils.timeservice import convert_cst_in_millisecond_to_utc
-from huobi.model import *
+from huobi.utils.channel_parser import ChannelParser
+from huobi.utils.time_service import convert_cst_in_millisecond_to_utc
+from huobi.model.trade import *
+from huobi.serialize.trade import *
 
 
 class OrderUpdateEventSerial:
@@ -13,7 +14,7 @@ class OrderUpdateEventSerial:
         order_update_event.timestamp = convert_cst_in_millisecond_to_utc(json_data.get_int("ts"))
         data = json_data.get_object("data")
         account_id = data.get_int("account-id")
-        order = Order.json_parse_order_update(data, account_type_map[account_id])
+        order = OrderSerial.json_parse(data, account_type_map[account_id])
         order_update_event.data = order
         return order_update_event
 

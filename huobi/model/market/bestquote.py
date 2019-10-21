@@ -20,7 +20,7 @@ class BestQuote:
         self.ask_amount = 0.0
 
     def print_object(self, format_data=""):
-        from huobi.utils.printobject import PrintBasic
+        from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.timestamp, format_data + "Timestamp")
         PrintBasic.print_basic(self.bid_price, format_data + "Bid Price")
         PrintBasic.print_basic(self.bid_amount, format_data + "Bid Amount")

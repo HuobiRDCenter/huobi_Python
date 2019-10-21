@@ -3,7 +3,7 @@ import logging
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 from huobi.connection.impl.websocket_connection import ConnectionState
-from huobi.utils.timeservice import get_current_timestamp
+from huobi.utils.time_service import get_current_timestamp
 
 
 def watch_dog_job(*args):

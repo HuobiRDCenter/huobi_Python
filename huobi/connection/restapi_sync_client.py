@@ -1,10 +1,12 @@
+import logging
+
 from huobi.connection.impl.restapi_invoker import call_sync
 from huobi.connection.impl.restapi_request import RestApiRequest
 from huobi.constant.system import RestApiDefine, HttpMethod
-from huobi.utils.apisignature import create_signature
-from huobi.utils.urlparamsbuilder import UrlParamsBuilder
+from huobi.utils import *
 
-from huobi.exception.huobiapiexception import HuobiApiException
+from huobi.exception.huobi_api_exception import HuobiApiException
+
 
 
 class RestApiSyncClient(object):
@@ -26,13 +28,13 @@ class RestApiSyncClient(object):
             self.__server_url = kwargs["url"]
         if "method" in kwargs:
             self.__method = kwargs["method"]
-
-        """
-        try:
-            account_info_map.update_user_info(self.__api_key, self.request_impl)
-        except Exception:
-            pass
-        """
+        if "init_log" in kwargs:
+            if kwargs["init_log"] == True:
+                logger = logging.getLogger("huobi-client")
+                logger.setLevel(level=logging.INFO)
+                handler = logging.StreamHandler()
+                handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+                logger.addHandler(handler)
 
     def __create_request_by_get(self, url, builder):
         request = RestApiRequest()
@@ -45,7 +47,7 @@ class RestApiSyncClient(object):
     def __create_request_by_post_with_signature(self, url, builder):
         request = RestApiRequest()
         request.method = "POST"
-        request.host = self.server_url
+        request.host = self.__server_url
         create_signature(self.__api_key, self.__secret_key, request.method, request.host + url, builder)
         request.header.update({'Content-Type': 'application/json'})
         request.post_body = builder.post_map
@@ -63,8 +65,16 @@ class RestApiSyncClient(object):
 
     def create_request(self, method, url, params, parse):
         builder = UrlParamsBuilder()
-        for key, value in params.items():
-            builder.put_url(key, value)
+        if params and len(params):
+            if method in [HttpMethod.GET, HttpMethod.GET_SIGN]:
+                for key, value in params.items():
+                    builder.put_url(key, value)
+            elif method in [HttpMethod.POST, HttpMethod.POST_SIGN]:
+                for key, value in params.items():
+                    builder.put_post(key, value)
+            else:
+                raise HuobiApiException(HuobiApiException.EXEC_ERROR,
+                                        "[error] undefined HTTP method")
 
         if method == HttpMethod.GET:
             request = self.__create_request_by_get(url, builder)

@@ -25,18 +25,22 @@ class Order:
     """
 
     def __init__(self):
-        self.account_type = AccountType.INVALID
+        self.id = 0
+        self.symbol = ""
+        self.account_id = 0
+        #self.account_type = AccountType.INVALID
+
         self.amount = 0.0
         self.price = 0.0
-        self.created_timestamp = 0
-        self.canceled_timestamp = 0
-        self.finished_timestamp = 0
-        self.order_id = 0
+        self.created_at = 0
+        self.canceled_at = 0
+        self.finished_at = 0
+        self.id = 0
         self.symbol = ""
-        self.order_type = OrderType.INVALID
-        self.filled_amount = 0.0
-        self.filled_cash_amount = 0.0
-        self.filled_fees = 0.0
+        self.type = OrderType.INVALID
+        self.field_amount = 0.0
+        self.field_cash_amount = 0.0
+        self.field_fees = 0.0
         self.source = OrderSource.INVALID
         self.state = OrderState.INVALID
         self.stop_price = ""
@@ -45,19 +49,19 @@ class Order:
 
  
     def print_object(self, format_data=""):
-        from huobi.utils.printobject import PrintBasic
-        PrintBasic.print_basic(self.order_id, format_data + "Order Id")
+        from huobi.utils.print_mix_object import PrintBasic
+        PrintBasic.print_basic(self.id, format_data + "Order Id")
         PrintBasic.print_basic(self.symbol, format_data + "Symbol")
         PrintBasic.print_basic(self.price, format_data + "Price")
         PrintBasic.print_basic(self.amount, format_data + "Amount")
-        PrintBasic.print_basic(self.created_timestamp, format_data + "Create Time")
-        PrintBasic.print_basic(self.canceled_timestamp, format_data + "Cancel Time")
-        PrintBasic.print_basic(self.finished_timestamp, format_data + "Finish Time")
-        PrintBasic.print_basic(self.order_type, format_data + "Order Type")
-        PrintBasic.print_basic(self.filled_amount, format_data + "Filled Amount")
-        PrintBasic.print_basic(self.filled_cash_amount, format_data + "Filled Cash Amount")
-        PrintBasic.print_basic(self.filled_fees, format_data + "Filled Fees")
-        PrintBasic.print_basic(self.account_type, format_data + "Account Type")
+        PrintBasic.print_basic(self.created_at, format_data + "Create Time")
+        PrintBasic.print_basic(self.canceled_at, format_data + "Cancel Time")
+        PrintBasic.print_basic(self.finished_at, format_data + "Finish Time")
+        PrintBasic.print_basic(self.type, format_data + "Order Type")
+        PrintBasic.print_basic(self.field_amount, format_data + "Field Amount")
+        PrintBasic.print_basic(self.field_cash_amount, format_data + "Field Cash Amount")
+        PrintBasic.print_basic(self.field_fees, format_data + "Field Fees")
+        #PrintBasic.print_basic(self.account_type, format_data + "Account Type")
         PrintBasic.print_basic(self.source, format_data + "Order Source")
         PrintBasic.print_basic(self.state, format_data + "Order State")
         PrintBasic.print_basic(self.stop_price, format_data + "Stop Price")

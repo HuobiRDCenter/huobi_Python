@@ -1,3 +1,5 @@
+from huobi.model.trade import *
+
 class BatchCancelResultSerial:
 
     @staticmethod

@@ -1,0 +1,17 @@
+from huobi.service.trade.get_feerate import GetFeeRateService
+from huobi.service.trade.sub_order_update import SubOrderUpdateService
+from huobi.service.trade.get_match_results import GetMatchResultsService
+from huobi.service.trade.get_open_orders import GetOpenOrdersService
+from huobi.service.trade.get_orders import GetOrdersService
+from huobi.service.trade.get_order_by_id import GetOrderByIdService
+from huobi.service.trade.get_order_by_client_order_id import GetOrderByClientOrderIdService
+from huobi.service.trade.get_history_orders import GetHistoryOrdersService
+from huobi.service.trade.post_create_order import PostCreateOrderService
+from huobi.service.trade.post_cancel_order import PostCancelOrderService
+from huobi.service.trade.post_batch_cancel_open_order import PostBatchCancelOpenOrderService
+from huobi.service.trade.post_batch_cancel_order import PostBatchCancelOrderService
+from huobi.service.trade.post_cancel_client_order import PostCancelClientOrderService
+from huobi.service.trade.get_match_results_by_order_id import GetMatchResultsByOrderIdService
+from huobi.service.trade.req_order_list import ReqOrderListService
+from huobi.service.trade.req_order_detail import ReqOrderDetailService
+

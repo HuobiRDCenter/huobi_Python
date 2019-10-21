@@ -3,19 +3,17 @@ from huobi.constant.system import RestApiDefine, HttpMethod
 from huobi.utils import RestApiRequest
 from huobi.utils.restapirequestimpl import RestApiRequestImpl
 from huobi.utils.restapiinvoker import call_sync
-from huobi.utils.accountinfomap import account_info_map
-from huobi.utils.apisignature import create_signature
-from huobi.utils.inputchecker import *
-from huobi.utils.urlparamsbuilder import UrlParamsBuilder
+from huobi.utils.account_info_map import account_info_map
+from huobi.utils.api_signature.py import create_signature
+from huobi.utils.input_checker import *
+from huobi.utils.url_params_builder import urlParamsBuilder
 from huobi.model import *
 """
 from huobi.constant.system import RestApiDefine
-from huobi.service.candlestickget import CandleStickServiceGet
-from huobi.service.candlesticksub import CandleStickServiceSub
-from huobi.utils.inputchecker import *
+from huobi.utils.input_checker import *
 
 
-class TradeClient(object):
+class MarginClient(object):
     __server_url = RestApiDefine.Url
     args_config = {}
 

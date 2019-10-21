@@ -1,14 +1,14 @@
 
-from huobi.utils.timeservice import convert_cst_in_millisecond_to_utc
-from huobi.model import *
-
+from huobi.utils.time_service import convert_cst_in_millisecond_to_utc
+from huobi.constant import *
+from huobi.model.trade import *
 
 class OrderDetailReqSerial:
 
 
     @staticmethod
     def json_parse(json_data, account_type):
-        req_obj = OrderDetailRequest()
+        req_obj = OrderDetailReq()
         req_obj.timestamp = convert_cst_in_millisecond_to_utc(json_data.get_int("ts"))
         req_obj.client_req_id = json_data.get_string("cid")
         req_obj.topic = json_data.get_string("topic")

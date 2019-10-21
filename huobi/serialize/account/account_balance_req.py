@@ -1,5 +1,5 @@
 from huobi.model.account import *
-from huobi.utils.timeservice import convert_cst_in_millisecond_to_utc
+from huobi.utils.time_service import convert_cst_in_millisecond_to_utc
 
 
 

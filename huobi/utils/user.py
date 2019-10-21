@@ -1,4 +1,4 @@
-from huobi.exception.huobiapiexception import HuobiApiException
+from huobi.exception.huobi_api_exception import HuobiApiException
 
 
 class User:
