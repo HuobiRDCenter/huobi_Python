@@ -1,5 +1,5 @@
 
-from huobi.client import WalletClient
+from huobi.client.wallet import WalletClient
 from huobi.constant import *
 
 

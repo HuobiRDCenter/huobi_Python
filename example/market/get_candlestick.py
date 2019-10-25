@@ -2,7 +2,7 @@ from huobi.client.market import MarketClient
 from huobi.constant import *
 
 
-market_client = MarketClient(url=HUOBI_URL_VN)
+market_client = MarketClient(url=HUOBI_URL_VN, init_log=True)
 list_obj = market_client.get_candlestick("btcusdt", CandlestickInterval.MIN1, 10)
 print("---- 1 min candlestick for btcusdt ----")
 if list_obj and len(list_obj):

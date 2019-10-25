@@ -1,4 +1,4 @@
-from huobi.client import *
+from huobi.client.market import MarketClient
 from huobi.constant import *
 
 market_client = MarketClient(url=HUOBI_URL_VN)

@@ -1,7 +1,7 @@
-import logging
-from huobi.client import AccountClient
+
+from huobi.client.account import AccountClient
 from huobi.constant import *
-from huobi.service.account import *
+from huobi.service.account.get_accounts_select import GetAccountsSelectService
 
 # get accounts
 account_client = AccountClient(api_key=g_api_key,

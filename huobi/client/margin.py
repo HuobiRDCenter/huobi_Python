@@ -1,12 +1,8 @@
 
-from huobi.constant.system import RestApiDefine
-from huobi.service.margin import *
 from huobi.utils.input_checker import *
 
 
 class MarginClient(object):
-    __server_url = RestApiDefine.Url
-    __kwargs = {}
 
     def __init__(self, **kwargs):
         """
@@ -14,7 +10,8 @@ class MarginClient(object):
         :param kwargs: The option of request connection.
             api_key: The public key applied from Huobi.
             secret_key: The private key applied from Huobi.
-            server_url: The URL name like "https://api.huobi.pro".
+            url: The URL name like "https://api.huobi.pro".
+            init_log: to init logger
         """
         self.__kwargs = kwargs
 
@@ -37,6 +34,7 @@ class MarginClient(object):
             "amount": amount
         }
 
+        from huobi.service.margin.post_transfer_in_margin import PostTransferInMarginService
         return PostTransferInMarginService(params).request(**self.__kwargs)
 
     def post_transfer_out_margin(self, symbol: 'str', currency: 'str', amount: 'float') -> int:
@@ -58,6 +56,7 @@ class MarginClient(object):
             "amount": amount
         }
 
+        from huobi.service.margin.post_transfer_out_margin import PostTransferOutMarginService
         return PostTransferOutMarginService(params).request(**self.__kwargs)
 
     def get_margin_account_balance(self, symbol: 'str') -> list:
@@ -73,6 +72,7 @@ class MarginClient(object):
             "symbol": symbol
         }
 
+        from huobi.service.margin.get_margin_account_balance import GetMarginAccountBalanceService
         return GetMarginAccountBalanceService(params).request(**self.__kwargs)
 
     def post_create_margin_order(self, symbol: 'str', currency: 'str', amount: 'float') -> int:
@@ -94,6 +94,7 @@ class MarginClient(object):
             "amount" : amount
         }
 
+        from huobi.service.margin.post_create_margin_order import PostCreateMarginOrderService
         return PostCreateMarginOrderService(params).request(**self.__kwargs)
 
     def post_repay_margin_order(self, load_id: 'int', amount: 'float') -> int:
@@ -112,6 +113,7 @@ class MarginClient(object):
             "amount": amount
         }
 
+        from huobi.service.margin.post_repay_margin_order import PostRepayMarginOrderService
         return PostRepayMarginOrderService(params).request(**self.__kwargs)
 
     def get_margin_loan_orders(self, symbol: 'str', start_date: 'str' = None, end_date: 'str' = None,
@@ -144,4 +146,5 @@ class MarginClient(object):
             "direct" : direction
         }
 
+        from huobi.service.margin.get_margin_loan_orders import GetMarginLoanOrdersService
         return GetMarginLoanOrdersService(params).request(**self.__kwargs)

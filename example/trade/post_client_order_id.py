@@ -1,7 +1,8 @@
-from huobi.client import *
+from huobi.client.trade import TradeClient
 from huobi.constant import *
 from huobi.constant.test import *
-from huobi.service.account import GetAccountsSelectService
+from huobi.service.account.get_accounts_select import GetAccountsSelectService
+
 
 symbol_test = "eosusdt"
 client_order_id_test = "xxxx"  # unique id in 24hours

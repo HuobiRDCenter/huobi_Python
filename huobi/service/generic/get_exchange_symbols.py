@@ -1,4 +1,4 @@
-from huobi.connection import RestApiSyncClient
+from huobi.connection.restapi_sync_client import RestApiSyncClient
 from huobi.constant.system import HttpMethod
 from huobi.model.generic import *
 from huobi.utils import *

@@ -1,4 +1,4 @@
-from huobi.client import AccountClient
+from huobi.client.account import AccountClient
 from huobi.constant import *
 
 # get accounts

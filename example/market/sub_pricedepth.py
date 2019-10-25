@@ -1,5 +1,5 @@
 
-from huobi.client import MarketClient
+from huobi.client.market import MarketClient
 from huobi.constant import *
 
 

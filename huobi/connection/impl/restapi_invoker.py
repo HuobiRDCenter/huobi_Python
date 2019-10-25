@@ -37,9 +37,6 @@ def check_response(dict_data):
 
 def call_sync(request):
     if request.method == "GET":
-        print("=========host=========", request.host)
-        print("=========url=========", request.url)
-        print("=========header=========", request.header)
         response = requests.get(request.host + request.url, headers=request.header)
         dict_data = json.loads(response.text, encoding="utf-8")
         print("call_sync  === recv data : ", dict_data)

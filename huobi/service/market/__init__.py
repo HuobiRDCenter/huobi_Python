@@ -1,15 +1,1 @@
-from huobi.service.market.get_candlestick import GetCandleStickService
-from huobi.service.market.sub_candlestick import SubCandleStickService
-from huobi.service.market.req_candlestick import ReqCandleStickService
-from huobi.service.market.get_pricedepth import GetPriceDepthService
-from huobi.service.market.sub_pricedepth import SubPriceDepthService
-from huobi.service.market.req_pricedepth import ReqPriceDepthService
-from huobi.service.market.sub_pricedepth_bbo import SubPriceDepthBboService
-from huobi.service.market.get_market_detail import GetMarketDetailService
-from huobi.service.market.sub_market_detail import SubMarketDetailService
-from huobi.service.market.req_market_detail import ReqMarketDetailService
-from huobi.service.market.get_history_trade import GetHistoryTradeService
-from huobi.service.market.get_market_trade import GetMarketTradeService
-from huobi.service.market.sub_trade_detail import SubTradeDetailService
-from huobi.service.market.req_trade_detail import ReqTradeDetailService
-from huobi.service.market.get_market_detail_merged import GetMarketDetailMergedService
+

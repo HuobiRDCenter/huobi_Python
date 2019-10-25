@@ -1,15 +1,6 @@
-import logging
-from huobi.client import TradeClient
+
+from huobi.client.trade import TradeClient
 from huobi.constant import *
-
-
-
-logger = logging.getLogger("huobi-client")
-logger.setLevel(level=logging.INFO)
-handler = logging.StreamHandler()
-handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-logger.addHandler(handler)
-
 
 
 def callback(order_req_obj: 'OrderDetailRequest'):

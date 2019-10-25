@@ -1,20 +1,13 @@
 
 from huobi.utils import *
 
-from huobi.connection import SubscribeClient
+from huobi.connection.subscribe_client import SubscribeClient
 from huobi.model.account import *
 
 
 
 class SubAccountChangeService:
     def __init__(self, params):
-        """
-        Create the request client instance.
-        :param kwargs: The option of request connection.
-            api_key: The public key applied from Huobi.
-            secret_key: The private key applied from Huobi.
-            server_url: The URL name like "https://api.huobi.pro".
-        """
         self.params = params
 
     def subscribe(self, callback, error_handler, **kwargs):

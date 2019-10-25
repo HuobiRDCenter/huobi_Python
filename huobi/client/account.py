@@ -1,12 +1,9 @@
 from huobi.constant import *
-from huobi.service.account import *
 from huobi.model.account import *
 from huobi.utils import *
 
 
 class AccountClient(object):
-    __server_url = RestApiDefine.Url
-    __kwargs = {}
 
     def __init__(self, **kwargs):
         """
@@ -14,7 +11,8 @@ class AccountClient(object):
         :param kwargs: The option of request connection.
             api_key: The public key applied from Huobi.
             secret_key: The private key applied from Huobi.
-            server_url: The URL name like "https://api.huobi.pro".
+            url: The URL name like "https://api.huobi.pro".
+            init_log: Init logger, default is False, True will init logger handler
         """
         self.__kwargs = kwargs
 
@@ -24,6 +22,7 @@ class AccountClient(object):
         :return: The list of accounts data.
         """
 
+        from huobi.service.account.get_accounts import GetAccountsService
         return GetAccountsService({}).request(**self.__kwargs)
 
     def get_balance(self, account_id:'int'):
@@ -35,6 +34,7 @@ class AccountClient(object):
         params = {
             "account-id" : account_id
         }
+        from huobi.service.account.get_balance import GetBalanceService
         return GetBalanceService(params).request(**self.__kwargs)
 
     def get_account_balance(self):
@@ -62,6 +62,7 @@ class AccountClient(object):
         params = {
             "sub-uid" : sub_uid
         }
+        from huobi.service.account.get_account_balance_by_subuid import GetAccountBalanceBySubUidService
         return GetAccountBalanceBySubUidService(params).request(**self.__kwargs)
 
     def get_aggregated_subuser_balance(self):
@@ -71,6 +72,7 @@ class AccountClient(object):
         :return: The balance of all the sub-account aggregated.
         """
         params={}
+        from huobi.service.account.get_aggregate_subuser_balance import GetAggregateSubUserBalanceService
         return GetAggregateSubUserBalanceService(params).request(**self.__kwargs)
 
     def transfer_between_parent_and_subuser(self, sub_uid: 'int', currency: 'str', amount: 'float',
@@ -95,6 +97,7 @@ class AccountClient(object):
             "amount" : amount,
             "type" : transfer_type
         }
+        from huobi.service.account.post_subaccount_transfer import PostSubaccountTransferService
         return PostSubaccountTransferService(params).request(**self.__kwargs)
 
     def sub_account_change(self, model: 'BalanceMode', callback, error_handler=None):
@@ -118,6 +121,7 @@ class AccountClient(object):
             "model" : model,
         }
 
+        from huobi.service.account.sub_account_change import SubAccountChangeService
         SubAccountChangeService(params).subscribe(callback, error_handler, **self.__kwargs)
 
     def req_account_balance(self, callback, client_req_id=None, error_handler=None):
@@ -125,7 +129,6 @@ class AccountClient(object):
         Subscribe account changing event. If the balance is updated, server will send the data to client and onReceive in callback will be called.
 
         :param client_req_id: client request ID
-        :param auto_close : close websocket connection after get data
         :param callback: The implementation is required. onReceive will be called if receive server's update.
             example: def callback(account_event: 'AccountEvent'):
                         pass
@@ -140,4 +143,5 @@ class AccountClient(object):
             "client_req_id" : client_req_id
         }
 
+        from huobi.service.account.req_account_balance import ReqAccountBalanceService
         ReqAccountBalanceService(params).subscribe(callback, error_handler, **self.__kwargs)

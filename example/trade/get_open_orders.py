@@ -1,8 +1,7 @@
-import time
 
-from huobi.client import TradeClient
+from huobi.client.trade import TradeClient
 from huobi.constant import *
-from huobi.service.account import GetAccountsSelectService
+from huobi.service.account.get_accounts_select import GetAccountsSelectService
 
 
 def print_obj_list(list_obj):

@@ -1,4 +1,4 @@
-from huobi.client import *
+from huobi.client.generic import GenericClient
 from huobi.constant import *
 
 generic_client = GenericClient(url=HUOBI_URL_VN)

@@ -1,13 +1,9 @@
 from huobi.constant import *
-from huobi.constant.system import RestApiDefine
 from huobi.model.trade import *
-from huobi.service.trade import *
 from huobi.utils.input_checker import *
 
 
 class TradeClient(object):
-    __server_url = RestApiDefine.Url
-    __kwargs = {}
 
     def __init__(self, **kwargs):
         """
@@ -15,7 +11,8 @@ class TradeClient(object):
         :param kwargs: The option of request connection.
             api_key: The public key applied from Huobi.
             secret_key: The private key applied from Huobi.
-            server_url: The URL name like "https://api.huobi.pro".
+            url: The URL name like "https://api.huobi.pro".
+            init_log: to init logger
         """
         self.__kwargs = kwargs
 
@@ -36,6 +33,7 @@ class TradeClient(object):
             "symbols": symbols
         }
 
+        from huobi.service.trade.get_feerate import GetFeeRateService
         return GetFeeRateService(params).request(**self.__kwargs)
 
     def sub_order_update(self, symbols: 'str', callback, error_handler=None):
@@ -59,6 +57,7 @@ class TradeClient(object):
             "symbol_list" : symbol_list,
         }
 
+        from huobi.service.trade.sub_order_update import SubOrderUpdateService
         SubOrderUpdateService(params).subscribe(callback, error_handler, **self.__kwargs)
 
     def req_order_list(self, symbol: 'str', account_id: int, callback, order_states:'str',
@@ -94,6 +93,7 @@ class TradeClient(object):
             "client-req-id" : client_req_id
         }
 
+        from huobi.service.trade.req_order_list import ReqOrderListService
         ReqOrderListService(params).subscribe(callback, error_handler, **self.__kwargs)
 
     def req_order_detail(self, order_id: 'str', callback,
@@ -119,6 +119,7 @@ class TradeClient(object):
             "cid": client_req_id,
         }
 
+        from huobi.service.trade.req_order_detail import ReqOrderDetailService
         ReqOrderDetailService(params).subscribe(callback, error_handler, **self.__kwargs)
 
     def get_order(self, order_id: 'int') -> Order:
@@ -134,6 +135,7 @@ class TradeClient(object):
             "order_id": order_id,
         }
 
+        from huobi.service.trade.get_order_by_id import GetOrderByIdService
         return GetOrderByIdService(params).request(**self.__kwargs)
 
     def get_order_by_client_order_id(self, client_order_id):
@@ -143,6 +145,7 @@ class TradeClient(object):
             "clientOrderId": client_order_id,
         }
 
+        from huobi.service.trade.get_order_by_client_order_id import GetOrderByClientOrderIdService
         return GetOrderByClientOrderIdService(params).request(**self.__kwargs)
 
     def get_orders(self, symbol: 'str', order_state: 'OrderState', order_type: 'OrderType' = None,
@@ -164,6 +167,7 @@ class TradeClient(object):
             "direct" : direct
         }
 
+        from huobi.service.trade.get_orders import GetOrdersService
         return GetOrdersService(params).request(**self.__kwargs)
 
     def get_open_orders(self, symbol: 'str', account_id: 'int', side: 'OrderSide' = None,
@@ -191,6 +195,7 @@ class TradeClient(object):
             "direct" : direct
         }
 
+        from huobi.service.trade.get_open_orders import GetOpenOrdersService
         return GetOpenOrdersService(params).request(**self.__kwargs)
 
     def get_history_orders(self, symbol=None, start_time=None, end_time=None, size=None, direct=None)-> list:
@@ -212,7 +217,7 @@ class TradeClient(object):
             "direct" : direct
         }
 
-
+        from huobi.service.trade.get_history_orders import GetHistoryOrdersService
         return GetHistoryOrdersService(params).request(**self.__kwargs)
 
     def get_match_result(self, symbol: 'str', order_type: 'OrderSide' = None, start_date: 'str' = None,
@@ -247,6 +252,7 @@ class TradeClient(object):
             "direct" : direct
         }
 
+        from huobi.service.trade.get_match_results import GetMatchResultsService
         return GetMatchResultsService(params).request(**self.__kwargs)
 
     def get_match_results_by_order_id(self, order_id: 'int') -> list:
@@ -262,6 +268,7 @@ class TradeClient(object):
             "order_id": order_id
         }
 
+        from huobi.service.trade.get_match_results_by_order_id import GetMatchResultsByOrderIdService
         return GetMatchResultsByOrderIdService(params).request(**self.__kwargs)
 
     def order_source_desc(self, account_type):
@@ -314,6 +321,7 @@ class TradeClient(object):
 
         print("create order params :", params)
 
+        from huobi.service.trade.post_create_order import PostCreateOrderService
         return PostCreateOrderService(params).request(**self.__kwargs)
 
     def cancel_order(self, symbol, order_id):
@@ -324,6 +332,7 @@ class TradeClient(object):
             "order_id" : order_id
         }
 
+        from huobi.service.trade.post_cancel_order import PostCancelOrderService
         return PostCancelOrderService(params).request(**self.__kwargs)
 
     def cancel_orders(self, symbol, order_id_list)->BatchCancelResult:
@@ -346,6 +355,7 @@ class TradeClient(object):
             "order-ids" : string_list
         }
 
+        from huobi.service.trade.post_batch_cancel_order import PostBatchCancelOrderService
         return PostBatchCancelOrderService(params).request(**self.__kwargs)
 
     def cancel_open_orders(self, account_id, symbols: 'str'=None , side=None, size=None)->BatchCancelCount:
@@ -367,6 +377,7 @@ class TradeClient(object):
             "size" : size
         }
 
+        from huobi.service.trade.post_batch_cancel_open_order import PostBatchCancelOpenOrderService
         return PostBatchCancelOpenOrderService(params).request(**self.__kwargs)
 
     def cancel_client_order(self, client_order_id)->int:
@@ -381,6 +392,7 @@ class TradeClient(object):
             "client-order-id" : client_order_id
         }
 
+        from huobi.service.trade.post_cancel_client_order import PostCancelClientOrderService
         return PostCancelClientOrderService(params).request(**self.__kwargs)
 
     def transfer_between_futures_and_pro(self, currency: 'str', amount: 'float',
@@ -405,4 +417,5 @@ class TradeClient(object):
 
         }
 
+        from huobi.service.trade.post_transfer_futures_pro import PostTransferFuturesProService
         return PostTransferFuturesProService(params).request(**self.__kwargs)

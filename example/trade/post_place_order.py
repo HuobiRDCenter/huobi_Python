@@ -1,9 +1,9 @@
-from huobi.client import TradeClient
+from huobi.client.trade import TradeClient
 from huobi.constant import *
 from huobi.constant.test import *
 
 
-from huobi.service.account import GetAccountsSelectService
+from huobi.service.account.get_accounts_select import GetAccountsSelectService
 
 accounts = GetAccountsSelectService({"account_type" : AccountType.SPOT}).get_accounts_id_by_type(api_key=g_api_key, secret_key=g_secret_key, url=HUOBI_URL_VN)
 account_id = 0

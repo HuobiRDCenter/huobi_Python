@@ -19,10 +19,7 @@ class SubOrderUpdateService:
                 time.sleep(0.01)
 
         def parse(dict_data):
-            #account_type = "" #AccountInfoMap.get_account_type(self.__api_key, account_id)  TODO
-            order_update_event = default_parse(dict_data, OrderUpdateEvent, OrderUpdate)
-
-            return order_update_event
+            return default_parse(dict_data, OrderUpdateEvent, OrderUpdate)
 
         SubscribeClient(**kwargs).execute_subscribe(subscription,
                                             parse,

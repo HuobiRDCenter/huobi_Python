@@ -1,5 +1,4 @@
 import logging
-import time
 
 from huobi.connection.impl.restapi_invoker import call_sync
 from huobi.connection.impl.restapi_request import RestApiRequest
@@ -11,7 +10,6 @@ from huobi.exception.huobi_api_exception import HuobiApiException
 
 
 class RestApiSyncClient(object):
-    __server_url = RestApiDefine.Url
 
     def __init__(self, **kwargs):
         """
@@ -19,23 +17,19 @@ class RestApiSyncClient(object):
         :param kwargs: The option of request connection.
             api_key: The public key applied from Huobi.
             secret_key: The private key applied from Huobi.
-            server_url: The URL name like "https://api.huobi.pro".
+            url: The URL name like "https://api.huobi.pro".
+            init_log: to init logger
         """
-        if "api_key" in kwargs:
-            self.__api_key = kwargs["api_key"]
-        if "secret_key" in kwargs:
-            self.__secret_key = kwargs["secret_key"]
-        if "url" in kwargs:
-            self.__server_url = kwargs["url"]
-        if "method" in kwargs:
-            self.__method = kwargs["method"]
-        if "init_log" in kwargs:
-            if kwargs["init_log"] == True:
-                logger = logging.getLogger("huobi-client")
-                logger.setLevel(level=logging.INFO)
-                handler = logging.StreamHandler()
-                handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-                logger.addHandler(handler)
+        self.__api_key = kwargs.get("api_key", None)
+        self.__secret_key = kwargs.get("secret_key", None)
+        self.__server_url = kwargs.get("url", RestApiDefine.Url)
+        self.__init_log = kwargs.get("init_log", None)
+        if self.__init_log and self.__init_log == True:
+            logger = logging.getLogger("huobi-client")
+            logger.setLevel(level=logging.INFO)
+            handler = logging.StreamHandler()
+            handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+            logger.addHandler(handler)
 
     def __create_request_by_get(self, url, builder):
         request = RestApiRequest()
@@ -86,7 +80,7 @@ class RestApiSyncClient(object):
         elif method == HttpMethod.POST:
             request = self.__create_request_by_post_with_signature(url, builder)
         else:
-            raise HuobiApiException(HuobiApiException.INPUT_ERROR, "[Input] " + str(self.__method) + "  is invalid http method")
+            raise HuobiApiException(HuobiApiException.INPUT_ERROR, "[Input] " + method + "  is invalid http method")
 
         request.json_parser = parse
 
@@ -95,11 +89,7 @@ class RestApiSyncClient(object):
     def request_process(self, method, url, params, parse):
         request = self.create_request(method, url, params, parse)
         if request:
-            start = time.time()
-            ret = call_sync(request)
-            end = time.time()
-            print("======time cost inner API======", (end - start), start, end)
-            return ret
+            return call_sync(request)
 
         return None
 

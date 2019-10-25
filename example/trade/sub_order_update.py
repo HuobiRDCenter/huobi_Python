@@ -1,5 +1,5 @@
 
-from huobi.client import *
+from huobi.client.trade import TradeClient
 from huobi.constant import *
 
 

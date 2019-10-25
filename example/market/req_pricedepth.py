@@ -1,5 +1,5 @@
 
-from huobi.client import MarketClient
+from huobi.client.market import MarketClient
 from huobi.constant import DepthStep, HUOBI_WEBSOCKET_URI_VN
 
 
@@ -11,5 +11,5 @@ def error(e: 'HuobiApiException'):
     print(e.error_code + e.error_message)
 
 
-sub_client = MarketClient(url=HUOBI_WEBSOCKET_URI_VN, auto_close=True)
+sub_client = MarketClient(url=HUOBI_WEBSOCKET_URI_VN)
 sub_client.req_pricedepth("btcusdt", DepthStep.STEP0, callback, error)

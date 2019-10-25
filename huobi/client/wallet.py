@@ -1,13 +1,8 @@
 
-from huobi.constant.system import RestApiDefine
 from huobi.utils.input_checker import *
-from huobi.service.wallet import *
-from huobi.model.wallet import *
 
 
 class WalletClient(object):
-    __server_url = RestApiDefine.Url
-    __kwargs = {}
 
     def __init__(self, **kwargs):
         """
@@ -15,7 +10,8 @@ class WalletClient(object):
         :param kwargs: The option of request connection.
             api_key: The public key applied from Huobi.
             secret_key: The private key applied from Huobi.
-            server_url: The URL name like "https://api.huobi.pro".
+            url: The URL name like "https://api.huobi.pro".
+            init_log: to init logger
         """
         self.__kwargs = kwargs
 
@@ -40,6 +36,7 @@ class WalletClient(object):
             "size": size
         }
 
+        from huobi.service.wallet.get_deposit_withdraw import GetDepositWithdrawService
         return GetDepositWithdrawService(params).request(**self.__kwargs)
 
     def post_create_withdraw(self, address: 'str', amount: 'float', currency: 'str', fee: 'float',
@@ -69,6 +66,7 @@ class WalletClient(object):
             "addr-tag" : address_tag
         }
 
+        from huobi.service.wallet.post_create_withdraw import PostCreateWithdrawService
         return PostCreateWithdrawService(params).request(**self.__kwargs)
 
     def post_cancel_withdraw(self, withdraw_id: 'int') -> int:
@@ -82,9 +80,10 @@ class WalletClient(object):
             "withdraw-id": withdraw_id
         }
 
+        from huobi.service.wallet.post_cancel_withdraw import PostCancelWithdrawService
         return PostCancelWithdrawService(params).request(**self.__kwargs)
 
-    def get_account_deposit_address(self, currency: 'str'):
+    def get_account_deposit_address(self, currency: 'str') ->list:
         """
         Get deposit address of corresponding chain, for a specific crypto currency (except IOTA)
 
@@ -97,9 +96,10 @@ class WalletClient(object):
             "currency": currency
         }
 
+        from huobi.service.wallet.get_account_deposit_address import GetAccountDepositAddressService
         return GetAccountDepositAddressService(params).request(**self.__kwargs)
 
-    def get_account_withdraw_quota(self, currency: 'str'):
+    def get_account_withdraw_quota(self, currency: 'str')->list:
         """
         Get the withdraw quota for currencies
 
@@ -112,5 +112,6 @@ class WalletClient(object):
             "currency": currency,
         }
 
+        from huobi.service.wallet.get_account_withdraw_quota import GetAccountWithdrawQuotaService
         return GetAccountWithdrawQuotaService(params).request(**self.__kwargs)
 

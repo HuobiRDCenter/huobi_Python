@@ -1,12 +1,9 @@
 from huobi.constant import *
 from huobi.model.generic import *
-from huobi.service.generic import *
-from huobi.utils import *
+
 
 
 class GenericClient(object):
-    __server_url = RestApiDefine.Url
-    __kwargs = {}
 
     def __init__(self, **kwargs):
         """
@@ -14,7 +11,8 @@ class GenericClient(object):
         :param kwargs: The option of request connection.
             api_key: The public key applied from Huobi.
             secret_key: The private key applied from Huobi.
-            server_url: The URL name like "https://api.huobi.pro".
+            url: The URL name like "https://api.huobi.pro".
+            init_log: to init logger
         """
         self.__kwargs = kwargs
 
@@ -29,6 +27,7 @@ class GenericClient(object):
 
         params = {}
 
+        from huobi.service.generic.get_exchange_timestamp import GetExchangeTimestampService
         return GetExchangeTimestampService(params).request(**self.__kwargs)
 
     def get_exchange_currencies(self) -> list():
@@ -41,6 +40,7 @@ class GenericClient(object):
 
         params = {}
 
+        from huobi.service.generic.get_exchange_currencies import GetExchangeCurrenciesService
         return GetExchangeCurrenciesService(params).request(**self.__kwargs)
 
     def get_exchange_symbols(self) -> list():
@@ -53,6 +53,7 @@ class GenericClient(object):
 
         params = {}
 
+        from huobi.service.generic.get_exchange_symbols import GetExchangeSymbolsService
         return GetExchangeSymbolsService(params).request(**self.__kwargs)
 
     def get_exchange_info(self) -> ExchangeInfo:
@@ -83,4 +84,5 @@ class GenericClient(object):
             "authorizedUser" : is_authorized_user
         }
 
+        from huobi.service.generic.get_reference_currencies import GetReferenceCurrenciesService
         return GetReferenceCurrenciesService(params).request(**self.__kwargs)

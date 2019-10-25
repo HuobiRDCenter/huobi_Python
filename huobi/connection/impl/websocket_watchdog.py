@@ -2,38 +2,41 @@ import threading
 import logging
 from apscheduler.schedulers.blocking import BlockingScheduler
 
-from huobi.connection.impl.websocket_connection import ConnectionState
+from huobi.connection.impl.private_def import *
 from huobi.utils.time_service import get_current_timestamp
 
 
 def watch_dog_job(*args):
     watch_dog_instance = args[0]
-    for connection in watch_dog_instance.connection_list:
-        if connection.state == ConnectionState.CONNECTED:
-            if watch_dog_instance.is_auto_connect:
-                ts = get_current_timestamp() - connection.last_receive_time
-                if ts > watch_dog_instance.receive_limit_ms:
-                    watch_dog_instance.logger.warning("[Sub][" + str(connection.id) + "] No response from server")
-                    connection.re_connect_in_delay(watch_dog_instance.connection_delay_failure)
-        elif connection.in_delay_connection():
-            watch_dog_instance.logger.warning("[Sub] call re_connect")
-            connection.re_connect()
+    for websocket_manage in watch_dog_instance.websocket_manage_list:
+        if websocket_manage.request.auto_close == True:  # setting auto close no need reconnect
             pass
-        elif connection.state == ConnectionState.CLOSED_ON_ERROR:
+        elif websocket_manage.state == ConnectionState.CONNECTED:
             if watch_dog_instance.is_auto_connect:
-                connection.re_connect_in_delay(watch_dog_instance.connection_delay_failure)
+                ts = get_current_timestamp() - websocket_manage.last_receive_time
+                if ts > watch_dog_instance.heart_beat_limit_ms:
+                    watch_dog_instance.logger.warning("[Sub][" + str(websocket_manage.id) + "] No response from server")
+                    websocket_manage.close_and_wait_reconnect(watch_dog_instance.wait_reconnect_millisecond())
+        elif websocket_manage.state == ConnectionState.WAIT_RECONNECT:
+            watch_dog_instance.logger.warning("[Sub] call re_connect")
+            websocket_manage.re_connect()
+            pass
+        elif websocket_manage.state == ConnectionState.CLOSED_ON_ERROR:
+            if watch_dog_instance.is_auto_connect:
+                websocket_manage.re_connect_in_delay(watch_dog_instance.reconnect_after_ms)
                 pass
 
 
 class WebSocketWatchDog(threading.Thread):
+    print("start watch dog =======")
     mutex = threading.Lock()
-    connection_list = list()
+    websocket_manage_list = list()
 
-    def __init__(self, is_auto_connect=True, receive_limit_ms=60000, connection_delay_failure=15):
+    def __init__(self, is_auto_connect=True, heart_beat_limit_ms=CONNECT_HEART_BEAT_LIMIT_MS, reconnect_after_ms=RECONNECT_AFTER_TIME_MS):
         threading.Thread.__init__(self)
         self.is_auto_connect = is_auto_connect
-        self.receive_limit_ms = receive_limit_ms
-        self.connection_delay_failure = connection_delay_failure
+        self.heart_beat_limit_ms = heart_beat_limit_ms
+        self.reconnect_after_ms = reconnect_after_ms if reconnect_after_ms > heart_beat_limit_ms else heart_beat_limit_ms
         self.logger = logging.getLogger("huobi-client")
         self.scheduler = BlockingScheduler()
         self.scheduler.add_job(watch_dog_job, "interval", max_instances=10, seconds=1, args=[self])
@@ -42,12 +45,21 @@ class WebSocketWatchDog(threading.Thread):
     def run(self):
         self.scheduler.start()
 
-    def on_connection_created(self, connection):
+    def on_connection_created(self, websocket_manage):
         self.mutex.acquire()
-        self.connection_list.append(connection)
+        self.websocket_manage_list.append(websocket_manage)
         self.mutex.release()
 
-    def on_connection_closed(self, connection):
+    def on_connection_closed(self, websocket_manage):
         self.mutex.acquire()
-        self.connection_list.remove(connection)
+        self.websocket_manage_list.remove(websocket_manage)
         self.mutex.release()
+
+    # calculate next reconnect time
+    def wait_reconnect_millisecond(self):
+        wait_millisecond = int(self.reconnect_after_ms - self.heart_beat_limit_ms)
+        now_ms = get_current_timestamp()
+        wait_millisecond = wait_millisecond if wait_millisecond else 1000
+        # job loop after 1 second
+        return (wait_millisecond + now_ms)
+

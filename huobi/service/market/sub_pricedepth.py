@@ -3,7 +3,7 @@ import time
 from huobi.serialize.market import *
 from huobi.model.market import *
 from huobi.utils import *
-from huobi.connection import SubscribeClient
+from huobi.connection.subscribe_client import SubscribeClient
 
 
 class SubPriceDepthService:

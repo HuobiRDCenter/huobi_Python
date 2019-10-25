@@ -1,8 +1,8 @@
 
 
-from huobi.client import *
+from huobi.client.trade import TradeClient
 from huobi.constant import *
-from huobi.service.account import GetAccountsSelectService
+from huobi.service.account.get_accounts_select import GetAccountsSelectService
 from huobi.utils import *
 
 

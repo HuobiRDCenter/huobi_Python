@@ -1,4 +1,0 @@
-from huobi.service.etf.get_etf_swap_config import GetEtfSwapConfigService
-from huobi.service.etf.get_etf_swap_list import GetEtfSwapListService
-from huobi.service.etf.post_etf_swap_in import PostEftSwapInService
-from huobi.service.etf.post_etf_swap_out import PostEtfSwapOutService

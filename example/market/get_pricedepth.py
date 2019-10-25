@@ -1,4 +1,3 @@
-import time
 
 from huobi.client.market import MarketClient
 from huobi.constant import *

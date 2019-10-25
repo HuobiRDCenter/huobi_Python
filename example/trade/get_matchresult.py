@@ -1,4 +1,4 @@
-from huobi.client import TradeClient
+from huobi.client.trade import TradeClient
 from huobi.constant import *
 
 trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key, url=HUOBI_URL_VN)

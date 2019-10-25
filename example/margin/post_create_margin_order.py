@@ -1,4 +1,4 @@
-from huobi.client import MarginClient
+from huobi.client.margin import MarginClient
 from huobi.constant import *
 from huobi.constant.test import *
 
