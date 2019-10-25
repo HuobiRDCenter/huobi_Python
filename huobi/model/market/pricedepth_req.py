@@ -21,4 +21,4 @@ class PriceDepthReq:
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.id, format_data + "ID")
         PrintBasic.print_basic(self.rep, format_data + "Channel")
-        self.data.print_object()
+        self.data.print_object("\t")

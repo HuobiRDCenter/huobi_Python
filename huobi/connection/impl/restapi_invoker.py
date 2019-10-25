@@ -5,8 +5,9 @@ from huobi.utils import *
 
 
 def check_response(dict_data):
-    status = dict_data.get("status", "")
-    success = bool(dict_data.get("success", False))
+    status = dict_data.get("status", None)
+    code = dict_data.get("code", None)
+    success = dict_data.get("success", None)
     if status and len(status):
         if status == "error":
             err_code = dict_data.get("err-code", "")
@@ -15,8 +16,15 @@ def check_response(dict_data):
                                     "[Executing] " + err_code + ": " + err_msg)
         elif status != "ok":
             raise HuobiApiException(HuobiApiException.RUNTIME_ERROR, "[Invoking] Response is not expected: " + status)
-    elif success:
-        if success is False:
+    elif code:
+        code_int = int(code)
+        if code_int != 200:
+            err_code = dict_data.get("code", "")
+            err_msg = dict_data.get("message", "")
+            raise HuobiApiException(HuobiApiException.EXEC_ERROR,
+                                    "[Executing] " + err_code + ": " + err_msg)
+    elif success is not None:
+        if bool(success) is False:
             err_code = etf_result_check(dict_data.get("code"))
             err_msg = dict_data.get("message", "")
             if err_code == "":
@@ -29,6 +37,9 @@ def check_response(dict_data):
 
 def call_sync(request):
     if request.method == "GET":
+        print("=========host=========", request.host)
+        print("=========url=========", request.url)
+        print("=========header=========", request.header)
         response = requests.get(request.host + request.url, headers=request.header)
         dict_data = json.loads(response.text, encoding="utf-8")
         print("call_sync  === recv data : ", dict_data)

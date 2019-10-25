@@ -1,21 +1,12 @@
-"""
-from huobi.constant.system import RestApiDefine, HttpMethod
-from huobi.utils import RestApiRequest
-from huobi.utils.restapirequestimpl import RestApiRequestImpl
-from huobi.utils.restapiinvoker import call_sync
-from huobi.utils.account_info_map import account_info_map
-from huobi.utils.api_signature.py import create_signature
-from huobi.utils.input_checker import *
-from huobi.utils.url_params_builder import urlParamsBuilder
-from huobi.model import *
-"""
+
 from huobi.constant.system import RestApiDefine
+from huobi.service.margin import *
 from huobi.utils.input_checker import *
 
 
 class MarginClient(object):
     __server_url = RestApiDefine.Url
-    args_config = {}
+    __kwargs = {}
 
     def __init__(self, **kwargs):
         """
@@ -25,68 +16,132 @@ class MarginClient(object):
             secret_key: The private key applied from Huobi.
             server_url: The URL name like "https://api.huobi.pro".
         """
-        self.args_config = kwargs
+        self.__kwargs = kwargs
 
+    def post_transfer_in_margin(self, symbol: 'str', currency: 'str', amount: 'float') -> int:
         """
-        if "api_key" in kwargs:
-            self.__api_key = kwargs["api_key"]
-        if "secret_key" in kwargs:
-            self.__secret_key = kwargs["secret_key"]
-        if "url" in kwargs:
-            self.__server_url = kwargs["url"]
-        """
+        Transfer asset from spot account to margin account.
 
-        """   
-        for request has bind subscription_handler and parse_handler to connection, so connection can't be reused
-        if "reuse_sub_connection" in kwargs:
-            self.__reuse_sub_connection = kwargs["reuse_sub_connection"]
-            if self.__reuse_sub_connection and self.__reuse_sub_connection == True:
-                self.__reuse_sub_connection = True
-        """
-
-
-    def get_candlestick(self, symbol, interval, size, startTime=None, endTime=None):
-        """
-        Get the candlestick/kline for the specified symbol. The data number is 150 as default.
-
-        :param symbol: The symbol, like "btcusdt". To query hb10, put "hb10" at here. (mandatory)
-        :param interval: The candlestick/kline interval, MIN1, MIN5, DAY1 etc. (mandatory)
-        :param size: The start time of of requested candlestick/kline data. (optional)
-        :param start_time: The start time of of requested candlestick/kline data. (optional)
-        :param end_time: The end time of of requested candlestick/kline data. (optional)
-        :return: The list of candlestick/kline data.
+        :param symbol: The symbol, like "btcusdt". (mandatory)
+        :param currency: The currency of transfer. (mandatory)
+        :param amount: The amount of transfer. (mandatory)
+        :return:
         """
         check_symbol(symbol)
-        check_should_not_none(interval, "interval")
+        check_should_not_none(currency, "currency")
+        check_should_not_none(amount, "amount")
 
         params = {
             "symbol": symbol,
-            "interval": interval,
-            "size": size
+            "currency": currency,
+            "amount": amount
         }
-        if startTime:
-            params["start_time"] = startTime
-        if endTime:
-            params["end_time"] = endTime
 
-        return CandleStickServiceGet(params).request(self.args_config)
+        return PostTransferInMarginService(params).request(**self.__kwargs)
 
-    def sub_candlestick(self, symbols: 'str', interval: 'CandlestickInterval', callback, error_handler):
+    def post_transfer_out_margin(self, symbol: 'str', currency: 'str', amount: 'float') -> int:
         """
-        Get the candlestick/kline for the specified symbol. The data number is 150 as default.
+        Transfer asset from margin account to spot account.
 
-        :param symbol: The symbol, like "btcusdt". To query hb10, put "hb10" at here. (mandatory)
-        :param interval: The candlestick/kline interval, MIN1, MIN5, DAY1 etc. (mandatory)
-        :return: The list of candlestick/kline data.
+        :param symbol: The symbol, like "btcusdt". (mandatory)
+        :param currency: The currency of transfer. (mandatory)
+        :param amount: The amount of transfer. (mandatory)
+        :return:
         """
-        symbol_list = symbols.split(",")
-        check_symbol_list(symbol_list)
-        check_should_not_none(interval, "interval")
-        check_should_not_none(callback, "callback")
+        check_symbol(symbol)
+        check_should_not_none(currency, "currency")
+        check_should_not_none(amount, "amount")
 
         params = {
-            "symbol_list" : symbol_list,
-            "interval" : interval
+            "symbol": symbol,
+            "currency": currency,
+            "amount": amount
         }
 
-        CandleStickServiceSub(params).subscribe(self.args_config, callback, error_handler)
+        return PostTransferOutMarginService(params).request(**self.__kwargs)
+
+    def get_margin_account_balance(self, symbol: 'str') -> list:
+        """
+        Get the Balance of the Margin Loan Account.
+
+        :param symbol: The currency, like "btc". (mandatory)
+        :return: The margin loan account detail list.
+        """
+        check_symbol(symbol)
+
+        params = {
+            "symbol": symbol
+        }
+
+        return GetMarginAccountBalanceService(params).request(**self.__kwargs)
+
+    def post_create_margin_order(self, symbol: 'str', currency: 'str', amount: 'float') -> int:
+        """
+        Submit a request to borrow with margin account.
+
+        :param symbol: The trading symbol to borrow margin, e.g. "btcusdt", "bccbtc". (mandatory)
+        :param currency: The currency to borrow,like "btc". (mandatory)
+        :param amount: The amount of currency to borrow. (mandatory)
+        :return: The margin order id.
+        """
+        check_symbol(symbol)
+        check_should_not_none(currency, "currency")
+        check_should_not_none(amount, "amount")
+
+        params = {
+            "symbol": symbol,
+            "currency" : currency,
+            "amount" : amount
+        }
+
+        return PostCreateMarginOrderService(params).request(**self.__kwargs)
+
+    def post_repay_margin_order(self, load_id: 'int', amount: 'float') -> int:
+        """
+        Get the margin loan records.
+
+        :param load_id: The previously returned order id when loan order was created. (mandatory)
+        :param amount: The amount of currency to repay. (mandatory)
+        :return: The margin order id.
+        """
+        check_should_not_none(load_id, "load_id")
+        check_should_not_none(amount, "amount")
+
+        params = {
+            "load_id": load_id,
+            "amount": amount
+        }
+
+        return PostRepayMarginOrderService(params).request(**self.__kwargs)
+
+    def get_margin_loan_orders(self, symbol: 'str', start_date: 'str' = None, end_date: 'str' = None,
+                         states: 'LoanOrderState' = None, from_id: 'int' = None,
+                         size: 'int' = None, direction: 'QueryDirection' = None) -> list:
+        """
+        Get the margin loan records.
+
+        :param symbol: The symbol, like "btcusdt" (mandatory).
+        :param start_date: The search starts date in format yyyy-mm-dd. (optional).
+        :param end_date: The search end date in format yyyy-mm-dd.(optional, can be null).
+        :param states: The loan order states, it could be created, accrual, cleared or invalid. (optional)
+        :param from_id: Search order id to begin with. (optional)
+        :param size: The number of orders to return.. (optional)
+        :param direction: The query direction, prev or next. (optional)
+        :return: The list of the margin loan records.
+        """
+
+        check_symbol(symbol)
+        start_date = format_date(start_date, "start_date")
+        end_date = format_date(end_date, "end_date")
+
+        params = {
+            "symbol" : symbol,
+            "start-date" : start_date,
+            "end-date" : end_date,
+            "states" : states,
+            "from" : from_id,
+            "size" : size,
+            "direct" : direction
+        }
+
+        return GetMarginLoanOrdersService(params).request(**self.__kwargs)

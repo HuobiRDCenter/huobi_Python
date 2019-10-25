@@ -4,7 +4,7 @@ from huobi.constant import *
 
 
 
-def callback(price_depth_event: 'PriceDepth'):
+def callback(price_depth_event: 'PriceDepthEvent'):
     price_depth_event.print_object()
 
 

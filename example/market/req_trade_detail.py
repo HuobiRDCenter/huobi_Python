@@ -1,15 +1,6 @@
-import logging
 
 from huobi.client import *
 from huobi.constant import *
-
-logger = logging.getLogger("huobi-client")
-logger.setLevel(level=logging.INFO)
-handler = logging.StreamHandler()
-handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-logger.addHandler(handler)
-
-
 
 
 

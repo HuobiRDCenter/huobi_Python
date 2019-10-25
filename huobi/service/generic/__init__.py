@@ -1,2 +1,4 @@
 from huobi.service.generic.get_exchange_currencies import GetExchangeCurrenciesService
 from huobi.service.generic.get_exchange_symbols import GetExchangeSymbolsService
+from huobi.service.generic.get_exchange_timestamp import GetExchangeTimestampService
+from huobi.service.generic.get_reference_currencies import GetReferenceCurrenciesService

@@ -1,21 +1,13 @@
-"""
-from huobi.constant.system import RestApiDefine, HttpMethod
-from huobi.utils import RestApiRequest
-from huobi.utils.restapirequestimpl import RestApiRequestImpl
-from huobi.utils.restapiinvoker import call_sync
-from huobi.utils.account_info_map import account_info_map
-from huobi.utils.api_signature.py import create_signature
-from huobi.utils.input_checker import *
-from huobi.utils.url_params_builder import urlParamsBuilder
-from huobi.model import *
-"""
+
 from huobi.constant.system import RestApiDefine
 from huobi.utils.input_checker import *
+from huobi.service.wallet import *
+from huobi.model.wallet import *
 
 
 class WalletClient(object):
     __server_url = RestApiDefine.Url
-    args_config = {}
+    __kwargs = {}
 
     def __init__(self, **kwargs):
         """
@@ -25,68 +17,100 @@ class WalletClient(object):
             secret_key: The private key applied from Huobi.
             server_url: The URL name like "https://api.huobi.pro".
         """
-        self.args_config = kwargs
+        self.__kwargs = kwargs
 
+    def get_deposit_withdraw(self, op_type:'str', currency: 'str'=None, from_id: 'int'=None, size: 'int'=None, direct:'str'=None) -> list:
         """
-        if "api_key" in kwargs:
-            self.__api_key = kwargs["api_key"]
-        if "secret_key" in kwargs:
-            self.__secret_key = kwargs["secret_key"]
-        if "url" in kwargs:
-            self.__server_url = kwargs["url"]
-        """
+        Get the withdraw records of an account.
 
-        """   
-        for request has bind subscription_handler and parse_handler to connection, so connection can't be reused
-        if "reuse_sub_connection" in kwargs:
-            self.__reuse_sub_connection = kwargs["reuse_sub_connection"]
-            if self.__reuse_sub_connection and self.__reuse_sub_connection == True:
-                self.__reuse_sub_connection = True
+        :param currency: The currency, like "btc". (optional)
+        :param from_id: The beginning withdraw record id. (optional)
+        :param op_type: deposit or withdraw, see defination DepositWithdraw (mandatory)
+        :param size: The size of record. (optional)
+        :param direct: "prev" is order by asc, "next" is order by desc, default as "prev"(optional)
+        :return: The list of withdraw records.
         """
-
-
-    def get_candlestick(self, symbol, interval, size, startTime=None, endTime=None):
-        """
-        Get the candlestick/kline for the specified symbol. The data number is 150 as default.
-
-        :param symbol: The symbol, like "btcusdt". To query hb10, put "hb10" at here. (mandatory)
-        :param interval: The candlestick/kline interval, MIN1, MIN5, DAY1 etc. (mandatory)
-        :param size: The start time of of requested candlestick/kline data. (optional)
-        :param start_time: The start time of of requested candlestick/kline data. (optional)
-        :param end_time: The end time of of requested candlestick/kline data. (optional)
-        :return: The list of candlestick/kline data.
-        """
-        check_symbol(symbol)
-        check_should_not_none(interval, "interval")
+        check_should_not_none(op_type, "operate type")
 
         params = {
-            "symbol": symbol,
-            "interval": interval,
+            "currency": currency,
+            "type": op_type,
+            "from": from_id,
+            "direct": direct,
             "size": size
         }
-        if startTime:
-            params["start_time"] = startTime
-        if endTime:
-            params["end_time"] = endTime
 
-        return CandleStickServiceGet(params).request(self.args_config)
+        return GetDepositWithdrawService(params).request(**self.__kwargs)
 
-    def sub_candlestick(self, symbols: 'str', interval: 'CandlestickInterval', callback, error_handler):
+    def post_create_withdraw(self, address: 'str', amount: 'float', currency: 'str', fee: 'float',
+                 chain:'str' =None, address_tag: 'str' = None) -> int:
         """
-        Get the candlestick/kline for the specified symbol. The data number is 150 as default.
+        Submit a request to withdraw some asset from an account.
 
-        :param symbol: The symbol, like "btcusdt". To query hb10, put "hb10" at here. (mandatory)
-        :param interval: The candlestick/kline interval, MIN1, MIN5, DAY1 etc. (mandatory)
-        :return: The list of candlestick/kline data.
+        :param address: The destination address of this withdraw. (mandatory)
+        :param amount: The amount of currency to withdraw. (mandatory)
+        :param currency: The crypto currency to withdraw. (mandatory)
+        :param fee: The fee to pay with this withdraw. (mandatory)
+        :param address_tag: A tag specified for this address. (optional)
+        :param chain: set as "usdt" to withdraw USDT to OMNI, set as "trc20usdt" to withdraw USDT to TRX. (optional)
+        :return: Withdraw id
         """
-        symbol_list = symbols.split(",")
-        check_symbol_list(symbol_list)
-        check_should_not_none(interval, "interval")
-        check_should_not_none(callback, "callback")
+        check_symbol(currency)
+        check_should_not_none(address, "address")
+        check_should_not_none(amount, "amount")
+        check_should_not_none(fee, "fee")
 
         params = {
-            "symbol_list" : symbol_list,
-            "interval" : interval
+            "currency": currency,
+            "address": address,
+            "amount": amount,
+            "fee": fee,
+            "chain": chain,
+            "addr-tag" : address_tag
         }
 
-        CandleStickServiceSub(params).subscribe(self.args_config, callback, error_handler)
+        return PostCreateWithdrawService(params).request(**self.__kwargs)
+
+    def post_cancel_withdraw(self, withdraw_id: 'int') -> int:
+        """
+        Cancel an withdraw request.
+
+        :param withdraw_id: withdraw id (mandatory)
+        :return: No return.
+        """
+        params = {
+            "withdraw-id": withdraw_id
+        }
+
+        return PostCancelWithdrawService(params).request(**self.__kwargs)
+
+    def get_account_deposit_address(self, currency: 'str'):
+        """
+        Get deposit address of corresponding chain, for a specific crypto currency (except IOTA)
+
+        :param currency: The currency, like "btc". (optional)
+        :return:
+        """
+        check_should_not_none(currency, "currency")
+
+        params = {
+            "currency": currency
+        }
+
+        return GetAccountDepositAddressService(params).request(**self.__kwargs)
+
+    def get_account_withdraw_quota(self, currency: 'str'):
+        """
+        Get the withdraw quota for currencies
+
+        :param currency: The currency, like "btc". (mandatory)
+        :return:
+        """
+        check_should_not_none(currency, "currency")
+
+        params = {
+            "currency": currency,
+        }
+
+        return GetAccountWithdrawQuotaService(params).request(**self.__kwargs)
+

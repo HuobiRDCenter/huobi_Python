@@ -15,14 +15,14 @@ class MatchResult:
         price: The limit price of limit order.
         source: The source where the order was triggered, possible values: sys, web, api, app.
         symbol: The symbol, like "btcusdt".
-        order_type: The order type, possible values are: buy-market, sell-market, buy-limit, sell-limit,
+        type: The order type, possible values are: buy-market, sell-market, buy-limit, sell-limit,
             buy-ioc, sell-ioc, buy-limit-maker, sell-limit-maker.
         filled_points: deduct points
         fee_deduct_currency: deduct type, it means deduct from HT/ HT points / or other currency
     """
 
     def __init__(self):
-        self.created_timestamp = 0
+        self.created_at = 0
         self.filled_amount = 0.0
         self.filled_fees = 0.0
         self.id = 0
@@ -31,7 +31,7 @@ class MatchResult:
         self.price = 0.0
         self.source = OrderSource.INVALID
         self.symbol = ""
-        self.order_type = OrderType.INVALID
+        self.type = OrderType.INVALID
         self.role = ""
         self.filled_points = ""
         self.fee_deduct_currency = ""
@@ -39,7 +39,7 @@ class MatchResult:
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.id, format_data + "ID")
-        PrintBasic.print_basic(self.created_timestamp, format_data + "Create Time")
+        PrintBasic.print_basic(self.created_at, format_data + "Create Time")
         PrintBasic.print_basic(self.filled_amount, format_data + "Fill Amount")
         PrintBasic.print_basic(self.filled_fees, format_data + "Fill Fee")
         PrintBasic.print_basic(self.filled_points, format_data + "Fill Points")
@@ -48,6 +48,6 @@ class MatchResult:
         PrintBasic.print_basic(self.price, format_data + "Price")
         PrintBasic.print_basic(self.source, format_data + "Source")
         PrintBasic.print_basic(self.symbol, format_data + "Symbol")
-        PrintBasic.print_basic(self.order_type, format_data + "Order Type")
+        PrintBasic.print_basic(self.type, format_data + "Order Type")
         PrintBasic.print_basic(self.role, format_data + "Role")
         PrintBasic.print_basic(self.fee_deduct_currency, format_data + "Fee Deduct Currency")

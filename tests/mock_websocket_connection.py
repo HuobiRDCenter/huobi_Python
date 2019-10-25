@@ -9,3 +9,5 @@ class MockWebsocketConnection:
 
     def pop_output_message(self):
         return self.send_data_buffer.pop(0)
+
+

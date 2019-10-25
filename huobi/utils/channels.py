@@ -48,10 +48,10 @@ def market_detail_channel(symbol):
     return json.dumps(channel)
 
 
-def account_change_channel(mode):
+def account_change_channel(model):
     channel = dict()
     channel["op"] = "sub"
     channel["cid"] = str(get_current_timestamp())
     channel["topic"] = "accounts"
-    channel["mode"] = mode
+    channel["model"] = model
     return json.dumps(channel)

@@ -17,7 +17,7 @@ class GetMatchResultsByOrderIdService:
 
         def parse(dict_data):
             data_list = dict_data.get("data", [])
-            return default_parse_list_dict(data_list, Order, [])
+            return default_parse_list_dict(data_list, MatchResult, [])
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, get_channel(), self.params, parse)
 

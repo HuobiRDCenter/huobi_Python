@@ -12,3 +12,4 @@ from huobi.service.market.get_history_trade import GetHistoryTradeService
 from huobi.service.market.get_market_trade import GetMarketTradeService
 from huobi.service.market.sub_trade_detail import SubTradeDetailService
 from huobi.service.market.req_trade_detail import ReqTradeDetailService
+from huobi.service.market.get_market_detail_merged import GetMarketDetailMergedService

@@ -10,11 +10,11 @@ class PostTransferFuturesProService:
         self.params = params
 
     def request(self, **kwargs):
-        channel = "/v1/order/orders"
+        channel = "/v1/futures/transfer"
 
         def parse(dict_data):
-            data_list = dict_data.get("data", [])
-            return default_parse_list_dict(data_list, Order, [])
+            transfer_id = int(dict_data.get("data", 0))
+            return transfer_id     # transfer ID
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, channel, self.params, parse)
 

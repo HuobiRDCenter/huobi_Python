@@ -12,7 +12,7 @@ def fill_obj(dict_data, class_name=object):
     obj = class_name()
     for ks, vs in dict_data.items():
         obj_key = key_trans(ks)
-        print("===== fill_obj =====", ks, obj_key, str(vs))
+        #print("===== fill_obj =====", ks, obj_key, str(vs))
         if hasattr(obj, obj_key):
             setattr(obj, obj_key, vs)
             continue
@@ -62,6 +62,18 @@ def default_parse_list_dict(inner_data, inner_class_name=object, default_value=N
             new_value = default_value
 
     return new_value
+
+def default_parse_fill_directly(dict_data, outer_class_name=object):
+    rsp_obj = outer_class_name()
+
+    for outer_key, outer_value in dict_data.items():
+        obj_key = key_trans(outer_key)
+        if hasattr(rsp_obj, obj_key):
+            new_value = outer_value
+            setattr(rsp_obj, obj_key, new_value)
+            continue
+
+    return rsp_obj
 
 if __name__ == "__main__":
 

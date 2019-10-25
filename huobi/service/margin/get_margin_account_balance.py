@@ -1,6 +1,7 @@
 from huobi.connection import RestApiSyncClient
 from huobi.constant.system import HttpMethod
-from huobi.model.account import *
+from huobi.model.account import Balance
+from huobi.model.margin import *
 from huobi.utils import *
 
 
@@ -15,7 +16,12 @@ class GetMarginAccountBalanceService:
 
         def parse(dict_data):
             data_list = dict_data.get("data", [])
-            return default_parse_list_dict(data_list, Balance, [])
+            account_balance_list = []
+            if data_list and len(data_list):
+                for row in data_list:
+                    account_balance = default_parse(row, MarginAccountBalance, Balance)
+                    account_balance_list.append(account_balance)
+            return account_balance_list
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
 

@@ -76,6 +76,10 @@ class WithdrawState:
     INVALID = None
 
 
+class DepositWithdraw:
+    DEPOSIT = "deposit"
+    WITHDRAW = "withdraw"
+
 class DepositState:
     CONFIRMING = "confirming"
     SAFE = "safe"
@@ -184,3 +188,19 @@ class DepthStep:
     STEP3 = "step3"
     STEP4 = "step4"
     STEP5 = "step5"
+
+class ChainDepositStatus:
+    ALLOWED = "allowed"
+    PROHIBITED = "prohibited"
+    INVALID = None
+
+class ChainWithdrawStatus:
+    ALLOWED = "allowed"
+    PROHIBITED = "prohibited"
+    INVALID = None
+
+class InstrumentStatus:
+    NORMAL = "normal"
+    DELISTED = "delisted"
+    INVALID = None
+

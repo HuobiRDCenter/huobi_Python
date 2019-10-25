@@ -1,4 +1,3 @@
-import time
 
 from huobi.utils import *
 
@@ -7,7 +6,7 @@ from huobi.model.account import *
 
 
 
-class SubAccountChangeEventService:
+class SubAccountChangeService:
     def __init__(self, params):
         """
         Create the request client instance.
@@ -19,10 +18,10 @@ class SubAccountChangeEventService:
         self.params = params
 
     def subscribe(self, callback, error_handler, **kwargs):
-        mode = self.params["mode"]
+        model = self.params["model"]
 
         def subscription(connection):
-            connection.send(account_change_channel(mode))
+            connection.send(account_change_channel(model))
 
         def parse(dict_data):
             account_change_event = AccountChangeEvent()

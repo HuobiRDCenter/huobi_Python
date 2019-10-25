@@ -10,13 +10,14 @@ class PostCancelWithdrawService:
         self.params = params
 
     def request(self, **kwargs):
-        withdraw_id = self.params["withdraw_id"]
+        withdraw_id_params = self.params["withdraw-id"]
         def get_channel():
             path = "/v1/dw/withdraw-virtual/{}/cancel"
-            return path.format(withdraw_id)
+            return path.format(withdraw_id_params)
 
         def parse(dict_data):
-            return
+            withdraw_id_ret = int(dict_data.get("data", -1))
+            return withdraw_id_ret
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, get_channel(), self.params, parse)
 

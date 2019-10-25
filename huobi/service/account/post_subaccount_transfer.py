@@ -1,7 +1,6 @@
 from huobi.connection import RestApiSyncClient
 from huobi.constant.system import HttpMethod
-from huobi.model.market import *
-from huobi.utils import *
+
 
 
 
@@ -14,7 +13,8 @@ class PostSubaccountTransferService:
         channel = "/v1/subuser/transfer"
 
         def parse(dict_data):
-            return dict_data.get("data")
+            transfer_order_id = int(dict_data.get("data", -1))
+            return transfer_order_id
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, channel, self.params, parse)
 

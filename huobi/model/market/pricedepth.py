@@ -24,16 +24,16 @@ class PriceDepth:
         PrintBasic.print_basic(self.version, format_data + "Version")
         if len(self.bids):
             i = 0
-            print("---- Top " + str(len(self.bids)) + " bids ----")
+            print(format_data, "---- Top " + str(len(self.bids)) + " bids ----")
             for entry in self.bids:
                 i = i + 1
-                print(str(i) + ": price: " + str(entry.price) + ", amount: " + str(entry.amount))
+                print(format_data, str(i) + ": price: " + str(entry.price) + ", amount: " + str(entry.amount))
                 #print()
 
         if len(self.asks):
             i = 0
-            print("---- Top " + str(len(self.asks)) + " asks ----")
+            print(format_data, "---- Top " + str(len(self.asks)) + " asks ----")
             for entry in self.asks:
                 i = i + 1
-                print(str(i) + ": price: " + str(entry.price) + ", amount: " + str(entry.amount))
+                print(format_data, str(i) + ": price: " + str(entry.price) + ", amount: " + str(entry.amount))
                 #print()

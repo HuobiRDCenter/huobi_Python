@@ -10,12 +10,11 @@ class PostBatchCancelOpenOrderService:
         self.params = params
 
     def request(self, **kwargs):
-        order_id = self.params["order_id"]
-
         channel = "/v1/order/orders/batchCancelOpenOrders"
 
         def parse(dict_data):
-            return
+            data = dict_data.get("data", {})
+            return default_parse(data, BatchCancelCount)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, channel, self.params, parse)
 

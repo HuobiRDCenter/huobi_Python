@@ -31,11 +31,12 @@ class MarketClient(object):
         """
         check_symbol(symbol)
         check_should_not_none(interval, "interval")
+        check_range(size, 1, 2000, "size")
 
         params = {
             "symbol": symbol,
             "interval": interval,
-            "size": size,
+            "size": size
         }
 
         return GetCandleStickService(params).request(**self.__kwargs)
@@ -342,3 +343,11 @@ class MarketClient(object):
         }
 
         ReqTradeDetailService(params).subscribe(callback, error_handler, **self.__kwargs)
+
+    def get_market_detail_merged(self, symbol):
+        check_symbol(symbol)
+        params = {
+            "symbol": symbol
+        }
+
+        return GetMarketDetailMergedService(params).request(**self.__kwargs)

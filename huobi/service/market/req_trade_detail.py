@@ -19,14 +19,7 @@ class ReqTradeDetailService:
                 time.sleep(0.01)
 
         def parse(dict_data):
-            trade_detail_event = TradeDetailReq()
-            data_list_json = dict_data.get("data", [])
-            if (len(data_list_json)):
-                for row in data_list_json:
-                    trade_detail_obj = TradeDetailSerial.json_parse(row)
-                    trade_detail_event.data.append(trade_detail_obj)
-
-            return trade_detail_event
+            return default_parse(dict_data, TradeDetailReq, TradeDetail)
 
         WebSocketReqClient(**kwargs).execute_subscribe(subscription,
                                             parse,

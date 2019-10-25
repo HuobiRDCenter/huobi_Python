@@ -20,4 +20,4 @@ class PriceDepthEvent:
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.ch, format_data + "Channel")
-        self.tick.print_object()
+        self.tick.print_object("\t")

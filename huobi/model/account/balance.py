@@ -14,12 +14,12 @@ class Balance:
 
     def __init__(self):
         self.currency = ""
-        self.balance_type = BalanceType.INVALID
+        self.type = BalanceType.INVALID
         self.balance = 0.0
 
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.currency, format_data + "Currency")
-        PrintBasic.print_basic(self.balance_type, format_data + "Balance Type")
-        PrintBasic.print_basic(self.balance, format_data + "Balance State")
+        PrintBasic.print_basic(self.type, format_data + "Balance Type")
+        PrintBasic.print_basic(self.balance, format_data + "Balance")

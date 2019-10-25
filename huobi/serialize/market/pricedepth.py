@@ -24,12 +24,6 @@ class PriceDepthSerial:
 
     @staticmethod
     def json_parse(dict_data):
-        tick = dict_data.get("tick", {})
-        price_depth = PriceDepthSerial.json_parse_pricedepth(tick)
-        return price_depth
-
-    @staticmethod
-    def json_parse_pricedepth(dict_data):
         price_depth_obj = PriceDepth()
         price_depth_obj.ts = dict_data.get("ts")
         price_depth_obj.version = dict_data.get("version")

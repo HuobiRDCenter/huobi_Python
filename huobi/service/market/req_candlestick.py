@@ -23,7 +23,7 @@ class ReqCandleStickService:
                 time.sleep(0.01)
 
         def parse(dict_data):
-            return default_parse(dict_data, CandlestickEvent, Candlestick)
+            return default_parse(dict_data, CandlestickReq, Candlestick)
 
         WebSocketReqClient(**kwargs).execute_subscribe(subscription,
                                             parse,

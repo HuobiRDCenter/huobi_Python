@@ -28,8 +28,6 @@ class Order:
         self.id = 0
         self.symbol = ""
         self.account_id = 0
-        #self.account_type = AccountType.INVALID
-
         self.amount = 0.0
         self.price = 0.0
         self.created_at = 0

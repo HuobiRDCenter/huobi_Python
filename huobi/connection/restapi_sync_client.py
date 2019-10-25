@@ -1,8 +1,9 @@
 import logging
+import time
 
 from huobi.connection.impl.restapi_invoker import call_sync
 from huobi.connection.impl.restapi_request import RestApiRequest
-from huobi.constant.system import RestApiDefine, HttpMethod
+from huobi.constant import *
 from huobi.utils import *
 
 from huobi.exception.huobi_api_exception import HuobiApiException
@@ -94,7 +95,11 @@ class RestApiSyncClient(object):
     def request_process(self, method, url, params, parse):
         request = self.create_request(method, url, params, parse)
         if request:
-            return call_sync(request)
+            start = time.time()
+            ret = call_sync(request)
+            end = time.time()
+            print("======time cost inner API======", (end - start), start, end)
+            return ret
 
         return None
 

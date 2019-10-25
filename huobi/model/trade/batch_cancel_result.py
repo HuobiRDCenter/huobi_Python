@@ -9,10 +9,9 @@ class BatchCancelResult:
     """
 
     def __init__(self):
-        self.success_count = 0
-        self.failed_count = 0
+        self.success = []
+        self.failed = []
 
     def print_object(self, format_data=""):
-        from huobi.utils.print_mix_object import PrintBasic
-        PrintBasic.print_basic(self.success_count, format_data + "Success Count")
-        PrintBasic.print_basic(self.failed_count, format_data + "Failed Count")
+        print("Success Order Counts", len(self.success), " Success Order Ids : ", self.success)
+        print("Fail Order Counts", len(self.failed), " Fail Order Ids : ", self.failed)

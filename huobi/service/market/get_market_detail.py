@@ -15,7 +15,7 @@ class GetMarketDetailService:
 
         def parse(dict_data):
             tick = dict_data.get("tick", {})
-            return default_parse_list_dict(tick, MarketDetail)
+            return default_parse(tick, MarketDetail)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET, channel, self.params, parse)
 

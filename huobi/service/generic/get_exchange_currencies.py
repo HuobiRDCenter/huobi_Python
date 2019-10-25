@@ -1,8 +1,5 @@
 from huobi.connection import RestApiSyncClient
 from huobi.constant.system import HttpMethod
-from huobi.model.account import *
-from huobi.utils import *
-
 
 
 class GetExchangeCurrenciesService:

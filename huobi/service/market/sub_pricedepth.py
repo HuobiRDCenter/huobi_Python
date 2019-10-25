@@ -1,6 +1,7 @@
 import time
 
 from huobi.serialize.market import *
+from huobi.model.market import *
 from huobi.utils import *
 from huobi.connection import SubscribeClient
 
@@ -18,8 +19,15 @@ class SubPriceDepthService:
                 connection.send(price_depth_channel(symbol, step))
                 time.sleep(0.01)
 
+        def parse(dict_data):
+            price_depth_event_obj = PriceDepthEvent()
+            price_depth_event_obj.ch = dict_data.get("ch", "")
+            tick = dict_data.get("tick", "")
+            price_depth_event_obj.tick = PriceDepthSerial.json_parse(tick)
+            return price_depth_event_obj
+
         SubscribeClient(**kwargs).execute_subscribe(subscription,
-                                            PriceDepthSerial.json_parse,
+                                            parse,
                                             callback,
                                             error_handler)
 

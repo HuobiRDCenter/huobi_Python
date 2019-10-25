@@ -1,4 +1,5 @@
 from huobi.model.trade.batch_cancel_result import BatchCancelResult
+from huobi.model.trade.batch_cancel_count import BatchCancelCount
 from huobi.model.trade.feerate import FeeRate
 from huobi.model.trade.matchresult import MatchResult
 from huobi.model.trade.order import Order

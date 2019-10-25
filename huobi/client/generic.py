@@ -6,7 +6,7 @@ from huobi.utils import *
 
 class GenericClient(object):
     __server_url = RestApiDefine.Url
-    args_config = {}
+    __kwargs = {}
 
     def __init__(self, **kwargs):
         """
@@ -17,6 +17,19 @@ class GenericClient(object):
             server_url: The URL name like "https://api.huobi.pro".
         """
         self.__kwargs = kwargs
+
+    def get_exchange_timestamp(self) -> int:
+        """
+        Get the timestamp from Huobi server. The timestamp is the Unix timestamp in millisecond.
+        The count shows how many milliseconds passed from Jan 1st 1970, 00:00:00.000 at UTC.
+        e.g. 1546300800000 is Thu, 1st Jan 2019 00:00:00.000 UTC.
+
+        :return: The timestamp in UTC
+        """
+
+        params = {}
+
+        return GetExchangeTimestampService(params).request(**self.__kwargs)
 
     def get_exchange_currencies(self) -> list():
         """
@@ -54,3 +67,20 @@ class GenericClient(object):
         ret.symbol_list = self.get_exchange_symbols()
         ret.currencies = self.get_exchange_currencies()
         return ret
+
+    def get_reference_currencies(self, currency:'str'=None, is_authorized_user:'bool' =None) ->list:
+        """
+        Get all the trading assets and currencies supported in huobi.
+        The information of trading instrument, including base currency, quote precision, etc.
+
+        :param currency: btc, ltc, bch, eth, etc ...(available currencies in Huobi Global)
+        :param is_authorized_user: is Authorized user? True or False
+        :return: The information of trading instrument and currencies.
+        """
+
+        params = {
+            "currency" : currency,
+            "authorizedUser" : is_authorized_user
+        }
+
+        return GetReferenceCurrenciesService(params).request(**self.__kwargs)

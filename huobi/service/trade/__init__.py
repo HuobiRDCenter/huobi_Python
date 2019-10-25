@@ -14,4 +14,5 @@ from huobi.service.trade.post_cancel_client_order import PostCancelClientOrderSe
 from huobi.service.trade.get_match_results_by_order_id import GetMatchResultsByOrderIdService
 from huobi.service.trade.req_order_list import ReqOrderListService
 from huobi.service.trade.req_order_detail import ReqOrderDetailService
+from huobi.service.trade.post_transfer_futures_pro import PostTransferFuturesProService
 

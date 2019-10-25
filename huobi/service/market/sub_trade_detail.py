@@ -19,17 +19,9 @@ class SubTradeDetailService:
                 time.sleep(0.01)
 
         def parse(dict_data):
-            trade_detail_event = TradeDetailEvent()
             tick = dict_data.get("tick", {})
+            trade_detail_event = default_parse(tick, TradeDetailEvent, TradeDetail)
             trade_detail_event.ch = dict_data.get("ch", "")
-            trade_detail_event.id = tick.get("id", 0)
-            trade_detail_event.ts = tick.get("ts", 0)
-            data_list_json = tick.get("data", [])
-            if (len(data_list_json)):
-                for row in data_list_json:
-                    trade_detail_obj = TradeDetailSerial.json_parse(row)
-                    trade_detail_event.data.append(trade_detail_obj)
-
             return trade_detail_event
 
         SubscribeClient(**kwargs).execute_subscribe(subscription,

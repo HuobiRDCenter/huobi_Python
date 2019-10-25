@@ -1,16 +1,22 @@
 from huobi.client import *
 from huobi.constant import *
 from huobi.constant.test import *
+from huobi.service.account import GetAccountsSelectService
 
 symbol_test = "eosusdt"
 client_order_id_test = "xxxx"  # unique id in 24hours
 
 
+accounts = GetAccountsSelectService({"account_type" : AccountType.SPOT}).get_accounts_id_by_type(api_key=g_api_key, secret_key=g_secret_key, url=HUOBI_URL_VN)
+account_id = 0
+if accounts and len(accounts):
+    account_id = accounts[0]
+print("=========select first account:", account_id)
 
 trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key, url=HUOBI_URL_VN)
 
-order_id = trade_client.create_order_by_type(symbol=symbol_test,
-                                       account_type=AccountType.SPOT,
+order_id = trade_client.create_order(symbol=symbol_test,
+                                       account_id=account_id,
                                        order_type=OrderType.BUY_LIMIT,
                                        amount=1.0,
                                        price=0.21,

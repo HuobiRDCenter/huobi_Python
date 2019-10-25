@@ -1,7 +1,6 @@
 from huobi.constant import *
 from huobi.constant.system import RestApiDefine
 from huobi.model.trade import *
-from huobi.service.account.get_accounts_select import GetAccountsSelectService
 from huobi.service.trade import *
 from huobi.utils.input_checker import *
 
@@ -19,24 +18,6 @@ class TradeClient(object):
             server_url: The URL name like "https://api.huobi.pro".
         """
         self.__kwargs = kwargs
-
-        """
-        if "api_key" in kwargs:
-            self.__api_key = kwargs["api_key"]
-        if "secret_key" in kwargs:
-            self.__secret_key = kwargs["secret_key"]
-        if "url" in kwargs:
-            self.__server_url = kwargs["url"]
-        """
-
-        """   
-        for request has bind subscription_handler and parse_handler to connection, so connection can't be reused
-        if "reuse_sub_connection" in kwargs:
-            self.__reuse_sub_connection = kwargs["reuse_sub_connection"]
-            if self.__reuse_sub_connection and self.__reuse_sub_connection == True:
-                self.__reuse_sub_connection = True
-        """
-
 
     def get_feerate(self, symbols: 'str') -> list:
         """
@@ -166,20 +147,8 @@ class TradeClient(object):
 
     def get_orders(self, symbol: 'str', order_state: 'OrderState', order_type: 'OrderType' = None,
                               start_date: 'str' = None, end_date: 'str' = None, start_id: 'int' = None,
-                              size: 'int' = None) -> list:
-        """
-        Get historical orders.
-
-        :param symbol: The symbol, like "btcusdt". (mandatory)
-        :param order_state: Order state , SUBMITTED etc. (mandatory)
-        :param order_type: Order type. (optional)
-        :param start_date: Start date in format yyyy-mm-dd. (optional)
-        :param end_date: End date in format yyyy-mm-dd. (optional)
-        :param start_id: Start id. (optional)
-        :param size: The size of orders. (optional)
-        :return:
-        """
-        check_symbol(symbol),
+                              size: 'int' = None, direct=None) -> list:
+        check_symbol(symbol)
         check_should_not_none(order_state, "order_state")
         start_date = format_date(start_date, "start_date")
         end_date = format_date(end_date, "end_date")
@@ -191,26 +160,11 @@ class TradeClient(object):
             "end-date" : end_date,
             "from" : start_id,
             "states" : order_state,
-            "size" :  size
+            "size" :  size,
+            "direct" : direct
         }
 
         return GetOrdersService(params).request(**self.__kwargs)
-
-    def get_open_orders_by_type(self, symbol: 'str', account_type: 'AccountType', side: 'OrderSide' = None,
-                        size: 'int' = None, from_id=None, direct=None) -> list:
-        """
-        The request of get open orders.
-
-        :param symbol: The symbol, like "btcusdt". (mandatory)
-        :param account_type: The order side, buy or sell. If no side defined, will return all open orders of the account. (mandatory)
-        :param side: The order side, buy or sell. If no side defined, will return all open orders of the account. (optional)
-        :param size: The number of orders to return. Range is [1, 500]. (optional)
-        :param direct: 1:prev  order by ID asc from from_id, 2:next order by ID desc from from_id
-        :param from_id: start ID for search
-        :return: The orders information.
-        """
-        check_should_not_none(account_type, "account_type")
-        return self.get_open_orders(symbol, g_spot_account, side, size, from_id, direct)
 
     def get_open_orders(self, symbol: 'str', account_id: 'int', side: 'OrderSide' = None,
                         size: 'int' = None, from_id=None, direct=None) -> list:
@@ -264,7 +218,8 @@ class TradeClient(object):
     def get_match_result(self, symbol: 'str', order_type: 'OrderSide' = None, start_date: 'str' = None,
                          end_date: 'str' = None,
                          size: 'int' = None,
-                         from_id: 'int' = None):
+                         from_id: 'int' = None,
+                         direct:'str'=None):
         """
         Search for the trade records of an account.
 
@@ -289,9 +244,25 @@ class TradeClient(object):
             "types" : order_type,
             "size" : size,
             "from" : from_id,
+            "direct" : direct
         }
 
-        return GetMatchResultService(params).request(**self.__kwargs)
+        return GetMatchResultsService(params).request(**self.__kwargs)
+
+    def get_match_results_by_order_id(self, order_id: 'int') -> list:
+        """
+        Get detail match results of an order.
+
+        :param order_id: The order id. (mandatory)
+        :return: The list of match result.
+        """
+        check_should_not_none(order_id, "order_id")
+
+        params = {
+            "order_id": order_id
+        }
+
+        return GetMatchResultsByOrderIdService(params).request(**self.__kwargs)
 
     def order_source_desc(self, account_type):
         default_source = "api"
@@ -327,7 +298,7 @@ class TradeClient(object):
                 or order_type == OrderType.SELL_LIMIT_MAKER:
             check_should_not_none(price, "price")
         if order_type == OrderType.SELL_MARKET or order_type == OrderType.BUY_MARKET:
-            check_should_none(price, "price")
+            price = None
 
         params = {
             "account-id" : account_id,
@@ -345,15 +316,6 @@ class TradeClient(object):
 
         return PostCreateOrderService(params).request(**self.__kwargs)
 
-    def create_order_by_type(self, symbol: 'str', account_type: 'AccountType', order_type: 'OrderType', amount: 'float',
-                     price: 'float', client_order_id=None, stop_price=None, operator=None) -> int:
-        check_should_not_none(account_type, "account_type")
-        order_source  = self.order_source_desc(account_type)
-        account_id = GetAccountsSelectService({"account_type" : account_type}).get_account_id_by_type(**self.__kwargs)
-        check_should_not_none(account_id, "account-id")
-        return self.create_order(symbol=symbol, account_id=account_id, order_type=order_type, amount=amount, price=price, source=order_source,
-                                 client_order_id=client_order_id, stop_price=stop_price, operator=operator)
-
     def cancel_order(self, symbol, order_id):
         check_symbol(symbol)
         check_should_not_none(order_id, "order_id")
@@ -364,7 +326,14 @@ class TradeClient(object):
 
         return PostCancelOrderService(params).request(**self.__kwargs)
 
-    def cancel_orders(self, symbol, order_id_list):
+    def cancel_orders(self, symbol, order_id_list)->BatchCancelResult:
+        """
+        Submit cancel request for cancelling multiple orders.
+
+        :param symbol: The symbol, like "btcusdt". (mandatory)
+        :param order_id_list: The list of order id. the max size is 50. (mandatory)
+        :return: No return
+        """
         check_symbol(symbol)
         check_should_not_none(order_id_list, "order_id_list")
         check_list(order_id_list, 1, 50, "order_id_list")
@@ -379,26 +348,33 @@ class TradeClient(object):
 
         return PostBatchCancelOrderService(params).request(**self.__kwargs)
 
-    def cancel_open_orders(self, symbol, account_id, side=None, size=None):
-        check_symbol(symbol)
+    def cancel_open_orders(self, account_id, symbols: 'str'=None , side=None, size=None)->BatchCancelCount:
+        """
+        Request to cancel open orders.
+
+        :param symbols: The symbol, like "btcusdt".
+        :param account_type: Account type. (mandatory)
+        :param side: The order side, buy or sell. If no side defined, will cancel all open orders of the account. (optional)
+        :param size: The number of orders to cancel. Range is [1, 100]. (optional)
+        :return: Status of batch cancel result.
+        """
         check_should_not_none(account_id, "account_id")
 
         params = {
             "account-id": account_id,
-            "symbol" : symbol,
+            "symbol" : symbols,
             "side" : side,
             "size" : size
         }
 
         return PostBatchCancelOpenOrderService(params).request(**self.__kwargs)
 
-    def cancel_open_orders_by_type(self, symbol, account_type, side=None, size=None):
-        check_should_not_none(account_type, "account_type")
+    def cancel_client_order(self, client_order_id)->int:
+        """
+        Request to cancel open orders.
 
-        account_id = GetAccountsSelectService({"account_type": account_type}).get_account_id_by_type(**self.__kwargs)
-        return self.cancel_open_orders(symbol=symbol, account_id=account_id, side=side, size=size)
-
-    def cancel_client_order(self, client_order_id):
+        :param client_order_id: user defined unique order id
+        """
         check_should_not_none(client_order_id, "client-order-id")
 
         params = {
@@ -406,3 +382,27 @@ class TradeClient(object):
         }
 
         return PostCancelClientOrderService(params).request(**self.__kwargs)
+
+    def transfer_between_futures_and_pro(self, currency: 'str', amount: 'float',
+                                        transfer_type: 'TransferFuturesPro')-> int:
+        """
+        Transfer Asset between Futures and Contract.
+
+        :param sub_uid: The target sub account uid to transfer to or from. (mandatory)
+        :param currency: The crypto currency to transfer. (mandatory)
+        :param amount: The amount of asset to transfer. (mandatory)
+        :param transfer_type: The type of transfer, need be "futures-to-pro" or "pro-to-futures" (mandatory)
+        :return: The order id.
+        """
+        check_currency(currency)
+        check_should_not_none(currency, "currency")
+        check_should_not_none(amount, "amount")
+        check_should_not_none(transfer_type, "transfer_type")
+        params = {
+            "currency" : currency,
+            "amount" : amount,
+            "type" : transfer_type
+
+        }
+
+        return PostTransferFuturesProService(params).request(**self.__kwargs)
