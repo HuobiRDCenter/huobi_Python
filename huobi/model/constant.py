@@ -42,6 +42,10 @@ class AccountType:
     MARGIN = "margin"
     OTC = "otc"
     POINT = "point"
+    MINEPOLL = "minepool"
+    ETF = "etf"
+    AGENCY = "agency"
+    SUPER_MARGIN = "super-margin"
     INVALID = None
 
 

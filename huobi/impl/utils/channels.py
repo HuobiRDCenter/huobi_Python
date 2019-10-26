@@ -57,5 +57,5 @@ def account_channel(mode):
     channel["op"] = "sub"
     channel["cid"] = str(get_current_timestamp())
     channel["topic"] = "accounts"
-    channel["mode"] = mode
+    channel["model"] = mode
     return json.dumps(channel)

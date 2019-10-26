@@ -19,6 +19,7 @@ class Account:
         self.id = 0
         self.account_type = AccountType.INVALID
         self.account_state = AccountState.INVALID
+        self.subtype = ""
         self.balances = list()
 
     def get_balance(self, currency: 'str') -> list:
@@ -40,6 +41,7 @@ class Account:
         account.id = json_data.get_string("id")
         account.account_type = account_type if account_type else json_data.get_string("type")
         account.account_state = json_data.get_string("state")
+        account.subtype = json_data.get_string("subtype")
         list_array = json_data.get_array("list")
         balance_list = list()
         for item in list_array.get_items():

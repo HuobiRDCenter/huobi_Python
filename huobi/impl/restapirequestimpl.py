@@ -252,6 +252,7 @@ class RestApiRequestImpl(object):
                 account.id = item.get_int("id")
                 account.account_type = item.get_string("type")
                 account.account_state = item.get_string("state")
+                account.subtype = item.get_string("subtype")
                 account_list.append(account)
             return account_list
 

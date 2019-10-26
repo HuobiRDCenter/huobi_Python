@@ -24,3 +24,4 @@ def callback(account_event: 'AccountEvent'):
 
 
 sub_client.subscribe_account_event(BalanceMode.TOTAL, callback)
+#sub_client.subscribe_account_event(BalanceMode.AVAILABLE, callback)
