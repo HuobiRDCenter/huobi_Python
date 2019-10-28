@@ -44,24 +44,23 @@ def on_open(original_connection):
 connection_id = 0
 
 
-
-
-
 def websocket_func(*args):
-    websocket_manage = args[0]
-    websocket_manage.original_connection = websocket.WebSocketApp(websocket_manage.url,
-                                                    on_message=on_message,
-                                                    on_error=on_error,
-                                                    on_close=on_close)
-    global websocket_connection_handler
-    websocket_connection_handler[websocket_manage.original_connection] = websocket_manage
-    websocket_manage.logger.info("[Sub][" + str(websocket_manage.id) + "] Connecting...")
-    websocket_manage.delay_in_second = -1
-    websocket_manage.original_connection.on_open = on_open
-    websocket_manage.original_connection.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
-    websocket_manage.logger.info("[Sub][" + str(websocket_manage.id) + "] Connection event loop down")
-    if websocket_manage.state == ConnectionState.CONNECTED:
-        websocket_manage.state = ConnectionState.IDLE
+    try:
+        websocket_manage = args[0]
+        websocket_manage.original_connection = websocket.WebSocketApp(websocket_manage.url,
+                                                        on_message=on_message,
+                                                        on_error=on_error,
+                                                        on_close=on_close)
+        global websocket_connection_handler
+        websocket_connection_handler[websocket_manage.original_connection] = websocket_manage
+        websocket_manage.logger.info("[Sub][" + str(websocket_manage.id) + "] Connecting...")
+        websocket_manage.original_connection.on_open = on_open
+        websocket_manage.original_connection.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
+        websocket_manage.logger.info("[Sub][" + str(websocket_manage.id) + "] Connection event loop down")
+        if websocket_manage.state == ConnectionState.CONNECTED:
+            websocket_manage.state = ConnectionState.IDLE
+    except Exception as ex:
+        print(ex)
 
 class WebsocketManage:
 
@@ -170,7 +169,6 @@ class WebsocketManage:
         ch_outer = dict_data.get("ch", "")
         rep_outer = dict_data.get("rep", "")
         ping_market_outer = int(dict_data.get("ping", 0))
-        print("******** receive ping pong ********", op_outer, ping_market_outer, ch_outer, rep_outer, status_outer, dict_data)
         if status_outer and len(status_outer) and status_outer != "ok":
             error_code = dict_data.get("err-code", "Unknown error")
             error_msg = dict_data.get("err-msg", "Unknown error")

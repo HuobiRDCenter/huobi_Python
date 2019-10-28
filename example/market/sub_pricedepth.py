@@ -5,7 +5,8 @@ from huobi.constant import *
 
 
 def callback(price_depth_event: 'PriceDepthEvent'):
-    price_depth_event.print_object()
+    #price_depth_event.print_object()
+    print("Channel for test", price_depth_event.ch)
 
 
 def error(e: 'HuobiApiException'):
@@ -14,3 +15,5 @@ def error(e: 'HuobiApiException'):
 
 market_client = MarketClient(url=HUOBI_WEBSOCKET_URI_VN)
 market_client.sub_pricedepth("btcusdt", DepthStep.STEP0, callback, error)
+market_client.sub_pricedepth("eosusdt", DepthStep.STEP0, callback, error)
+market_client.sub_pricedepth("ethusdt", DepthStep.STEP0, callback, error)

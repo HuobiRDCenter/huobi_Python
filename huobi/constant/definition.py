@@ -42,6 +42,10 @@ class AccountType:
     MARGIN = "margin"
     OTC = "otc"
     POINT = "point"
+    MINEPOLL = "minepool"
+    ETF = "etf"
+    AGENCY = "agency"
+    SUPER_MARGIN = "super-margin"
     INVALID = None
 
 
@@ -108,6 +112,11 @@ class OrderSource:
     MARGIN_API = "margin-api"
     MARGIN_WEB = "margin-web"
     MARGIN_APP = "margin-app"
+    SUPER_MARGIN_API = "super-margin-api"
+    SUPER_MARGIN_WEB = "super-margin-web"
+    SUPER_MARGIN_APP = "super-margin-app"
+    SUPER_MARGIN_FL_SYS = "super-margin-fl-sys"
+    SUPER_MARGIN_FL_MGT = "super-margin-fl-mgt"
     INVALID = None
 
 

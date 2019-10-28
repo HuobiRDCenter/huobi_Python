@@ -286,7 +286,10 @@ class TradeClient(object):
         :param symbol: The symbol, like "btcusdt". (mandatory)
         :param account_id: Account id. (mandatory)
         :param order_type: The order type. (mandatory)
-        :param source: The order type. (optional)
+        :param source: The order type. (mandatory)
+                for spot, it's "api"
+                for margin, it's "margin-api",
+                for super margin, it's "super-margin-api"
         :param amount: The amount to buy (quote currency) or to sell (base currency). (mandatory)
         :param price: The limit price of limit order, only needed for limit order. (mandatory for buy-limit, sell-limit, buy-limit-maker and sell-limit-maker)
         :param client_order_id: unique Id which is user defined and must be unique in recent 24 hours
@@ -299,6 +302,8 @@ class TradeClient(object):
         check_should_not_none(account_id, "account_id")
         check_should_not_none(order_type, "order_type")
         check_should_not_none(amount, "amount")
+        check_should_not_none(source, "source")
+
         if order_type == OrderType.SELL_LIMIT \
                 or order_type == OrderType.BUY_LIMIT \
                 or order_type == OrderType.BUY_LIMIT_MAKER \
@@ -323,6 +328,32 @@ class TradeClient(object):
 
         from huobi.service.trade.post_create_order import PostCreateOrderService
         return PostCreateOrderService(params).request(**self.__kwargs)
+
+    def create_spot_order(self, symbol: 'str', account_id: 'int', order_type: 'OrderType', amount: 'float',
+                       price: 'float', client_order_id=None, stop_price=None,
+                       operator=None) -> int:
+        order_source = OrderSource.API
+        return self.create_order(symbol=symbol, account_id=account_id, order_type=order_type, amount=amount,
+                       price=price, source=order_source, client_order_id=client_order_id, stop_price=stop_price,
+                       operator=operator)
+
+    def create_margin_order(self, symbol: 'str', account_id: 'int', order_type: 'OrderType', amount: 'float',
+                       price: 'float', client_order_id=None, stop_price=None,
+                       operator=None) -> int:
+        order_source = OrderSource.MARGIN_API
+        return self.create_order(symbol=symbol, account_id=account_id, order_type=order_type, amount=amount,
+                                 price=price, source=order_source, client_order_id=client_order_id,
+                                 stop_price=stop_price,
+                                 operator=operator)
+
+    def create_super_margin_order(self, symbol: 'str', account_id: 'int', order_type: 'OrderType', amount: 'float',
+                            price: 'float', client_order_id=None, stop_price=None,
+                            operator=None) -> int:
+        order_source = OrderSource.SUPER_MARGIN_API
+        return self.create_order(symbol=symbol, account_id=account_id, order_type=order_type, amount=amount,
+                                 price=price, source=order_source, client_order_id=client_order_id,
+                                 stop_price=stop_price,
+                                 operator=operator)
 
     def cancel_order(self, symbol, order_id):
         check_symbol(symbol)
