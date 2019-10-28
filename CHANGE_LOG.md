@@ -15,10 +15,20 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 
 ## Table of Contents
+- [Huobi Global API Python SDK version 1.0.3](#Huobi-Global-API-Python-SDK-version-1.0.3)
 
 - [Huobi Global API Python SDK version 1.0.2](#Huobi-Global-API-Python-SDK-version-1.0.2)
 
 - [Huobi Global API Python SDK version 1.0.1](#Huobi-Global-API-Python-SDK-version-1.0.1)
+
+
+## Huobi Global API Python SDK version 1.0.3
+
+[***version 1.0.3***](https://github.com/HuobiRDCenter/huobi_Python/releases)
+
+***2019-10-28***
+
+1. **add new state defination in order state and account type**
 
 
 
