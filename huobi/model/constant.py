@@ -92,6 +92,7 @@ class LoanOrderState:
     CREATED = "created"
     ACCRUAL = "accrual"
     CLEARED = "cleared"
+    FAILED = "failed"
     INVALID = None
 
 
