@@ -41,7 +41,7 @@ class Account:
         account.id = json_data.get_string("id")
         account.account_type = account_type if account_type else json_data.get_string("type")
         account.account_state = json_data.get_string("state")
-        account.subtype = json_data.get_string("subtype")
+        account.subtype = json_data.get_string_or_default("subtype", "")
         list_array = json_data.get_array("list")
         balance_list = list()
         for item in list_array.get_items():

@@ -252,7 +252,7 @@ class RestApiRequestImpl(object):
                 account.id = item.get_int("id")
                 account.account_type = item.get_string("type")
                 account.account_state = item.get_string("state")
-                account.subtype = item.get_string("subtype")
+                account.subtype = item.get_string_or_default("subtype", "")
                 account_list.append(account)
             return account_list
 
@@ -444,10 +444,12 @@ class RestApiRequestImpl(object):
 
     @staticmethod
     def order_source_desc(account_type):
-        default_source = "api"
+        default_source = OrderSource.API
         if account_type:
             if account_type == AccountType.MARGIN:
-                return "margin-api"
+                return OrderSource.MARGIN_API
+            if account_type == AccountType.SUPER_MARGIN:
+                return OrderSource.SUPER_MARGIN_API
         return default_source
 
     def create_order(self, symbol, account_type, order_type, amount, price,
@@ -465,7 +467,7 @@ class RestApiRequestImpl(object):
             check_should_none(price, "price")
         global account_info_map
         user = account_info_map.get_user(self.__api_key)
-        account = user.get_account_by_type(account_type)
+        account = user.get_account_by_type(account_type=account_type, subtype=symbol)
         source = RestApiRequestImpl.order_source_desc(account_type)
         builder = UrlParamsBuilder()
         builder.put_post("account-id", account.id)
@@ -492,7 +494,7 @@ class RestApiRequestImpl(object):
         check_should_not_none(account_type, "account_type")
         global account_info_map
         user = account_info_map.get_user(self.__api_key)
-        account = user.get_account_by_type(account_type)
+        account = user.get_account_by_type(account_type=account_type, subtype=symbol)
         builder = UrlParamsBuilder()
         builder.put_url("account-id", account.id)
         builder.put_url("symbol", symbol)
@@ -563,7 +565,7 @@ class RestApiRequestImpl(object):
         check_should_not_none(account_type, "account_type")
         global account_info_map
         user = account_info_map.get_user(self.__api_key)
-        account = user.get_account_by_type(account_type)
+        account = user.get_account_by_type(account_type=account_type, subtype=symbol)
         builder = UrlParamsBuilder()
         builder.put_post("account-id", account.id)
         builder.put_post("symbol", symbol)
