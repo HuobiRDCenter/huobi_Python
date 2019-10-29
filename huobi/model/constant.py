@@ -4,6 +4,7 @@ class CandlestickInterval:
     MIN15 = "15min"
     MIN30 = "30min"
     MIN60 = "60min"
+    HOUR4 = "4hour"
     DAY1 = "1day"
     MON1 = "1mon"
     WEEK1 = "1week"
@@ -79,6 +80,10 @@ class WithdrawState:
     REPEALED = "repealed"
     INVALID = None
 
+class DepositWithdraw:
+    DEPOSIT = "deposit"
+    WITHDRAW = "withdraw"
+
 
 class DepositState:
     CONFIRMING = "confirming"
@@ -118,12 +123,17 @@ class OrderSource:
 
 
 class OrderState:
+    CREATED = "created"   #for stop loss order
+    PRE_SUBMITTED = "pre-submitted"
+    SUBMITTING = "submitting"
     SUBMITTED = "submitted"
     PARTIAL_FILLED = "partial-filled"
     CANCELLING = "cancelling"
     PARTIAL_CANCELED = "partial-canceled"
     FILLED = "filled"
     CANCELED = "canceled"
+    FAILED = "failed"
+    PLACE_TIMEOUT = "place_timeout"
     INVALID = None
 
 
@@ -194,3 +204,19 @@ class DepthStep:
     STEP3 = "step3"
     STEP4 = "step4"
     STEP5 = "step5"
+
+
+class ChainDepositStatus:
+    ALLOWED = "allowed"
+    PROHIBITED = "prohibited"
+    INVALID = None
+
+class ChainWithdrawStatus:
+    ALLOWED = "allowed"
+    PROHIBITED = "prohibited"
+    INVALID = None
+
+class InstrumentStatus:
+    NORMAL = "normal"
+    DELISTED = "delisted"
+    INVALID = None

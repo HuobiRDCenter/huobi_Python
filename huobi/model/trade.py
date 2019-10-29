@@ -17,6 +17,7 @@ class Trade:
         self.price = 0.0
         self.amount = 0.0
         self.trade_id = 0
+        self.unique_trade_id = 0
         self.timestamp = 0
         self.direction = ""
 
@@ -26,13 +27,15 @@ class Trade:
         trade.amount = json_data.get_float("amount")
         trade.price = json_data.get_float("price")
         trade.trade_id = json_data.get_string("id")
+        trade.unique_trade_id = json_data.get_string("trade-id")
         trade.direction = json_data.get_string("direction")
         trade.timestamp = convert_cst_in_millisecond_to_utc(json_data.get_int("ts"))
         return trade
 
     def print_object(self, format_data=""):
         from huobi.base.printobject import PrintBasic
-        PrintBasic.print_basic(self.trade_id, format_data + "Trade Id")
+        PrintBasic.print_basic(self.trade_id, format_data + "Id")
+        PrintBasic.print_basic(self.unique_trade_id, format_data + "Trade Id")
         PrintBasic.print_basic(self.timestamp, format_data + "Trade Time")
         PrintBasic.print_basic(self.price, format_data + "Price")
         PrintBasic.print_basic(self.amount, format_data + "Amount")

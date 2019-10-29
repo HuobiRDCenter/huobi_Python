@@ -557,3 +557,141 @@ class RequestClient(object):
         :return: The Order list.
         """
         return call_sync(self.request_impl.get_order_recent_48hour(symbol, start_time, end_time, size, direct))
+
+
+    def get_reference_currencies(self, currency:'str'=None, is_authorized_user:'bool' =None) ->list:
+        """
+        Get all the trading assets and currencies supported in huobi.
+        The information of trading instrument, including base currency, quote precision, etc.
+
+        :param currency: btc, ltc, bch, eth, etc ...(available currencies in Huobi Global)
+        :param is_authorized_user: is Authorized user? True or False
+        :return: The information of trading instrument and currencies.
+        """
+        return call_sync(self.request_impl.get_reference_currencies(currency, is_authorized_user))
+
+    def get_account_deposit_address(self, currency: 'str') ->list:
+        """
+        Get deposit address of corresponding chain, for a specific crypto currency (except IOTA)
+
+        :param currency: The currency, like "btc". (optional)
+        :return:
+        """
+        return call_sync(self.request_impl.get_account_deposit_address(currency))
+
+    def get_account_withdraw_quota(self, currency: 'str')->list:
+        """
+        Get the withdraw quota for currencies
+
+        :param currency: The currency, like "btc". (mandatory)
+        :return:
+        """
+        return call_sync(self.request_impl.get_account_withdraw_quota(currency))
+
+    def get_deposit_withdraw(self, op_type:'str', currency: 'str'=None, from_id: 'int'=None, size: 'int'=None, direct:'str'=None) -> list:
+        """
+        Get the withdraw records of an account.
+
+        :param currency: The currency, like "btc". (optional)
+        :param from_id: The beginning withdraw record id. (optional)
+        :param op_type: deposit or withdraw, see defination DepositWithdraw (mandatory)
+        :param size: The size of record. (optional)
+        :param direct: "prev" is order by asc, "next" is order by desc, default as "prev"(optional)
+        :return: The list of withdraw records.
+        """
+        return call_sync(self.request_impl.get_deposit_withdraw(op_type, currency, from_id, size, direct))
+
+
+    def post_create_withdraw(self, address: 'str', amount: 'float', currency: 'str', fee: 'float',
+                 chain:'str' =None, address_tag: 'str' = None) -> int:
+        """
+        Submit a request to withdraw some asset from an account.
+
+        :param address: The destination address of this withdraw. (mandatory)
+        :param amount: The amount of currency to withdraw. (mandatory)
+        :param currency: The crypto currency to withdraw. (mandatory)
+        :param fee: The fee to pay with this withdraw. (mandatory)
+        :param address_tag: A tag specified for this address. (optional)
+        :param chain: set as "usdt" to withdraw USDT to OMNI, set as "trc20usdt" to withdraw USDT to TRX. (optional)
+        :return: Withdraw id
+        """
+        return call_sync(self.request_impl.post_create_withdraw(address, amount, currency, fee, chain, address_tag))
+
+    def post_cancel_withdraw(self, withdraw_id: 'int') -> int:
+        """
+        Cancel an withdraw request.
+
+        :param withdraw_id: withdraw id (mandatory)
+        :return: No return.
+        """
+        return call_sync(self.request_impl.post_cancel_withdraw(withdraw_id))
+
+    def post_cross_margin_transfer_in(self, currency: 'str', amount:'float') -> int:
+        """
+        transfer currency to cross account.
+
+        :param currency: currency name (mandatory)
+        :param amount: transfer amount (mandatory)
+        :return: return transfer id.
+        """
+        return call_sync(self.request_impl.post_cross_margin_transfer_in(currency, amount))
+
+    def post_cross_margin_transfer_out(self, currency: 'str', amount:'float') -> int:
+        """
+        transfer currency out from cross account.
+
+        :param currency: currency name (mandatory)
+        :param amount: transfer amount (mandatory)
+        :return: return transfer id.
+        """
+        return call_sync(self.request_impl.post_cross_margin_transfer_out(currency, amount))
+
+    def post_cross_margin_create_loan_orders(self, currency:'str', amount: 'float') -> int:
+        """
+        create cross margin loan orders
+
+        :param currency: currency name (mandatory)
+        :param amount: transfer amount (mandatory)
+        :return: return order id.
+        """
+        return call_sync(self.request_impl.post_cross_margin_create_loan_orders(currency, amount))
+
+    def post_cross_margin_loan_order_repay(self, order_id:'str', amount: 'float'):
+        """
+        repay cross margin loan orders
+
+        :param currency: currency name (mandatory)
+        :param amount: transfer amount (mandatory)
+        :return: return order id.
+        """
+        return call_sync(self.request_impl.post_cross_margin_loan_order_repay(order_id, amount))
+
+    def get_cross_margin_loan_orders(self, currency:'str'=None, state:'str'=None,
+                                     start_date:'str'=None, end_date:'str'=None,
+                                     from_id:'int'=None, size:'int'=None, direct:'str'=None) -> list:
+        """
+        get cross margin loan orders
+
+        :return: return list.
+        """
+        return call_sync(self.request_impl.get_cross_margin_loan_orders(currency, state, start_date, end_date, from_id, size, direct))
+
+    def get_cross_margin_account_balance(self):
+        """
+        get cross margin account balance
+
+        :return: cross-margin account.
+        """
+        return call_sync(self.request_impl.get_cross_margin_account_balance())
+
+    def get_account_history(self, account_id:'int', currency:'str'=None,
+                            transact_types:'str'=None, start_time:'int'=None, end_time:'int'=None,
+                            sort:'str'=None, size:'int'=None):
+        """
+        get account change record
+
+        :return: account change record list.
+        """
+        return call_sync(self.request_impl.get_account_history(account_id, currency,
+                            transact_types, start_time, end_time,
+                            sort, size))

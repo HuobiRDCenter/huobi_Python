@@ -23,6 +23,10 @@ def check_response(json_wrapper):
                 raise HuobiApiException(HuobiApiException.EXEC_ERROR, "[Executing] " + err_msg)
             else:
                 raise HuobiApiException(HuobiApiException.EXEC_ERROR, "[Executing] " + err_code + ": " + err_msg)
+    elif json_wrapper.contain_key("code"):
+        code = json_wrapper.get_int("code")
+        if code != 200:
+            raise HuobiApiException(HuobiApiException.EXEC_ERROR, "[Executing] " + str(code))
     else:
         raise HuobiApiException(HuobiApiException.RUNTIME_ERROR, "[Invoking] Status cannot be found in response.")
 
