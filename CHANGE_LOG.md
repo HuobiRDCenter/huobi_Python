@@ -41,23 +41,23 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
   - LoanOrderState 增加 `failed`字段
 
-  - OrderSource 中去掉`invalid`字段，增加以下缺失字段
+  - OrderSource 中去掉`invalid`字段，增加如下值的定义
 
     ```
-    super_margin_api
-    super_margin_app
-    super_margin_web
-    super_margin_fl_sys
-    super_margin_fl_mgt
+    super-margin-api
+    super-margin-app
+    super-margin-web
+    super-margin-fl-sys
+    super-margin-fl-mgt
     ```
 
 
-  - AccountType增加以下缺失字段
+  - AccountType增加如下值的定义
     ```
-  minepool;
+    minepool;
     etf;
     agency;
-    super_margin;
+    super-margin;
     ```
   
 - 方法重载
