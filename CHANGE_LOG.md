@@ -22,13 +22,55 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 - [Huobi Global API Python SDK version 1.0.1](#Huobi-Global-API-Python-SDK-version-1.0.1)
 
 
-## Huobi Global API Python SDK version 1.0.3
+# Huobi Global API Python SDK version 1.0.3
 
-[***version 1.0.3***](https://github.com/HuobiRDCenter/huobi_Python/releases)
+## 1.RELEASE NOTE - Huobi Global API SDK  1.0.3
 
 ***2019-10-28***
 
-1. **add new state defination in order state and account type**
+1. **add new state defination in order state and account type**CPP修改的点：
+
+- model类中增加字段
+
+  - ```
+    Account 
+    中加入subtype字段
+    ```
+
+- 新增状态定义：
+
+  - LoanOrderState 增加 `failed`字段
+
+  - OrderSource 中去掉`invalid`字段，增加以下缺失字段
+
+    ```
+    super_margin_api
+    super_margin_app
+    super_margin_web
+    super_margin_fl_sys
+    super_margin_fl_mgt
+    ```
+
+
+  - AccountType增加以下缺失字段
+    ```
+  minepool;
+    etf;
+    agency;
+    super_margin;
+    ```
+  
+- 方法重载
+
+
+  - User类重载以下方法，增加subtype字段
+
+  ```
+  getAccount
+  ```
+
+- account解析时增加subtype字段
+
 
 
 
