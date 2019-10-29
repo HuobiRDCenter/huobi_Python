@@ -41,7 +41,7 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
   - LoanOrderState 增加 `failed`字段
 
-  - OrderSource 中去掉`invalid`字段，增加如下值的定义
+  - OrderSource 中增加如下值的定义
 
     ```
     super-margin-api
