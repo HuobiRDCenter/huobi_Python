@@ -28,7 +28,7 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 ***2019-10-28***
 
-1. **add new state defination in order state and account type**CPP修改的点：
+1. **add new state defination in order state and account type**修改的点：
 
 - model类中增加字段
 
