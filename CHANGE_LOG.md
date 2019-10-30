@@ -15,11 +15,51 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 
 ## Table of Contents
+
+- [Huobi Global API Python SDK version 1.0.4](#Huobi-Global-API-Python-SDK-version-1.0.4)
+
 - [Huobi Global API Python SDK version 1.0.3](#Huobi-Global-API-Python-SDK-version-1.0.3)
 
 - [Huobi Global API Python SDK version 1.0.2](#Huobi-Global-API-Python-SDK-version-1.0.2)
 
 - [Huobi Global API Python SDK version 1.0.1](#Huobi-Global-API-Python-SDK-version-1.0.1)
+
+
+# Huobi Global API Python SDK version 1.0.4
+
+## 1.RELEASE NOTE - Huobi Global API SDK  1.0.4 
+***2019-10-30***
+
+
+- add new api
+
+    ```
+    /v2/reference/currencies
+    /v2/account/deposit/address
+    /v2/account/withdraw/quota
+    /v1/account/history
+    
+    /v1/cross-margin/transfer-in
+    /v1/cross-margin/transfer-out
+    /v1/cross-margin/orders
+    /v1/cross-margin/orders/{order-id}/repay
+    /v1/cross-margin/loan-orders
+    /v1/cross-margin/accounts/balance
+    ```
+
+- add data item tradeId in below apis
+    ```
+    /market/trade
+    /market/history/trade
+    market.$symbol.trade.detail
+    ```
+
+- align output data with API document for below apis
+    ```
+    /v1/margin/loan-orders   
+    /v1/query/deposit-withdraw 
+    ```
+
 
 
 # Huobi Global API Python SDK version 1.0.3
