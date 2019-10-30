@@ -128,6 +128,7 @@ class RestApiRequestImpl(object):
                 local_trade.price = item.get_float("price")
                 local_trade.amount = item.get_float("amount")
                 local_trade.trade_id = item.get_int("id")
+                local_trade.unique_trade_id = item.get_int("trade-id")
                 local_trade.timestamp = convert_cst_in_millisecond_to_utc(item.get_int("ts"))
                 local_trade.direction = item.get_string("direction")
                 trade_list.append(local_trade)
@@ -155,6 +156,7 @@ class RestApiRequestImpl(object):
                     local_trade.price = item_in.get_float("price")
                     local_trade.amount = item_in.get_float("amount")
                     local_trade.trade_id = item_in.get_int("id")
+                    local_trade.unique_trade_id = item_in.get_int("trade-id")
                     local_trade.timestamp = convert_cst_in_millisecond_to_utc(item_in.get_int("ts"))
                     local_trade.direction = item_in.get_string("direction")
                     trade_list.append(local_trade)
@@ -260,13 +262,12 @@ class RestApiRequestImpl(object):
         return request
 
     def get_withdraw_history(self, currency, from_id, size, direct):
-        check_currency(currency)
         check_should_not_none(from_id, "from_id")
         check_should_not_none(size, "size")
 
         builder = UrlParamsBuilder()
         builder.put_url("currency", currency)
-        builder.put_url("type", "withdraw")
+        builder.put_url("type", DepositWithdraw.WITHDRAW)
         builder.put_url("from", from_id)
         builder.put_url("size", size)
         builder.put_url("direct", direct)
@@ -284,6 +285,8 @@ class RestApiRequestImpl(object):
                 withdraw.address = item.get_string("address")
                 withdraw.address_tag = item.get_string("address-tag")
                 withdraw.fee = item.get_float("fee")
+                withdraw.type = item.get_string("type")
+                withdraw.chain = item.get_string("chain")
                 withdraw.withdraw_state = item.get_string("state")
                 withdraw.created_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("created-at"))
                 withdraw.updated_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("updated-at"))
@@ -294,13 +297,12 @@ class RestApiRequestImpl(object):
         return request
 
     def get_deposit_history(self, currency, from_id, size, direct):
-        check_symbol(currency)
         check_should_not_none(from_id, "from_id")
         check_should_not_none(size, "size")
 
         builder = UrlParamsBuilder()
         builder.put_url("currency", currency)
-        builder.put_url("type", "deposit")
+        builder.put_url("type", DepositWithdraw.DEPOSIT)
         builder.put_url("from", from_id)
         builder.put_url("size", size)
         builder.put_url("direct", direct)
@@ -318,6 +320,8 @@ class RestApiRequestImpl(object):
                 deposit.address = item.get_string("address")
                 deposit.address_tag = item.get_string("address-tag")
                 deposit.fee = item.get_float("fee")
+                deposit.type = item.get_string("type")
+                deposit.chain = item.get_string("chain")
                 deposit.withdraw_state = item.get_string("state")
                 deposit.created_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("created-at"))
                 deposit.updated_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("updated-at"))
@@ -434,8 +438,17 @@ class RestApiRequestImpl(object):
                 loan.account_type = account_info_map.get_account_by_id(self.__api_key,
                                                                        item.get_int("account-id")).account_type
                 loan.user_id = item.get_int("user-id")
+
+                loan.deduct_rate = item.get_float("deduct-rate")
+                loan.paid_point = item.get_float("paid-point")
+                loan.deduct_currency = item.get_string("deduct-currency")
+                loan.account_id = item.get_int("account-id")
+                loan.paid_coin = item.get_float("paid-coin")
+                loan.deduct_amount = item.get_float("deduct-amount")
+
                 loan.accrued_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("accrued-at"))
                 loan.created_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("created-at"))
+                loan.updated_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("updated-at"))
                 loan_list.append(loan)
             return loan_list
 
@@ -1034,7 +1047,6 @@ class RestApiRequestImpl(object):
         return request
 
     def get_order_recent_48hour(self, symbol, start_time, end_time, size, direct):
-        #check_symbol(symbol)
         builder = UrlParamsBuilder()
         builder.put_url("symbol", symbol)
         builder.put_url("start-time", start_time)
@@ -1044,4 +1056,357 @@ class RestApiRequestImpl(object):
         request = self.__create_request_by_get_with_signature("/v1/order/history", builder)
 
         request.json_parser = self.get_order_list_json_parse
+        return request
+
+    def get_reference_currencies(self, currency, is_authorized_user):
+        builder = UrlParamsBuilder()
+        builder.put_url("currency", currency)
+        builder.put_url("authorizedUser", is_authorized_user)
+        request = self.__create_request_by_get("/v2/reference/currencies", builder)
+
+        def parse(json_wrapper):
+            reference_currency_list = []
+
+            data_array = json_wrapper.get_array("data")
+            for reference_currency_data in data_array.get_items():
+                reference_currency = ReferenceCurrency()
+                reference_currency.currency = reference_currency_data.get_string("currency")
+                reference_currency.instStatus = reference_currency_data.get_string("instStatus")
+                chains_array = reference_currency_data.get_array("chains")
+                for chain_in_data in chains_array.get_items():
+                    chain_obj = Chain()
+
+                    chain_obj.chain = chain_in_data.get_string("chain")
+                    chain_obj.numOfConfirmations = chain_in_data.get_float("numOfConfirmations")
+                    chain_obj.numOfFastConfirmations = chain_in_data.get_float("numOfFastConfirmations")
+
+                    chain_obj.depositStatus = chain_in_data.get_string("depositStatus")
+                    chain_obj.minDepositAmt = chain_in_data.get_float("minDepositAmt")
+                    chain_obj.withdrawStatus = chain_in_data.get_string("withdrawStatus")
+                    chain_obj.minWithdrawAmt = chain_in_data.get_float("minWithdrawAmt")
+                    chain_obj.maxWithdrawAmt = chain_in_data.get_float("maxWithdrawAmt")
+                    chain_obj.withdrawQuotaPerDay = chain_in_data.get_float("withdrawQuotaPerDay")
+                    chain_obj.withdrawQuotaPerYear = chain_in_data.get_float("withdrawQuotaPerYear")
+                    chain_obj.withdrawQuotaTotal = chain_in_data.get_float("withdrawQuotaTotal")
+                    chain_obj.withdrawFeeType = chain_in_data.get_string("withdrawFeeType")
+                    chain_obj.transactFeeWithdraw = chain_in_data.get_float_or_default("transactFeeWithdraw", 0)
+                    chain_obj.minTransactFeeWithdraw = chain_in_data.get_float_or_default("minTransactFeeWithdraw", 0)
+                    chain_obj.maxTransactFeeWithdraw = chain_in_data.get_float_or_default("maxTransactFeeWithdraw", 0)
+                    chain_obj.transactFeeRateWithdraw = chain_in_data.get_float_or_default("transactFeeRateWithdraw", 0)
+                    reference_currency.chains.append(chain_obj)
+                reference_currency_list.append(reference_currency)
+            return reference_currency_list
+
+        request.json_parser = parse
+        return request
+
+    def get_deposit_withdraw(self, op_type, currency, from_id, size, direct):
+        builder = UrlParamsBuilder()
+        builder.put_url("currency", currency)
+        builder.put_url("type", op_type)
+        builder.put_url("from", from_id)
+        builder.put_url("direct", direct)
+        builder.put_url("size", size)
+
+        request = self.__create_request_by_get_with_signature("/v1/query/deposit-withdraw", builder)
+
+        def parse_deposit(json_wrapper):
+            deposit = Deposit()
+            deposit.id = json_wrapper.get_int("id")
+            deposit.currency = json_wrapper.get_string("currency")
+            deposit.tx_hash = json_wrapper.get_string("tx-hash")
+            deposit.amount = json_wrapper.get_float("amount")
+            deposit.address = json_wrapper.get_string("address")
+            deposit.address_tag = json_wrapper.get_string("address-tag")
+            deposit.fee = json_wrapper.get_float("fee")
+            deposit.type = json_wrapper.get_string("type")
+            deposit.chain = json_wrapper.get_string("chain")
+            deposit.created_timestamp = json_wrapper.get_int("created-at")
+            deposit.updated_timestamp = json_wrapper.get_int("updated-at")
+            deposit.deposit_state = json_wrapper.get_string("state")
+            return deposit
+
+        def parse_withdraw(json_wrapper):
+            withdraw = Withdraw()
+            withdraw.id = json_wrapper.get_int("id")
+            withdraw.currency = json_wrapper.get_string("currency")
+            withdraw.tx_hash = json_wrapper.get_string("tx-hash")
+            withdraw.amount = json_wrapper.get_float("amount")
+            withdraw.address = json_wrapper.get_string("address")
+            withdraw.address_tag = json_wrapper.get_string("address-tag")
+            withdraw.fee = json_wrapper.get_float("fee")
+            withdraw.type = json_wrapper.get_string("type")
+            withdraw.chain = json_wrapper.get_string("chain")
+            withdraw.created_timestamp = json_wrapper.get_int("created-at")
+            withdraw.updated_timestamp = json_wrapper.get_int("updated-at")
+            withdraw.withdraw_state = json_wrapper.get_string("state")
+            return withdraw
+
+        def parse(json_wrapper):
+            ret_list = []
+            if op_type == DepositWithdraw.DEPOSIT:
+                data_array = json_wrapper.get_array("data")
+                for deposit_data in data_array.get_items():
+                    deposit = parse_deposit(deposit_data)
+                    ret_list.append(deposit)
+            elif op_type == DepositWithdraw.WITHDRAW:
+                data_array = json_wrapper.get_array("data")
+                for withdraw_data in data_array.get_items():
+                    withdraw = parse_withdraw(withdraw_data)
+                    ret_list.append(withdraw)
+
+            return ret_list
+        request.json_parser = parse
+        return request
+
+
+    def get_account_deposit_address(self, currency):
+        builder = UrlParamsBuilder()
+        builder.put_url("currency", currency)
+        request = self.__create_request_by_get_with_signature("/v2/account/deposit/address", builder)
+
+        def parse(json_wrapper):
+            ret_list = []
+            data_array = json_wrapper.get_array("data")
+            for address_data in data_array.get_items():
+                obj = ChainDepositAddress()
+                obj.currency = address_data.get_string("currency")
+                obj.address = address_data.get_string("address")
+                obj.addressTag = address_data.get_string("addressTag")
+                obj.chain = address_data.get_string("chain")
+                ret_list.append(obj)
+            return ret_list
+
+        request.json_parser = parse
+        return request
+
+
+    def get_account_withdraw_quota(self, currency):
+        check_should_not_none(currency, "currency")
+        builder = UrlParamsBuilder()
+        builder.put_url("currency", currency)
+        request = self.__create_request_by_get_with_signature("/v2/account/withdraw/quota", builder)
+
+        def parse(json_wrapper):
+            ret_list = []
+            data = json_wrapper.get_object("data")
+            chains_info = data.get_array("chains")
+            for chain_data in chains_info.get_items():
+                obj = WithdrawQuota()
+                obj.chain = chain_data.get_string("chain")
+                obj.maxWithdrawAmt = chain_data.get_string("maxWithdrawAmt")
+                obj.withdrawQuotaPerDay = chain_data.get_string("withdrawQuotaPerDay")
+                obj.remainWithdrawQuotaPerDay = chain_data.get_string("remainWithdrawQuotaPerDay")
+                obj.withdrawQuotaPerYear = chain_data.get_string("withdrawQuotaPerYear")
+                obj.remainWithdrawQuotaPerYear = chain_data.get_string("remainWithdrawQuotaPerYear")
+                obj.withdrawQuotaTotal = chain_data.get_string("withdrawQuotaTotal")
+                obj.remainWithdrawQuotaTotal = chain_data.get_string("remainWithdrawQuotaTotal")
+
+                ret_list.append(obj)
+            return ret_list
+
+        request.json_parser = parse
+        return request
+
+    def post_create_withdraw(self, address, amount, currency, fee, chain, address_tag):
+        check_should_not_none(address, "address")
+        check_should_not_none(currency, "currency")
+        check_should_not_none(amount, "amount")
+        check_should_not_none(fee, "fee")
+        builder = UrlParamsBuilder()
+        builder.put_post("address", address)
+        builder.put_post("amount", amount)
+        builder.put_post("currency", currency)
+        builder.put_post("fee", fee)
+        builder.put_post("chain", chain)
+        builder.put_post("addr-tag", address_tag)
+
+        request = self.__create_request_by_post_with_signature("/v1/dw/withdraw/api/create", builder)
+
+        def parse(json_wrapper):
+            return json_wrapper.get_int_or_default("data", 0)
+
+        request.json_parser = parse
+        return request
+
+    def post_cancel_withdraw(self, withdraw_id):
+        check_should_not_none(withdraw_id, "withdraw-id")
+        path = "/v1/dw/withdraw-virtual/{}/cancel"
+        path = path.format(withdraw_id)
+
+        request = self.__create_request_by_post_with_signature(path, UrlParamsBuilder())
+        def parse(json_wrapper):
+            return json_wrapper.get_int_or_default("data", 0)
+
+        request.json_parser = parse
+        return request
+
+    def post_cross_margin_transfer_in(self, currency, amount):
+        check_should_not_none(currency, "currency")
+        check_should_not_none(amount, "amount")
+        path = "/v1/cross-margin/transfer-in"
+
+        builder = UrlParamsBuilder()
+        builder.put_post("amount", amount)
+        builder.put_post("currency", currency)
+
+        request = self.__create_request_by_post_with_signature(path, builder)
+
+        def parse(json_wrapper):
+            return json_wrapper.get_int_or_default("data", 0)
+
+        request.json_parser = parse
+        return request
+
+    def post_cross_margin_transfer_out(self, currency, amount):
+        check_should_not_none(currency, "currency")
+        check_should_not_none(amount, "amount")
+        path = "/v1/cross-margin/transfer-out"
+
+        builder = UrlParamsBuilder()
+        builder.put_post("amount", amount)
+        builder.put_post("currency", currency)
+
+        request = self.__create_request_by_post_with_signature(path, builder)
+
+        def parse(json_wrapper):
+            return json_wrapper.get_int_or_default("data", 0)
+
+        request.json_parser = parse
+        return request
+
+    def post_cross_margin_create_loan_orders(self, currency, amount):
+        check_should_not_none(currency, "currency")
+        check_should_not_none(amount, "amount")
+        path = "/v1/cross-margin/orders"
+
+        builder = UrlParamsBuilder()
+        builder.put_post("amount", amount)
+        builder.put_post("currency", currency)
+
+        request = self.__create_request_by_post_with_signature(path, builder)
+
+        def parse(json_wrapper):
+            return json_wrapper.get_int_or_default("data", 0)
+
+        request.json_parser = parse
+        return request
+
+    def post_cross_margin_loan_order_repay(self, order_id, amount):
+        check_should_not_none(order_id, "order-id")
+        check_should_not_none(amount, "amount")
+        path = "/v1/cross-margin/orders/{order_id}/repay".format(order_id=order_id)
+
+        builder = UrlParamsBuilder()
+        builder.put_post("amount", amount)
+
+        request = self.__create_request_by_post_with_signature(path, builder)
+
+        def parse(json_wrapper):
+            return
+
+        request.json_parser = parse
+        return request
+
+    def get_cross_margin_loan_orders(self, currency, state, start_date, end_date, from_id, size, direct):
+
+        path = "/v1/cross-margin/loan-orders"
+        builder = UrlParamsBuilder()
+        builder.put_url("currency", currency)
+        builder.put_url("state", state)
+        builder.put_url("start-date", start_date)
+        builder.put_url("end-date", end_date)
+        builder.put_url("from", from_id)
+        builder.put_url("size", size)
+        builder.put_url("direct", direct)
+
+        request = self.__create_request_by_get_with_signature(path, builder)
+
+        def parse(json_wrapper):
+            ret_list = []
+            order_list = json_wrapper.get_array("data")
+            for order_data in order_list.get_items():
+                obj = LoanOrder()
+                obj.id = order_data.get_int("id")
+                obj.user_id = order_data.get_int("user-id")
+                obj.account_id = order_data.get_int("account-id")
+                obj.currency = order_data.get_string("currency")
+                obj.load_amount = order_data.get_float("loan-amount")
+                obj.loan_balance = order_data.get_float("loan-balance")
+                obj.interest_amount = order_data.get_float("interest-amount")
+                obj.interest_balance = order_data.get_float("interest-balance")
+                obj.filled_points = order_data.get_float("filled-points")
+                obj.filled_ht = order_data.get_float("filled-ht")
+                obj.created_at = order_data.get_int("created-at")
+                obj.accrued_at = order_data.get_int("accrued-at")
+                obj.state = order_data.get_string("state")
+
+                ret_list.append(obj)
+            return ret_list
+
+        request.json_parser = parse
+        return request
+
+    def get_cross_margin_account_balance(self):
+
+        path = "/v1/cross-margin/accounts/balance"
+
+        request = self.__create_request_by_get_with_signature(path, UrlParamsBuilder())
+
+        def parse(json_wrapper):
+            account_balance = CrossMarginAccountBalance()
+            data_obj = json_wrapper.get_object("data")
+            account_balance.id = data_obj.get_int("id")
+            account_balance.type = data_obj.get_string("type")
+            account_balance.state = data_obj.get_string("state")
+            account_balance.risk_rate = data_obj.get_int("risk-rate")
+            account_balance.acct_balance_sum = data_obj.get_float("acct-balance-sum")
+            account_balance.debt_balance_sum = data_obj.get_float("debt-balance-sum")
+            balance_list = data_obj.get_array("list")
+            for balance_data in balance_list.get_items():
+                balance_obj = Balance()
+                balance_obj.currency = balance_data.get_string("currency")
+                balance_obj.balance_type = balance_data.get_string("type")
+                balance_obj.balance = balance_data.get_float("balance")
+                account_balance.list.append(balance_obj)
+
+            return account_balance
+
+        request.json_parser = parse
+        return request
+
+    def get_account_history(self, account_id, currency,
+                                transact_types, start_time, end_time,
+                                sort, size):
+        path = "/v1/account/history"
+
+        builder = UrlParamsBuilder()
+        builder.put_url("account-id", account_id)
+        builder.put_url("currency", currency)
+        builder.put_url("transact-types", transact_types)
+        builder.put_url("start-time", start_time)
+        builder.put_url("end-time", end_time)
+        builder.put_url("sort", sort)
+        builder.put_url("size", size)
+
+        request = self.__create_request_by_get_with_signature(path, builder)
+
+        def parse(json_wrapper):
+            account_history_list = []
+            data_obj = json_wrapper.get_array("data")
+            for history_data in data_obj.get_items():
+                account_history = AccountHistory()
+                account_history.account_id = history_data.get_int("account-id")
+                account_history.currency = history_data.get_string("currency")
+                account_history.transact_amt = history_data.get_string("transact-amt")
+                account_history.transact_type = history_data.get_string("transact-type")
+                account_history.avail_balance = history_data.get_string("avail-balance")
+                account_history.acct_balance = history_data.get_string("acct-balance")
+                account_history.record_id = history_data.get_string("record-id")
+                account_history.transact_time = history_data.get_int("transact-time")
+                account_history_list.append(account_history)
+
+            return account_history_list
+
+        request.json_parser = parse
         return request

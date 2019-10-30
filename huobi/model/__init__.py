@@ -29,6 +29,14 @@ from huobi.model.accountevent import AccountEvent
 from huobi.model.accountchange import AccountChange
 from huobi.model.tradestatisticsevent import TradeStatisticsEvent
 from huobi.model.marginbalancedetail import MarginBalanceDetail
+from huobi.model.referencecurrency import ReferenceCurrency
+from huobi.model.chain import Chain
+from huobi.model.chaindepositaddress import ChainDepositAddress
+from huobi.model.withdrawquota import WithdrawQuota
+from huobi.model.loanorder import LoanOrder
+from huobi.model.crossmarginaccountbalance import CrossMarginAccountBalance
+from huobi.model.accounthistory import AccountHistory
+
 
 
 

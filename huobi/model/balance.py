@@ -24,3 +24,9 @@ class Balance:
         balance.currency = json_data.get_string("currency")
         balance.balance_type = json_data.get_string("type")
         return balance
+
+    def print_object(self, format_data=""):
+        from huobi.base.printobject import PrintBasic
+        PrintBasic.print_basic(self.currency, format_data + "Currency")
+        PrintBasic.print_basic(self.balance_type, format_data + "Balance Type")
+        PrintBasic.print_basic(self.balance, format_data + "Balance")

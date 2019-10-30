@@ -129,6 +129,7 @@ class WebsocketRequestImpl(object):
                 trade.amount = item.get_float("amount")
                 trade.price = item.get_float("price")
                 trade.trade_id = item.get_string("id")
+                trade.unique_trade_id = item.get_int("trade-id")
                 trade.direction = item.get_string("direction")
                 trade.timestamp = convert_cst_in_millisecond_to_utc(item.get_int("ts"))
                 trade_list.append(trade)
