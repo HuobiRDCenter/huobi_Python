@@ -4,5 +4,5 @@ venv/
 build/
 dist/
 huobi_client.egg-info/
-huobi/constant/test.py
+huobi/privateconfig.py
 
