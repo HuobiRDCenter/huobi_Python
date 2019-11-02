@@ -124,13 +124,7 @@ class RestApiRequestImpl(object):
             trade_list = list()
 
             for item in data_array.get_items():
-                local_trade = Trade()
-                local_trade.price = item.get_float("price")
-                local_trade.amount = item.get_float("amount")
-                local_trade.trade_id = item.get_int("id")
-                local_trade.unique_trade_id = item.get_int("trade-id")
-                local_trade.timestamp = convert_cst_in_millisecond_to_utc(item.get_int("ts"))
-                local_trade.direction = item.get_string("direction")
+                local_trade = Trade.json_parse(item)
                 trade_list.append(local_trade)
 
             return trade_list
@@ -152,13 +146,7 @@ class RestApiRequestImpl(object):
             for item in data_array.get_items():
                 data_array_in = item.get_array("data")
                 for item_in in data_array_in.get_items():
-                    local_trade = Trade()
-                    local_trade.price = item_in.get_float("price")
-                    local_trade.amount = item_in.get_float("amount")
-                    local_trade.trade_id = item_in.get_int("id")
-                    local_trade.unique_trade_id = item_in.get_int("trade-id")
-                    local_trade.timestamp = convert_cst_in_millisecond_to_utc(item_in.get_int("ts"))
-                    local_trade.direction = item_in.get_string("direction")
+                    local_trade = Trade.json_parse(item_in)
                     trade_list.append(local_trade)
             return trade_list
 
@@ -680,7 +668,7 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
-    def get_match_results(self, symbol, order_type=None, start_date=None, end_date=None, size=None, from_id=None):
+    def get_match_results(self, symbol, order_type=None, start_date=None, end_date=None, size=None, from_id=None, direct=None):
         check_symbol(symbol)
         start_date = format_date(start_date, "start_date")
         end_date = format_date(end_date, "end_date")
@@ -692,6 +680,7 @@ class RestApiRequestImpl(object):
         builder.put_url("end-date", end_date)
         builder.put_url("from", from_id)
         builder.put_url("size", size)
+        builder.put_url("direct", direct)
         request = self.__create_request_by_get_with_signature("/v1/order/matchresults", builder)
 
         def parse(json_wrapper):

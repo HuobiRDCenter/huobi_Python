@@ -125,13 +125,7 @@ class WebsocketRequestImpl(object):
             data_array = tick.get_array("data")
             trade_list = list()
             for item in data_array.get_items():
-                trade = Trade()
-                trade.amount = item.get_float("amount")
-                trade.price = item.get_float("price")
-                trade.trade_id = item.get_string("id")
-                trade.unique_trade_id = item.get_int("trade-id")
-                trade.direction = item.get_string("direction")
-                trade.timestamp = convert_cst_in_millisecond_to_utc(item.get_int("ts"))
+                trade = Trade.json_parse(item)
                 trade_list.append(trade)
             trade_event.trade_list = trade_list
             return trade_event

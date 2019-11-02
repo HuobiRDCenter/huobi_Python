@@ -26,13 +26,7 @@ class TradeRequest:
         tick = json_wrapper.get_array(OutputKey.KeyData)
         trade_list = list()
         for item in tick.get_items():
-            trade = Trade()
-            trade.amount = item.get_float("amount")
-            trade.price = item.get_float("price")
-            trade.trade_id = item.get_string("id")
-            trade.unique_trade_id = item.get_string("tradeId")  # others return trade-id, here return tradeId
-            trade.direction = item.get_string("direction")
-            trade.timestamp = convert_cst_in_millisecond_to_utc(item.get_int("ts"))
+            trade = Trade.json_parse(item)  # others return trade-id, here return tradeId
             trade_list.append(trade)
         trade_event.trade_list = trade_list
         return trade_event

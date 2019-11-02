@@ -383,7 +383,8 @@ class RequestClient(object):
     def get_match_result(self, symbol: 'str', order_type: 'OrderSide' = None, start_date: 'str' = None,
                          end_date: 'str' = None,
                          size: 'int' = None,
-                         from_id: 'int' = None):
+                         from_id: 'int' = None,
+                         direct:'str'=None):
         """
         Search for the trade records of an account.
 
@@ -395,7 +396,7 @@ class RequestClient(object):
         :param from_id: Search order id to begin with. (optional).
         :return:
         """
-        return call_sync(self.request_impl.get_match_results(symbol, order_type, start_date, end_date, size, from_id))
+        return call_sync(self.request_impl.get_match_results(symbol, order_type, start_date, end_date, size, from_id, direct))
 
     def withdraw(self, address: 'str', amount: 'float', currency: 'str', fee: 'float' = None,
                  address_tag: 'str' = None) -> int:
