@@ -374,7 +374,7 @@ print(balance.get(0).get(0).balance)
 *Authentication is required.*
 
 ```python
-id = request_client.withdraw("xxxxxxx", 0.1, "btc")
+id = request_client.withdraw(address="xxxxxx",amount=2, currency="usdt", fee=1, chain="yyy", address_tag="zzz")
 print(id)
 ```
 
