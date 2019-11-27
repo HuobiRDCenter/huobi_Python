@@ -51,6 +51,11 @@ Trade model no change and no impact to user test case
     remove convert_cst_in_second_to_utc function
     remove convert_cst_in_millisecond_to_utc function
     ```
+    
+- add mbp(market by price) subscribe and request
+    ```
+    market.$symbol.mbp.$levels
+    ```
   
 - UT code update
     ```
