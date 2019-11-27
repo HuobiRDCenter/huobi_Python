@@ -1,6 +1,5 @@
 from huobi.constant.result import OutputKey
 from huobi.impl.utils.channelparser import ChannelParser
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
 from huobi.model import *
 from huobi.model.pricedepthbbo import PriceDepthBbo
 
@@ -28,7 +27,7 @@ class PriceDepthBboEvent:
         parse = ChannelParser(ch)
         price_depth_event = PriceDepthBboEvent()
         price_depth_event.symbol = parse.symbol
-        price_depth_event.timestamp = convert_cst_in_millisecond_to_utc(json_wrapper.get_int("ts"))
+        price_depth_event.timestamp = json_wrapper.get_int("ts")
         price_depth_event.ch = ch
         data = json_wrapper.get_object(OutputKey.KeyTick)
         price_depth = PriceDepthBbo.json_parse(data)

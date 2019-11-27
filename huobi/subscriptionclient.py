@@ -339,6 +339,47 @@ class SubscriptionClient(object):
         request = self.websocket_request_impl.request_order_detail_event(order_id, callback,
                                                                           client_req_id, auto_close, error_handler)
         self.__create_connection(request)
+
+    def subscribe_mbp_event(self, symbols: 'str', level: 'int', callback, error_handler=None):
+        """
+        Subscribe price depth event. If the price depth is updated, server will send the data to client and onReceive in callback will be called.
+
+        :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
+        :param level: level, 5，10，20，150. current only support 150
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(price_depth_event: 'PriceDepthEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+
+        :return:  No return
+        """
+        symbol_list = symbols.split(",")
+        request = self.websocket_request_impl.subscribe_mbp_event(symbol_list, level, callback, error_handler)
+        self.__create_connection(request)
+
+    def request_mbp_event(self, symbols: 'str', level: 'int', callback, auto_close = True, error_handler=None):
+        """
+        Subscribe price depth event. If the price depth is updated, server will send the data to client and onReceive in callback will be called.
+
+        :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
+        :param level: level, 5，10，20，150. current only support 150
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(price_depth_event: 'PriceDepthEvent'):
+                        pass
+        :param auto_close : close websocket connection after get data
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+
+        :return:  No return
+        """
+        symbol_list = symbols.split(",")
+        request = self.websocket_request_impl.request_mbp_event(symbol_list, level, callback,
+                                                                          auto_close, error_handler)
+        self.__create_connection(request)
+
     def unsubscribe_all(self):
         for conn in self.connections:
             conn.close()

@@ -2,7 +2,7 @@ import unittest
 from huobi.impl.utils import *
 from huobi.model import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 from huobi.impl.restapirequestimpl import account_info_map
 
 
@@ -29,10 +29,10 @@ class TestCancelOpenOrders(unittest.TestCase):
         request = impl.cancel_open_orders("htbtc", AccountType.SPOT, OrderSide.BUY, 30)
         self.assertEqual("POST", request.method)
         self.assertTrue(request.url.find("Signature") != -1)
-        self.assertTrue(request.url.find("symbol=htbtc") != -1)
-        self.assertTrue(request.url.find("account-id=12345") != -1)
-        self.assertTrue(request.url.find("side=buy") != -1)
-        self.assertTrue(request.url.find("size=30") != -1)
+        self.assertTrue(request.post_body.get("symbol") == "htbtc")
+        self.assertTrue(int(request.post_body.get("account-id")) == 12345)
+        self.assertTrue(request.post_body.get("side") == "buy")
+        self.assertTrue(int(request.post_body.get("size")) == 30)
 
     def test_result(self):
         impl = RestApiRequestImpl("12345", "67890")

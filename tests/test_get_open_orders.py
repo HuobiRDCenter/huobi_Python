@@ -2,7 +2,7 @@ import unittest
 from huobi.impl.utils import *
 from huobi.model import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 from huobi.impl.restapirequestimpl import account_info_map
 
 data = '''
@@ -82,4 +82,4 @@ class TestGetOpenOrders(unittest.TestCase):
         self.assertEqual(AccountType.SPOT, order_list[0].account_type)
         self.assertEqual(OrderState.SUBMITTED, order_list[0].state)
         self.assertEqual(OrderType.SELL_LIMIT, order_list[0].order_type)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550628731111), order_list[0].created_timestamp)
+        self.assertEqual(1550628731111, order_list[0].created_timestamp)

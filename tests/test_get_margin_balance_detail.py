@@ -2,7 +2,7 @@ import unittest
 from huobi.impl.utils import *
 from huobi.model import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 from huobi.impl.restapirequestimpl import account_info_map
 
 
@@ -74,15 +74,16 @@ class TestGetMarginBalanceDetail(unittest.TestCase):
 
     def test_request(self):
         impl = RestApiRequestImpl("12345", "67890")
-        request = impl.get_margin_balance_detail("htbtc")
+        request = impl.get_margin_balance_detail("htbtc",123)
         self.assertEqual("GET", request.method)
         self.assertTrue(request.url.find("/v1/margin/accounts/balance") != -1)
         self.assertTrue(request.url.find("Signature") != -1)
         self.assertTrue(request.url.find("symbol=htbtc") != -1)
+        self.assertTrue(request.url.find("symbol=htbtc") != -1)
 
     def test_result(self):
         impl = RestApiRequestImpl("12345", "67890")
-        request = impl.get_margin_balance_detail("htbtc")
+        request = impl.get_margin_balance_detail("htbtc", 123)
         margin_balance_detail_list = request.json_parser(parse_json_from_string(data))
         self.assertEqual(1, len(margin_balance_detail_list))
         self.assertEqual(12, len(margin_balance_detail_list[0].sub_account_balance_list))

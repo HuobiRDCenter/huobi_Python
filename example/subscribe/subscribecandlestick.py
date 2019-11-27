@@ -13,7 +13,9 @@ sub_client = SubscriptionClient()
 
 
 def callback(candlestick_event: 'CandlestickEvent'):
-    print("Symbol: " + candlestick_event.symbol)
+    print("Symbol: ", candlestick_event.symbol)
+    print("Subscribe Receive Time: ", candlestick_event.timestamp)
+    print("Interval: ", candlestick_event.interval)
     candlestick_event.data.print_object()
     print()
 
@@ -22,4 +24,4 @@ def error(e: 'HuobiApiException'):
     print(e.error_code + e.error_message)
 
 
-sub_client.subscribe_candlestick_event("btcusdt", CandlestickInterval.HOUR4, callback, error)
+sub_client.subscribe_candlestick_event("btcusdt", CandlestickInterval.MIN1, callback, error)

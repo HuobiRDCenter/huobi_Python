@@ -10,6 +10,9 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 ## Huobi Python SDK Download
 
+
+- [Huobi Global API Python SDK version 1.0.6](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.6)
+
 - [Huobi Global API Python SDK version 1.0.5](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.5)
 
 - [Huobi Global API Python SDK version 1.0.4](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.4)
@@ -374,7 +377,7 @@ print(balance.get(0).get(0).balance)
 *Authentication is required.*
 
 ```python
-id = request_client.withdraw(address="xxxxxx",amount=2, currency="usdt", fee=1, chain="yyy", address_tag="zzz")
+id = request_client.withdraw("xxxxxxx", 0.1, "btc")
 print(id)
 ```
 

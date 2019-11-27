@@ -2,7 +2,7 @@ import unittest
 from huobi.impl.utils import *
 from huobi.model.constant import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 
 
 data = '''
@@ -45,7 +45,7 @@ class TestGetBestQuote(unittest.TestCase):
         impl = RestApiRequestImpl("", "")
         request = impl.get_best_quote("btcusdt")
         best_quote = request.json_parser(parse_json_from_string(data))
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550223581490), best_quote.timestamp)
+        self.assertEqual(1550223581490, best_quote.timestamp)
         self.assertEqual(122.26, best_quote.ask_price)
         self.assertEqual(0.8271, best_quote.ask_amount)
         self.assertEqual(122.24, best_quote.bid_price)

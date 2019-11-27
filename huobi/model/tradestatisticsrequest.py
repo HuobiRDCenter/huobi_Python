@@ -1,5 +1,4 @@
 from huobi.impl.utils.channelparser import ChannelParser
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
 from huobi.model.tradestatistics import TradeStatistics
 
 
@@ -23,7 +22,7 @@ class TradeStatisticsRequest:
         parse = ChannelParser(ch)
         trade_statistics_event = TradeStatisticsRequest()
         trade_statistics_event.symbol = parse.symbol
-        ts = convert_cst_in_millisecond_to_utc(json_wrapper.get_int("ts"))
+        ts = json_wrapper.get_int("ts")
         trade_statistics_event.timestamp = ts
         tick = json_wrapper.get_object("data")
         statistics = TradeStatistics.json_parse(tick, ts)

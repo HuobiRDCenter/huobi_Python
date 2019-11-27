@@ -48,7 +48,7 @@ class RestApiRequestImpl(object):
         request = self.__create_request_by_get("/v1/common/timestamp", UrlParamsBuilder())
 
         def parse(json_wrapper):
-            return convert_cst_in_millisecond_to_utc(json_wrapper.get_int("data"))
+            return json_wrapper.get_int("data")
 
         request.json_parser = parse
         return request
@@ -88,7 +88,7 @@ class RestApiRequestImpl(object):
         def parse(json_wrapper):
             tick = json_wrapper.get_object("tick")
             dp = PriceDepth()
-            dp.timestamp = convert_cst_in_millisecond_to_utc(tick.get_int("ts"))
+            dp.timestamp = tick.get_int("ts")
             bid_array = tick.get_array("bids")
             ask_array = tick.get_array("asks")
             bids = list()
@@ -162,7 +162,7 @@ class RestApiRequestImpl(object):
         def parse(json_wrapper):
             tick = json_wrapper.get_object("tick")
             trade_statistics = TradeStatistics()
-            trade_statistics.timestamp = convert_cst_in_millisecond_to_utc(json_wrapper.get_int("ts"))
+            trade_statistics.timestamp = json_wrapper.get_int("ts")
             trade_statistics.amount = tick.get_float("amount")
             trade_statistics.open = tick.get_float("open")
             trade_statistics.close = tick.get_float("close")
@@ -218,7 +218,7 @@ class RestApiRequestImpl(object):
 
         def parse(json_wrapper):
             best_quote = BestQuote()
-            best_quote.timestamp = convert_cst_in_millisecond_to_utc(json_wrapper.get_int("ts"))
+            best_quote.timestamp = json_wrapper.get_int("ts")
             tick = json_wrapper.get_object("tick")
             ask_array = tick.get_array("ask")
             best_quote.ask_price = ask_array.get_float_at(0)
@@ -276,8 +276,8 @@ class RestApiRequestImpl(object):
                 withdraw.type = item.get_string("type")
                 withdraw.chain = item.get_string("chain")
                 withdraw.withdraw_state = item.get_string("state")
-                withdraw.created_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("created-at"))
-                withdraw.updated_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("updated-at"))
+                withdraw.created_timestamp = item.get_int("created-at")
+                withdraw.updated_timestamp = item.get_int("updated-at")
                 withdraws.append(withdraw)
             return withdraws
 
@@ -311,8 +311,8 @@ class RestApiRequestImpl(object):
                 deposit.type = item.get_string("type")
                 deposit.chain = item.get_string("chain")
                 deposit.withdraw_state = item.get_string("state")
-                deposit.created_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("created-at"))
-                deposit.updated_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("updated-at"))
+                deposit.created_timestamp = item.get_int("created-at")
+                deposit.updated_timestamp = item.get_int("updated-at")
                 deposits.append(deposit)
             return deposits
 
@@ -434,9 +434,9 @@ class RestApiRequestImpl(object):
                 loan.paid_coin = item.get_float("paid-coin")
                 loan.deduct_amount = item.get_float("deduct-amount")
 
-                loan.accrued_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("accrued-at"))
-                loan.created_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("created-at"))
-                loan.updated_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("updated-at"))
+                loan.accrued_timestamp = item.get_int("accrued-at")
+                loan.created_timestamp = item.get_int("created-at")
+                loan.updated_timestamp = item.get_int("updated-at")
                 loan_list.append(loan)
             return loan_list
 
@@ -465,7 +465,7 @@ class RestApiRequestImpl(object):
                 or order_type == OrderType.SELL_LIMIT_MAKER:
             check_should_not_none(price, "price")
         if order_type == OrderType.SELL_MARKET or order_type == OrderType.BUY_MARKET:
-            check_should_none(price, "price")
+            price = None
         global account_info_map
         user = account_info_map.get_user(self.__api_key)
         account = user.get_account_by_type(account_type=account_type, subtype=symbol)
@@ -517,7 +517,7 @@ class RestApiRequestImpl(object):
                 order.amount = item.get_float("amount")
                 order.account_type = account_info_map.get_account_by_id(self.__api_key,
                                                                         item.get_int("account-id")).account_type
-                order.created_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("created-at"))
+                order.created_timestamp = item.get_int("created-at")
                 order.order_type = item.get_string("type")
                 order.filled_amount = item.get_float("filled-amount")
                 order.filled_cash_amount = item.get_float("filled-cash-amount")
@@ -650,7 +650,7 @@ class RestApiRequestImpl(object):
             for item in data_array.get_items():
                 match_result = MatchResult()
                 match_result.id = item.get_int("id")
-                match_result.created_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("created-at"))
+                match_result.created_timestamp = item.get_int("created-at")
                 match_result.filled_amount = item.get_float("filled-amount")
                 match_result.filled_fees = item.get_float("filled-fees")
                 match_result.match_id = item.get_int("match-id")
@@ -689,7 +689,7 @@ class RestApiRequestImpl(object):
             for item in data_array.get_items():
                 match_result = MatchResult()
                 match_result.id = item.get_int("id")
-                match_result.created_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("created-at"))
+                match_result.created_timestamp = item.get_int("created-at")
                 match_result.filled_amount = item.get_float("filled-amount")
                 match_result.filled_fees = item.get_float("filled-fees")
                 match_result.match_id = item.get_int("match-id")
@@ -763,12 +763,12 @@ class RestApiRequestImpl(object):
                 order.account_type = account_info_map.get_account_by_id(self.__api_key,
                                                                         item.get_int("account-id")).account_type
                 order.amount = item.get_float("amount")
-                order.canceled_timestamp = convert_cst_in_millisecond_to_utc(item.get_int_or_default("canceled-at", 0))
-                order.finished_timestamp = convert_cst_in_millisecond_to_utc(item.get_int_or_default("finished-at", 0))
+                order.canceled_timestamp = item.get_int_or_default("canceled-at", 0)
+                order.finished_timestamp = item.get_int_or_default("finished-at", 0)
                 order.order_id = item.get_int("id")
                 order.symbol = item.get_string("symbol")
                 order.price = item.get_float("price")
-                order.created_timestamp = convert_cst_in_millisecond_to_utc(item.get_int("created-at"))
+                order.created_timestamp = item.get_int("created-at")
                 order.order_type = item.get_string("type")
                 order.filled_amount = item.get_float("field-amount")
                 order.filled_cash_amount = item.get_float("field-cash-amount")
@@ -806,7 +806,7 @@ class RestApiRequestImpl(object):
         def parse(json_wrapper):
             balances = list()
             data_array = json_wrapper.get_array("data")
-            for item in data_array.get_items:
+            for item in data_array.get_items():
                 balance = Balance()
                 balance.currency = item.get_string("currency")
                 balance.balance = item.get_float("balance")
@@ -964,10 +964,11 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
-    def get_margin_balance_detail(self, symbol):
-        check_symbol(symbol)
+    def get_margin_balance_detail(self, symbol, sub_uid):
+        #check_symbol(symbol)
         builder = UrlParamsBuilder()
         builder.put_url("symbol", symbol)
+        builder.put_url("sub-uid", sub_uid)
         request = self.__create_request_by_get_with_signature("/v1/margin/accounts/balance", builder)
 
         def parse(json_wrapper):

@@ -16,6 +16,8 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 ## Table of Contents
 
+- [Huobi Global API Python SDK version 1.0.6](#Huobi-Global-API-Python-SDK-version-1.0.6)
+
 - [Huobi Global API Python SDK version 1.0.5](#Huobi-Global-API-Python-SDK-version-1.0.5)
 
 - [Huobi Global API Python SDK version 1.0.4](#Huobi-Global-API-Python-SDK-version-1.0.4)
@@ -26,6 +28,34 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 - [Huobi Global API Python SDK version 1.0.1](#Huobi-Global-API-Python-SDK-version-1.0.1)
 
+## Huobi Global API Python SDK version 1.0.5
+
+[***version 1.0.5***](https://github.com/HuobiRDCenter/huobi_Python/releases)
+
+***2019-11-02***
+```
+compatiable tradeId for subscribe trade detail and request trade detail.
+Trade model no change and no impact to user test case
+```
+
+# Huobi Global API Python SDK version 1.0.6
+
+## 1.RELEASE NOTE - Huobi Global API SDK  1.0.6
+***2019-11-27***
+
+
+- add performance test code
+
+- align response timestamp to UTC time
+    ```
+    remove convert_cst_in_second_to_utc function
+    remove convert_cst_in_millisecond_to_utc function
+    ```
+  
+- UT code update
+    ```
+    UT code update
+    ```
 
 ## Huobi Global API Python SDK version 1.0.5
 

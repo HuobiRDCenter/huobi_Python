@@ -1,5 +1,6 @@
 import json
 from huobi.impl.utils.timeservice import get_current_timestamp
+from huobi.model import MbpLevel
 
 
 def request_kline_channel(symbol, interval, from_ts_second = None, to_ts_second = None):
@@ -26,7 +27,11 @@ def request_price_depth_channel(symbol, step_type = "step0"):
     channel["id"] = str(get_current_timestamp())
     return json.dumps(channel)
 
-
+def request_mbp_channel(symbol, levels):
+    channel = dict()
+    channel["req"] = "market.{symbol}.mbp.{levels}".format(symbol=symbol, levels=levels)
+    channel["id"] = str(get_current_timestamp())
+    return json.dumps(channel)
 
 def request_trade_statistics_channel(symbol):
     channel = dict()

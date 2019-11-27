@@ -206,6 +206,13 @@ class DepthStep:
     STEP5 = "step5"
 
 
+class MbpLevel:
+    MBP5 = 5
+    MBP10 = 10
+    MBP20 = 20
+    MBP150 = 150
+
+
 class ChainDepositStatus:
     ALLOWED = "allowed"
     PROHIBITED = "prohibited"

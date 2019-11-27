@@ -4,7 +4,7 @@ from huobi.model import *
 from huobi.impl.utils import *
 from huobi.model import *
 from tests.mock_websocket_connection import MockWebsocketConnection
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 from huobi.impl.restapirequestimpl import account_info_map
 
 
@@ -53,7 +53,7 @@ class TestSubscribeTradeStatistics(unittest.TestCase):
         request = impl.subscribe_24h_trade_statistics_event(symbols, callback)
         event = request.json_parser(parse_json_from_string(data))
         self.assertEqual("btcusdt", event.symbol);
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550740513421), event.timestamp);
+        self.assertEqual(1550740513421, event.timestamp);
         self.assertEqual(204966, event.trade_statistics.count)
         self.assertEqual(115320213.26007387, event.trade_statistics.volume)
         self.assertEqual(0.00030342, event.trade_statistics.open)

@@ -2,7 +2,7 @@ import unittest
 from huobi.impl.utils import *
 from huobi.model.constant import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 
 
 data = '''
@@ -14,14 +14,26 @@ data = '''
 		"price-precision": 2,
 		"amount-precision": 4,
 		"symbol-partition": "main",
-		"symbol": "btcusdt"
+		"symbol": "btcusdt",
+		"state":"online",
+		"value-precision":12,
+		"min-order-amt":10,
+		"max-order-amt":200,
+		"min-order-value":1,
+		"leverage-ratio":2
 	}, {
 		"base-currency": "bch",
 		"quote-currency": "usdt",
 		"price-precision": 3,
 		"amount-precision": 5,
 		"symbol-partition": "main",
-		"symbol": "bchusdt"
+		"symbol": "bchusdt",
+		"state":"online",
+		"value-precision":12,
+		"min-order-amt":10,
+		"max-order-amt":200,
+		"min-order-value":1,
+		"leverage-ratio":2
 	}]
 }'''
 

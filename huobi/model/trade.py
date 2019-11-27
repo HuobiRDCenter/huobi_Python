@@ -1,4 +1,3 @@
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
 
 
 class Trade:
@@ -29,7 +28,7 @@ class Trade:
         trade.trade_id = json_data.get_string("id")
         trade.unique_trade_id = json_data.get_int_or_default("trade-id", json_data.get_int_or_default("tradeId", 0))
         trade.direction = json_data.get_string("direction")
-        trade.timestamp = convert_cst_in_millisecond_to_utc(json_data.get_int("ts"))
+        trade.timestamp = json_data.get_int("ts")
         return trade
 
     def print_object(self, format_data=""):

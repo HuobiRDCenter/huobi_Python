@@ -1,7 +1,6 @@
 from huobi.constant.result import OutputKey
 from huobi.impl.utils import *
 from huobi.impl.utils.channelparser import ChannelParser
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
 from huobi.model.constant import *
 from huobi.model.candlestick import Candlestick
 
@@ -31,7 +30,7 @@ class CandlestickEvent:
         candlestick_event = CandlestickEvent()
         candlestick_event.symbol = parse.symbol
         candlestick_event.interval = ""
-        candlestick_event.timestamp = convert_cst_in_millisecond_to_utc(json_wrapper.get_int("ts"))
+        candlestick_event.timestamp = json_wrapper.get_int("ts")
         tick = json_wrapper.get_object(OutputKey.KeyTick)
         data = Candlestick.json_parse(tick)
         candlestick_event.data = data

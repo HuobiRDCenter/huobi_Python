@@ -1,7 +1,7 @@
 import unittest
 from huobi.impl.utils import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 
 data = '''
     {
@@ -41,7 +41,6 @@ class TestGetPriceDepth(unittest.TestCase):
     def test_request(self):
         impl = RestApiRequestImpl("", "")
         request = impl.get_price_depth("btcustd", 10)
-        print(request.url)
         self.assertEqual("GET", request.method)
         self.assertTrue(request.url.find("/market/depth") != -1)
         self.assertTrue(request.url.find("symbol=btcustd") != -1)
@@ -52,7 +51,7 @@ class TestGetPriceDepth(unittest.TestCase):
         request = impl.get_price_depth("btcustd", 1)
         price_depth = request.json_parser(parse_json_from_string(data))
         self.assertEqual(1, len(price_depth.bids))
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550218546020), price_depth.timestamp)
+        self.assertEqual(1550218546020, price_depth.timestamp)
         self.assertEqual(122.92, price_depth.bids[0].price)
         self.assertEqual(2.7468, price_depth.bids[0].amount)
         self.assertEqual(122.94, price_depth.asks[0].price)

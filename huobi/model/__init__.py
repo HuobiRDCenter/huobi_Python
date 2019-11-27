@@ -37,6 +37,10 @@ from huobi.model.loanorder import LoanOrder
 from huobi.model.crossmarginaccountbalance import CrossMarginAccountBalance
 from huobi.model.accounthistory import AccountHistory
 
+from huobi.model.mbp import Mbp
+from huobi.model.mbpevent import MbpEvent
+from huobi.model.mbprequest import MbpRequest
+
 
 
 

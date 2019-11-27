@@ -2,7 +2,7 @@ import unittest
 from huobi.impl.utils import *
 from huobi.model.constant import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 
 
 data = '''
@@ -40,7 +40,7 @@ class TestGetETFCandlestick(unittest.TestCase):
         request = impl.get_etf_candlestick("hb10", CandlestickInterval.YEAR1, 100)
         candlestick_list = request.json_parser(parse_json_from_string(data))
         self.assertEqual(1, len(candlestick_list))
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1499184000), candlestick_list[0].timestamp)
+        self.assertEqual(0, candlestick_list[0].id)
         self.assertEqual(0.7694, candlestick_list[0].high)
         self.assertEqual(0.769, candlestick_list[0].low)
         self.assertEqual(0.7794, candlestick_list[0].open)

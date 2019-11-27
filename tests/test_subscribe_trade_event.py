@@ -4,7 +4,7 @@ from huobi.model import *
 from huobi.impl.utils import *
 from huobi.model import *
 from tests.mock_websocket_connection import MockWebsocketConnection
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 from huobi.impl.restapirequestimpl import account_info_map
 
 
@@ -61,14 +61,14 @@ class TestSubscribeTradeEvent(unittest.TestCase):
         event = request.json_parser(parse_json_from_string(data))
         self.assertEqual("btcusdt", event.symbol)
         self.assertEqual(2, len(event.trade_list))
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550558574702), event.timestamp)
+        self.assertEqual(1550558574702, event.timestamp)
         self.assertEqual(0.001, event.trade_list[0].amount)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550558574684), event.trade_list[0].timestamp)
+        self.assertEqual(1550558574684, event.trade_list[0].timestamp)
         self.assertEqual("10033544262424890651900", event.trade_list[0].trade_id)
         self.assertEqual(3892.36, event.trade_list[0].price)
         self.assertEqual(TradeDirection.SELL, event.trade_list[0].direction)
         self.assertEqual(0.0512, event.trade_list[1].amount)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550558574684), event.trade_list[1].timestamp)
+        self.assertEqual(1550558574684, event.trade_list[1].timestamp)
         self.assertEqual("10033544262424890651183", event.trade_list[1].trade_id)
         self.assertEqual(3892.35, event.trade_list[1].price)
         self.assertEqual(TradeDirection.BUY, event.trade_list[1].direction)

@@ -4,7 +4,7 @@ from huobi.model import *
 from huobi.impl.utils import *
 from huobi.model import *
 from tests.mock_websocket_connection import MockWebsocketConnection
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 from huobi.impl.restapirequestimpl import account_info_map
 
 
@@ -82,9 +82,9 @@ class TestSubscribeOrderUpdateEvent(unittest.TestCase):
         self.assertEqual(5001, event.data.amount)
         self.assertEqual(5000, event.data.filled_amount)
         self.assertEqual("btcusdt", event.data.symbol)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1522856623232), event.timestamp)
+        self.assertEqual(1522856623232, event.timestamp)
         self.assertEqual(AccountType.SPOT, event.data.account_type)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1522858623622), event.data.created_timestamp)
+        self.assertEqual(1522858623622, event.data.created_timestamp)
         self.assertEqual(2039498445, event.data.order_id)
         self.assertEqual(OrderType.BUY_LIMIT, event.data.order_type)
         self.assertEqual(OrderSource.API, event.data.source)

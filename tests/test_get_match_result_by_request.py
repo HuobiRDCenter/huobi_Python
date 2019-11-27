@@ -2,7 +2,7 @@ import unittest
 from huobi.impl.utils import *
 from huobi.model import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 from huobi.impl.restapirequestimpl import account_info_map
 
 
@@ -21,7 +21,9 @@ data = '''
             "filled-amount":"1",
             "match-id":100047439757,
             "id":4192759683,
-            "type":"sell-market"
+            "type":"sell-market",
+            "role":"taker",
+            "fee-deduct-currency":""
         },
         {
             "symbol":"htbtc",
@@ -34,7 +36,9 @@ data = '''
             "filled-amount":"1.89",
             "match-id":100047251154,
             "id":4191225853,
-            "type":"sell-market"
+            "type":"sell-market",
+            "role":"taker",
+            "fee-deduct-currency":""
         }
     ]
 }
@@ -75,7 +79,7 @@ class TestGetMatchResultByRequest(unittest.TestCase):
         request = impl.get_match_results("btcustd", OrderType.SELL_LIMIT, "2019-01-03", "2019-02-03", 10, 100)
         match_result_list = request.json_parser(parse_json_from_string(data))
         self.assertEqual(2, len(match_result_list))
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550632074577), match_result_list[1].created_timestamp)
+        self.assertEqual(1550632074577, match_result_list[1].created_timestamp)
         self.assertEqual(4191225853, match_result_list[1].id)
         self.assertEqual(100047251154, match_result_list[1].match_id)
         self.assertEqual(24966984923, match_result_list[1].order_id)

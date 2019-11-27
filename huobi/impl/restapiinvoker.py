@@ -1,4 +1,5 @@
 import requests
+import time
 from huobi.exception.huobiapiexception import HuobiApiException
 from huobi.impl.utils.etfresult import etf_result_check
 from huobi.impl.utils import *
@@ -42,4 +43,25 @@ def call_sync(request):
         json_wrapper = parse_json_from_string(response.text)
         check_response(json_wrapper)
         return request.json_parser(json_wrapper)
+
+def call_sync_perforence_test(request):
+    if request.method == "GET":
+        inner_start_time = time.time()
+        response = requests.get(request.host + request.url, headers=request.header)
+        #print("call_sync_perforence_test data :", response.text)
+        inner_end_time = time.time()
+        cost_manual = round(inner_end_time - inner_start_time, 6)
+        req_cost = response.elapsed.total_seconds()
+        json_wrapper = parse_json_from_string(response.text)
+        check_response(json_wrapper)
+        return request.json_parser(json_wrapper), req_cost, cost_manual
+    elif request.method == "POST":
+        inner_start_time = time.time()
+        response = requests.post(request.host + request.url, data=json.dumps(request.post_body), headers=request.header)
+        inner_end_time = time.time()
+        cost_manual = round(inner_end_time - inner_start_time, 6)
+        req_cost = response.elapsed.total_seconds()
+        json_wrapper = parse_json_from_string(response.text)
+        check_response(json_wrapper)
+        return request.json_parser(json_wrapper), req_cost, cost_manual
 

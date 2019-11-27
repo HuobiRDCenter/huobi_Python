@@ -4,7 +4,7 @@ from huobi.model import *
 from huobi.impl.utils import *
 from huobi.model import *
 from tests.mock_websocket_connection import MockWebsocketConnection
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 
 
 data ='''
@@ -69,7 +69,7 @@ class TestSubscribeCandlestickEvent(unittest.TestCase):
         request = impl.subscribe_candlestick_event(symbols, CandlestickInterval.MIN1, callback)
         candlestick_event = request.json_parser(parse_json_from_string(data))
         self.assertEqual("btcusdt", candlestick_event.symbol)
-        self.assertEqual( convert_cst_in_millisecond_to_utc(1550469651403), candlestick_event.timestamp)
+        self.assertEqual( 1550469651403, candlestick_event.timestamp)
         self.assertEqual(CandlestickInterval.MIN1, candlestick_event.interval)
         self.assertEqual(3719.88, candlestick_event.data.open)
         self.assertEqual(3719.91, candlestick_event.data.close)

@@ -2,7 +2,7 @@ import unittest
 from huobi.impl.utils import *
 from huobi.model import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 from huobi.impl.restapirequestimpl import account_info_map
 
 
@@ -58,10 +58,10 @@ class TestGetOrders(unittest.TestCase):
         request = impl.get_order("htbtc", 24962048654)
         order = request.json_parser(parse_json_from_string(data))
 
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550626936504), order.created_timestamp)
+        self.assertEqual(1550626936504, order.created_timestamp)
         self.assertEqual(AccountType.SPOT, order.account_type)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550626936722), order.canceled_timestamp)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550626936798), order.finished_timestamp)
+        self.assertEqual(1550626936722, order.canceled_timestamp)
+        self.assertEqual(1550626936798, order.finished_timestamp)
         self.assertEqual(24962048654, order.order_id)
         self.assertEqual(0.08888, order.filled_amount)
         self.assertEqual(0.204, order.filled_cash_amount)

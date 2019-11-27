@@ -2,7 +2,7 @@ import unittest
 from huobi.impl.utils import *
 from huobi.model.constant import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 
 data = '''
 {
@@ -63,5 +63,5 @@ class TestGetHistoricalTrade(unittest.TestCase):
         self.assertEqual(3, len(trade_list))
         self.assertEqual(122.18, trade_list[0].price)
         self.assertEqual(0.0071, trade_list[0].amount)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550222502562), trade_list[0].timestamp)
+        self.assertEqual(1550222502562, trade_list[0].timestamp)
         self.assertEqual(TradeDirection.SELL, trade_list[0].direction)

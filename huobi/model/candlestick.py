@@ -1,5 +1,3 @@
-from huobi.impl.utils.timeservice import convert_cst_in_second_to_utc
-
 
 class Candlestick:
     """
@@ -7,7 +5,6 @@ class Candlestick:
 
     :member
         id : keep the original timestamp
-        timestamp: The UNIX formatted timestamp in UTC.
         high: The high price.
         low: The low price.
         open: The opening price.
@@ -20,7 +17,6 @@ class Candlestick:
 
     def __init__(self):
         self.id = 0
-        self.timestamp = 0
         self.high = 0.0
         self.low = 0.0
         self.open = 0.0
@@ -33,7 +29,6 @@ class Candlestick:
     def json_parse(json_data):
         data_obj = Candlestick()
         data_obj.id = json_data.get_int("id")
-        data_obj.timestamp = convert_cst_in_second_to_utc(json_data.get_int("id"))
         data_obj.open = json_data.get_float("open")
         data_obj.close = json_data.get_float("close")
         data_obj.low = json_data.get_float("low")
@@ -46,7 +41,6 @@ class Candlestick:
     def print_object(self, format_data=""):
         from huobi.base.printobject import PrintBasic
         PrintBasic.print_basic(self.id, format_data + "Id")
-        PrintBasic.print_basic(self.timestamp, format_data + "Unix Time")
         PrintBasic.print_basic(self.high, format_data + "High")
         PrintBasic.print_basic(self.low, format_data + "Low")
         PrintBasic.print_basic(self.open, format_data + "Open")

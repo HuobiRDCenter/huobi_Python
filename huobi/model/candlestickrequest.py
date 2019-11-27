@@ -18,6 +18,7 @@ class CandlestickRequest:
     """
 
     def __init__(self):
+        self.id = 0
         self.symbol = ""
         self.timestamp = 0
         self.interval = CandlestickInterval.INVALID
@@ -27,14 +28,16 @@ class CandlestickRequest:
     def json_parse(json_wrapper):
         ch = json_wrapper.get_string(OutputKey.KeyChannelRep)
         parse = ChannelParser(ch)
-        candlestick_event = CandlestickRequest()
-        candlestick_event.symbol = parse.symbol
-        candlestick_event.interval = ""
+        candlestick_req = CandlestickRequest()
+        candlestick_req.id = json_wrapper.get_int("id")
+        candlestick_req.timestamp = candlestick_req.id
+        candlestick_req.symbol = parse.symbol
+        candlestick_req.interval = ""
         tick = json_wrapper.get_array(OutputKey.KeyData)
         candlestick_list = list()
         for item in tick.get_items():
             data = Candlestick.json_parse(item)
             candlestick_list.append(data)
 
-        candlestick_event.data = candlestick_list
-        return candlestick_event
+        candlestick_req.data = candlestick_list
+        return candlestick_req

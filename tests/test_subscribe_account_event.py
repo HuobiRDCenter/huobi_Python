@@ -5,7 +5,7 @@ from huobi.model import *
 from huobi.impl.utils import *
 from huobi.model import *
 from tests.mock_websocket_connection import MockWebsocketConnection
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 from huobi.impl.restapirequestimpl import account_info_map
 
 
@@ -69,7 +69,7 @@ class TestSubscribeAccountEvent(unittest.TestCase):
         request = impl.subscribe_account_event(BalanceMode.AVAILABLE, callback)
         event = request.json_parser(parse_json_from_string(data))
 
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550556381242), event.timestamp)
+        self.assertEqual(1550556381242, event.timestamp)
         self.assertEqual(1, len(event.account_change_list))
         self.assertEqual(AccountChangeType.NEWORDER, event.change_type)
         self.assertEqual(AccountType.SPOT, event.account_change_list[0].account_type)

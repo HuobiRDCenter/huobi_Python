@@ -1,6 +1,5 @@
 from huobi.constant.result import OutputKey
 from huobi.impl.utils.channelparser import ChannelParser
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
 from huobi.model import Trade
 
 

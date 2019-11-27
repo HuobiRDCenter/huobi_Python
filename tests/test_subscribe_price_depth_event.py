@@ -4,7 +4,7 @@ from huobi.model import *
 from huobi.impl.utils import *
 from huobi.model import *
 from tests.mock_websocket_connection import MockWebsocketConnection
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 from huobi.impl.restapirequestimpl import account_info_map
 
 data = '''
@@ -36,7 +36,7 @@ class TestSubscribePriceDepthEvent(unittest.TestCase):
         def callback(event):
             pass
 
-        request = impl.subscribe_price_depth_event(symbols, callback)
+        request = impl.subscribe_price_depth_event(symbols, "step0", callback)
         mock_connection = MockWebsocketConnection(request)
         request.subscription_handler(mock_connection)
         subscription = mock_connection.pop_output_message()
@@ -50,10 +50,10 @@ class TestSubscribePriceDepthEvent(unittest.TestCase):
         def callback(event):
             pass
 
-        request = impl.subscribe_price_depth_event(symbols, callback)
+        request = impl.subscribe_price_depth_event(symbols, "step0",callback)
         event = request.json_parser(parse_json_from_string(data))
         self.assertEqual("btcusdt", event.symbol)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550558788054), event.timestamp)
+        self.assertEqual(1550558788054, event.timestamp)
         self.assertEqual(3, len(event.data.bids))
         self.assertEqual(2, len(event.data.asks))
         self.assertEqual(3891.94, event.data.bids[0].price)

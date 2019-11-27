@@ -2,7 +2,7 @@ import unittest
 from huobi.impl.utils import *
 from huobi.model import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 from huobi.impl.restapirequestimpl import account_info_map
 
 data = '''
@@ -19,6 +19,7 @@ data = '''
         "address": "rae93V8d2mdoUQHwBDBdM4NHCMehRJAsbm",
         "address-tag": "100040",
         "fee": 345,
+        "chain":"abcd",
         "state": "confirmed",
         "created-at": 1510912472199,
         "updated-at": 1511145876575
@@ -42,7 +43,7 @@ class TestGetDepositHistory(unittest.TestCase):
 
     def test_request(self):
         impl = RestApiRequestImpl("12345", "67890")
-        request = impl.get_deposit_history("btc", 24966984923, 1)
+        request = impl.get_deposit_history("btc", 24966984923, 1, "next")
         self.assertEqual("GET", request.method)
         self.assertTrue(request.url.find("/v1/query/deposit-withdraw") != -1)
         self.assertTrue(request.url.find("Signature") != -1)
@@ -50,16 +51,17 @@ class TestGetDepositHistory(unittest.TestCase):
         self.assertTrue(request.url.find("from=24966984923") != -1)
         self.assertTrue(request.url.find("size=1") != -1)
         self.assertTrue(request.url.find("type=deposit") != -1)
+        self.assertTrue(request.url.find("direct=next") != -1)
 
     def test_result(self):
         impl = RestApiRequestImpl("12345", "67890")
-        request = impl.get_deposit_history("btc", 24966984923, 1)
+        request = impl.get_deposit_history("btc", 24966984923, 1, "next")
         deposits = request.json_parser(parse_json_from_string(data))
         self.assertEqual(1, len(deposits))
         self.assertEqual(345, deposits[0].fee)
         self.assertEqual(1171, deposits[0].id)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1510912472199), deposits[0].created_timestamp)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1511145876575), deposits[0].updated_timestamp)
+        self.assertEqual(1510912472199, deposits[0].created_timestamp)
+        self.assertEqual(1511145876575, deposits[0].updated_timestamp)
         self.assertTrue("rae93V8d2mdoUQHwBDBdM4NHCMehRJAsbm", deposits[0].address)
         self.assertEqual("100040", deposits[0].address_tag)
         self.assertEqual("ht", deposits[0].currency)

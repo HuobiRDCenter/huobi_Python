@@ -2,7 +2,6 @@ import unittest
 from huobi.impl.utils import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
 from huobi.model.constant import *
-from huobi.impl.utils.timeservice import convert_cst_in_second_to_utc
 
 data = '''{
   "status": "ok",
@@ -49,7 +48,7 @@ class TestGetCandlestick(unittest.TestCase):
         request = impl.get_candlestick("btcusdt", CandlestickInterval.YEAR1, 100)
         candlestick_list = request.json_parser(parse_json_from_string(data))
         self.assertEqual(2, len(candlestick_list))
-        self.assertEqual(1550131200000, candlestick_list[0].timestamp)
+        self.assertEqual(1550160000, candlestick_list[0].id)
         self.assertEqual(3612.19, candlestick_list[0].high)
         self.assertEqual(3575, candlestick_list[0].low)
         self.assertEqual(3600.77, candlestick_list[0].open)
@@ -57,7 +56,7 @@ class TestGetCandlestick(unittest.TestCase):
         self.assertEqual(4562.76674424022461572, candlestick_list[0].amount)
         self.assertEqual(16424799.08415395920040605355, candlestick_list[0].volume)
         self.assertEqual(28891, candlestick_list[0].count)
-        self.assertEqual(convert_cst_in_second_to_utc(1550073600), candlestick_list[1].timestamp)
+        self.assertEqual(1550073600, candlestick_list[1].id)
         self.assertEqual(3624.3, candlestick_list[1].high)
         self.assertEqual(3570, candlestick_list[1].low)
         self.assertEqual(3594.85, candlestick_list[1].open)

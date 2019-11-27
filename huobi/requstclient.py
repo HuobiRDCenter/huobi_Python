@@ -502,7 +502,7 @@ class RequestClient(object):
         :param size: The number of records to return, the range is [1, 100]. (mandatory)
         :return: The swap history.
         """
-        return call_sync(self.request_impl.get_etf_swap_config(etf_symbol, offset, size))
+        return call_sync(self.request_impl.get_etf_swap_history(etf_symbol, offset, size))
 
     def get_etf_candlestick(self, etf_symbol: 'str', interval: 'CandlestickInterval', size: 'int'=None) -> list:
         """
@@ -515,14 +515,15 @@ class RequestClient(object):
         """
         return call_sync(self.request_impl.get_etf_candlestick(etf_symbol, interval, size))
 
-    def get_margin_balance_detail(self, symbol: 'str' ) -> list:
+    def get_margin_balance_detail(self, symbol: 'str' = None, sub_uid: 'int' = None) -> list:
         """
         Get the Balance of the Margin Loan Account.
 
-        :param symbol: The currency, like "btc". (mandatory)
+        :param symbol: The currency, like "trxusdt". (optional)
+        :param sub_uid: The currency for specific user. (optional)
         :return: The margin loan account detail list.
         """
-        return call_sync(self.request_impl.get_margin_balance_detail(symbol))
+        return call_sync(self.request_impl.get_margin_balance_detail(symbol, sub_uid))
 
     def get_fee_rate(self, symbols: 'str') -> list:
         """

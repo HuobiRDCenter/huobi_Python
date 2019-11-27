@@ -2,7 +2,7 @@ import unittest
 from huobi.impl.utils import *
 from huobi.model import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 from huobi.impl.restapirequestimpl import account_info_map
 from huobi.exception.huobiapiexception import HuobiApiException
 
@@ -19,10 +19,16 @@ data = '''
 			"symbol": "ethbtc",
 			"currency": "btc",
 			"id": 390,
+			"deduct-rate":1.201,
+			"paid-point":10.87,
 			"state": "accrual",
 			"account-id": 123,
 			"user-id": 119910,
-			"created-at": 1511169724530
+			"created-at": 1511169724530,
+			"deduct-currency":"",
+			"paid-coin":0,
+			"deduct-amount":0.1,
+			"updated-at":1511169724531
 		},
 		{
 			"loan-balance": "1.100000000000000000",
@@ -34,10 +40,16 @@ data = '''
 			"symbol": "ethbtc",
 			"currency": "btc",
 			"id": 391,
+			"paid-point":10.87,
+			"deduct-rate":1.201,
 			"state": "accrual",
 			"account-id": 456,
 			"user-id": 119911,
-			"created-at": 1511169724531
+			"created-at": 1511169724531,
+			"deduct-currency":"",
+			"paid-coin":0,
+			"deduct-amount":0.1,
+			"updated-at":1511169724531
 		}
 	]
 }
@@ -107,5 +119,5 @@ class TestGetLoanHistory(unittest.TestCase):
         self.assertEqual(LoanOrderState.ACCRUAL, loan_list[0].state)
         self.assertEqual(AccountType.SPOT, loan_list[0].account_type)
         self.assertEqual(119910, loan_list[0].user_id)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1511169724000), loan_list[0].accrued_timestamp)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1511169724530), loan_list[0].created_timestamp)
+        self.assertEqual(1511169724000, loan_list[0].accrued_timestamp)
+        self.assertEqual(1511169724530, loan_list[0].created_timestamp)

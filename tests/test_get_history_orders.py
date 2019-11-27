@@ -2,7 +2,7 @@ import unittest
 from huobi.impl.utils import *
 from huobi.model import *
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
-from huobi.impl.utils.timeservice import convert_cst_in_millisecond_to_utc
+
 from huobi.impl.restapirequestimpl import account_info_map
 
 data = '''
@@ -93,9 +93,9 @@ class TestGetHistoryOrders(unittest.TestCase):
         self.assertEqual(2, len(order_list))
         self.assertEqual(24965104183, order_list[0].order_id)
         self.assertEqual(AccountType.SPOT, order_list[0].account_type)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550630155568), order_list[0].canceled_timestamp)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550630155647), order_list[0].finished_timestamp)
-        self.assertEqual(convert_cst_in_millisecond_to_utc(1550630155350), order_list[0].created_timestamp)
+        self.assertEqual(1550630155568, order_list[0].canceled_timestamp)
+        self.assertEqual(1550630155647, order_list[0].finished_timestamp)
+        self.assertEqual(1550630155350, order_list[0].created_timestamp)
         self.assertEqual(0.0888, order_list[0].filled_amount)
         self.assertEqual(0.011, order_list[0].filled_cash_amount)
         self.assertEqual(0.03445, order_list[0].filled_fees)
