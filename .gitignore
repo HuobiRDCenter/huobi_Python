@@ -7,3 +7,4 @@ dist/
 huobi_client.egg-info/
 huobi/privateconfig.py
 
+.DS_Store
