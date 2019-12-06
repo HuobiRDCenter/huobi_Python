@@ -1011,7 +1011,7 @@ class RestApiRequestImpl(object):
                 fee_rate = FeeRate()
                 fee_rate.symbol = item_in_data.get_string("symbol")
                 fee_rate.maker_fee = item_in_data.get_string("maker-fee")
-                fee_rate.symbol = item_in_data.get_string("taker-fee")
+                fee_rate.taker_fee = item_in_data.get_string("taker-fee")
                 fee_list.append(fee_rate)
             return fee_list
 

@@ -16,6 +16,8 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 ## Table of Contents
 
+- [Huobi Global API Python SDK version 1.0.7](#Huobi-Global-API-Python-SDK-version-1.0.7)
+
 - [Huobi Global API Python SDK version 1.0.6](#Huobi-Global-API-Python-SDK-version-1.0.6)
 
 - [Huobi Global API Python SDK version 1.0.5](#Huobi-Global-API-Python-SDK-version-1.0.5)
@@ -28,7 +30,13 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 - [Huobi Global API Python SDK version 1.0.1](#Huobi-Global-API-Python-SDK-version-1.0.1)
 
+# Huobi Global API Python SDK version 1.0.7
 
+## 1.RELEASE NOTE - Huobi Global API SDK  1.0.7
+***2019-12-06***
+
+
+- fix bug in websocketconnection.py to support wss://api-aws.huobi.pro
 
 
 # Huobi Global API Python SDK version 1.0.6
@@ -44,8 +52,7 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
     remove convert_cst_in_second_to_utc function
     remove convert_cst_in_millisecond_to_utc function
     ```
-    
-- add mbp(market by price) subscribe and request
+- add subscribe mbp and request mbp
     ```
     market.$symbol.mbp.$levels
     ```

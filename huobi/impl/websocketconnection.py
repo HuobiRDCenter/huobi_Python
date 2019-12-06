@@ -84,7 +84,7 @@ class WebsocketConnection:
         connection_id += 1
         self.id = connection_id
         host = urllib.parse.urlparse(uri).hostname
-        if host.find("api.") == 0:
+        if host.find("api") == 0:
             self.__market_url = "wss://" + host + "/ws"
             self.__trading_url = "wss://" + host + "/ws/v1"
         else:
