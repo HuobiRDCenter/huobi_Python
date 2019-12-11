@@ -1,3 +1,6 @@
+from huobi.constant.system import ApiVersion
+
+
 class WebsocketRequest(object):
 
     def __init__(self):
@@ -7,3 +10,4 @@ class WebsocketRequest(object):
         self.error_handler = None
         self.json_parser = None
         self.update_callback = None
+        self.api_version = ApiVersion.VERSION_V1  # v1 as default

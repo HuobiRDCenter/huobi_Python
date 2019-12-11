@@ -179,6 +179,11 @@ class BalanceMode:
     TOTAL = "1"
     INVALID = None
 
+class AccountBalanceMode:
+    BALANCE = "0"
+    TOTAL = "1"
+    INVALID = None
+
 class OperateMode:
     PING = "ping"
     PONG = "pong"
@@ -226,4 +231,22 @@ class ChainWithdrawStatus:
 class InstrumentStatus:
     NORMAL = "normal"
     DELISTED = "delisted"
+    INVALID = None
+
+class AccountChangeType:
+    ORDER_PLACE = "order-place"
+    ORDER_MATCH = "order-match"
+    ORDER_REFUND = "order-refund"
+    ORDER_CANCEL = "order-cancel"
+    ORDER_FEE_REFUND = "order-fee-refund"
+    MARGIN_TRANSFER = "margin-transfer"
+    MARGIN_LOAN = "margin-loan"
+    MARGIN_INTEREST = "margin-interest"
+    MARGIN_REPAY = "margin-repay"
+    OTHER = "other"
+    INVALID = None
+
+class FeeDeductType:
+    DEDUCT_BY_HT = "ht"
+    DEDUCT_BY_POINT = "point"
     INVALID = None

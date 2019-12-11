@@ -41,6 +41,10 @@ from huobi.model.mbp import Mbp
 from huobi.model.mbpevent import MbpEvent
 from huobi.model.mbprequest import MbpRequest
 
+from huobi.model.tradeclearing import TradeClearing
+from huobi.model.tradeclearingevent import TradeClearingEvent
+from huobi.model.accountsupdate import AccountsUpdate
+from huobi.model.accountsupdateevent import AccountsUpdateEvent
 
 
 

@@ -10,14 +10,14 @@ class UrlParamsBuilder(object):
 
     def put_url(self, name, value):
         if value is not None:
-            if isinstance(value, list):
+            if isinstance(value, (list, dict)):
                 self.param_map[name] = value
             else:
                 self.param_map[name] = str(value)
 
     def put_post(self, name, value):
         if value is not None:
-            if isinstance(value, list):
+            if isinstance(value, (list, dict)):
                 self.post_map[name] = value
             else:
                 self.post_map[name] = str(value)

@@ -7,6 +7,8 @@ from urllib import parse
 import urllib.parse
 
 from huobi.base.printtime import PrintDate
+from huobi.constant.system import ApiVersion
+from huobi.impl.utils.apisignaturev2 import create_signature_v2
 from huobi.impl.utils.timeservice import get_current_timestamp
 from huobi.impl.utils.urlparamsbuilder import UrlParamsBuilder
 from huobi.impl.utils.apisignature import create_signature
@@ -70,7 +72,7 @@ class WebsocketConnection:
         # threading.Thread.__init__(self)
         self.__thread = None
         self.__market_url = "wss://api.huobi.pro/ws"
-        self.__trading_url = "wss://api.huobi.pro/ws/v1"
+        self.__trading_url = "wss://api.huobi.pro/ws/" + request.api_version
         self.__api_key = api_key
         self.__secret_key = secret_key
         self.request = request
@@ -86,10 +88,10 @@ class WebsocketConnection:
         host = urllib.parse.urlparse(uri).hostname
         if host.find("api") == 0:
             self.__market_url = "wss://" + host + "/ws"
-            self.__trading_url = "wss://" + host + "/ws/v1"
+            self.__trading_url = "wss://" + host + "/ws/" + request.api_version
         else:
             self.__market_url = "wss://" + host + "/api/ws"
-            self.__trading_url = "wss://" + host + "/ws/v1"
+            self.__trading_url = "wss://" + host + "/ws/" + request.api_version
         if request.is_trading:
             self.url = self.__trading_url
         else:
@@ -121,7 +123,7 @@ class WebsocketConnection:
             self.__thread.start()
 
     def send(self, data):
-        #print(data)
+        #print("sending data :", data)
         self.ws.send(data)
 
     def close(self):
@@ -139,11 +141,20 @@ class WebsocketConnection:
         self.__watch_dog.on_connection_created(self)
         if self.request.is_trading:
             try:
-                builder = UrlParamsBuilder()
-                create_signature(self.__api_key, self.__secret_key,
-                                 "GET", self.url, builder)
-                builder.put_url("op", "auth")
-                self.send(builder.build_url_to_json())
+                if self.request.api_version == ApiVersion.VERSION_V1:
+                    builder = UrlParamsBuilder()
+                    create_signature(self.__api_key, self.__secret_key,
+                                     "GET", self.url, builder)
+                    builder.put_url("op", "auth")
+                    self.send(builder.build_url_to_json())
+                elif self.request.api_version == ApiVersion.VERSION_V2:
+                    builder = UrlParamsBuilder()
+                    create_signature_v2(self.__api_key, self.__secret_key,
+                                     "GET", self.url, builder)
+                    self.send(builder.build_url_to_json())
+                else:
+                    self.on_error("api version for create the signature fill failed")
+
             except Exception as e:
                 self.on_error("Unexpected error when create the signature: " + str(e))
         else:
@@ -163,8 +174,16 @@ class WebsocketConnection:
 
     def on_message(self, message):
         self.last_receive_time = get_current_timestamp()
-        json_wrapper = parse_json_from_string(gzip.decompress(message).decode("utf-8"))
-        #print("RX: " + gzip.decompress(message).decode("utf-8"))
+
+        if isinstance(message, (str)):
+            #print("RX string : ", message)
+            json_wrapper = parse_json_from_string(message)
+        elif isinstance(message, (bytes)):
+            #print("RX bytes: " + gzip.decompress(message).decode("utf-8"))
+            json_wrapper = parse_json_from_string(gzip.decompress(message).decode("utf-8"))
+        else:
+            print("RX unknow type : ", type(message))
+            return
 
         if json_wrapper.contain_key("status") and json_wrapper.get_string("status") != "ok":
             error_code = json_wrapper.get_string_or_default("err-code", "Unknown error")
@@ -186,6 +205,33 @@ class WebsocketConnection:
                     self.request.subscription_handler(self)
             elif op == "req":
                 self.__on_receive(json_wrapper)
+        elif json_wrapper.contain_key("action"):  # for V2
+            action_name = json_wrapper.get_string("action")
+            if action_name == "ping":
+                action_data = json_wrapper.get_object("data")
+                ping_ts = action_data.get_string("ts")
+                self.__process_ping_on_v2_trade(ping_ts)
+            elif action_name == "sub":
+                action_code = json_wrapper.get_int("code")
+                if action_code == 200:
+                    logging.info("subscribe ACK received")
+                else:
+                    logging.error("receive error data : " + message)
+            elif action_name == "req": #
+                action_code = json_wrapper.get_int("code")
+                if action_code == 200:
+                    logging.info("signature ACK received")
+                    if self.request.subscription_handler is not None:
+                        self.request.subscription_handler(self)
+                else:
+                    logging.error("receive error data : " + message)
+            elif action_name == "push":
+                action_data = json_wrapper.get_object("data")
+                if action_data:
+                    self.__on_receive(json_wrapper)
+                else:
+                    logging.error("receive error push data : " + message)
+
         elif json_wrapper.contain_key("ch"):
             self.__on_receive(json_wrapper)
         elif json_wrapper.contain_key("rep"):
@@ -224,6 +270,11 @@ class WebsocketConnection:
         #self.send("{\"pong\":" + str(get_current_timestamp()) + "}")
         #PrintDate.timestamp_to_date(ping_ts)
         self.send("{\"pong\":" + str(ping_ts) + "}")
+        return
+
+    def __process_ping_on_v2_trade(self, ping_ts):
+        # PrintDate.timestamp_to_date(ping_ts)
+        self.send("{\"action\": \"pong\",\"data\": {\"ts\": " + str(ping_ts) +"}}")
         return
 
     def close_on_error(self):
