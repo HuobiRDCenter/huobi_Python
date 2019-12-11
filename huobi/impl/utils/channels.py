@@ -65,3 +65,19 @@ def account_channel(mode):
     channel["topic"] = "accounts"
     channel["model"] = mode
     return json.dumps(channel)
+
+def trade_clearing_channel(symbol="*"):
+    channel = dict()
+    channel["action"] = "sub"
+    channel["ch"] = "trade.clearing#" + symbol
+    return json.dumps(channel)
+
+def accounts_update_channel(mode=0):
+    channel = dict()
+    channel["action"] = "sub"
+    if mode is None:
+        channel["ch"] = "accounts.update"
+    else:
+        channel["ch"] = "accounts.update#{mode}".format(mode=mode)
+    return json.dumps(channel)
+

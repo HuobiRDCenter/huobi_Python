@@ -3,6 +3,7 @@ import urllib.parse
 from huobi.constant.system import WebSocketDefine
 from huobi.impl.websocketrequestimpl import WebsocketRequestImpl
 from huobi.impl.websocketconnection import WebsocketConnection
+from huobi.impl.websocketrequestimplv2 import WebsocketRequestImplV2
 from huobi.impl.websocketwatchdog import WebSocketWatchDog
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
 from huobi.impl.accountinfomap import account_info_map
@@ -36,6 +37,7 @@ class SubscriptionClient(object):
         self.__api_key = api_key
         self.__secret_key = secret_key
         self.websocket_request_impl = WebsocketRequestImpl(self.__api_key)
+        self.websocket_request_impl_v2 = WebsocketRequestImplV2(self.__api_key)
         self.connections = list()
         self.uri = WebSocketDefine.Uri
         is_auto_connect = True
@@ -380,6 +382,44 @@ class SubscriptionClient(object):
                                                                           auto_close, error_handler)
         self.__create_connection(request)
 
+
+    def subscribe_trade_clearing_event(self, symbols: 'str', callback, error_handler=None):
+        """
+        Subscribe trade clearing by symbol
+
+        :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
+                        "*" for all symbols
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(price_depth_event: 'PriceDepthEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+
+        :return:  No return
+        """
+        symbol_list = symbols.split(",")
+        request = self.websocket_request_impl_v2.subscribe_trade_clearing_event(symbol_list, callback, error_handler)
+        self.__create_connection(request)
+
+    def subscribe_accounts_update_event(self, mode: 'AccountBalanceMode', callback, error_handler=None):
+        """
+        Subscribe accounts update
+
+        :param mode: subscribe mode
+                "0" : for balance
+                "1" : for available and balance
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(price_depth_event: 'PriceDepthEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+
+        :return:  No return
+        """
+        request = self.websocket_request_impl_v2.subscribe_accounts_update_event(mode, callback, error_handler)
+        self.__create_connection(request)
     def unsubscribe_all(self):
         for conn in self.connections:
             conn.close()
