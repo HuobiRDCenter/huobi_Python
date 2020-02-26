@@ -24,7 +24,7 @@ class Mbp:
         mbp = Mbp()
         bid_list = list()
         mbp.seqNum = json_data.get_int("seqNum")
-        mbp.prevSeqNum = json_data.get_int("prevSeqNum")
+        mbp.prevSeqNum = json_data.get_int_or_default("prevSeqNum", 0)  # prevSeqNum only for increased subscribe, request doesn't have this value
         bids_array = json_data.get_array("bids")
         for item in bids_array.get_items_as_array():
             depth_entry = DepthEntry()

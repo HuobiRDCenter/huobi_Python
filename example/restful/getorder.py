@@ -4,7 +4,7 @@ from huobi.model import *
 
 request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key)
 
-client_order_id_tmp = "abc022601"
+client_order_id_tmp = "abc022602"
 
 symbol_test = "eosusdt"
 order_id = request_client.create_order(symbol_test, AccountType.SPOT, OrderType.BUY_LIMIT, amount=5, price=1.01, client_order_id=client_order_id_tmp)
