@@ -34,12 +34,15 @@ def check_response(json_wrapper):
 
 def call_sync(request):
     if request.method == "GET":
+        # print("call_sync url : " , request.host + request.url)
         response = requests.get(request.host + request.url, headers=request.header)
+        # print("receive data : " + response.text)
         json_wrapper = parse_json_from_string(response.text)
         check_response(json_wrapper)
         return request.json_parser(json_wrapper)
     elif request.method == "POST":
         response = requests.post(request.host + request.url, data=json.dumps(request.post_body), headers=request.header)
+        # print("receive data : " + response.text)
         json_wrapper = parse_json_from_string(response.text)
         check_response(json_wrapper)
         return request.json_parser(json_wrapper)

@@ -1,4 +1,5 @@
 from huobi.impl import RestApiRequest
+from huobi.impl.utils.apisignaturev2 import create_signature_v2
 from huobi.impl.utils.urlparamsbuilder import UrlParamsBuilder
 from huobi.impl.utils.apisignature import create_signature
 from huobi.impl.accountinfomap import account_info_map
@@ -11,6 +12,10 @@ from huobi.model.feerate import FeeRate
 class RestApiRequestImpl(object):
     # __MARKET_URL = "https://api.huobi.pro:443"
     # __TRADING_URL = "https://api.huobi.pro:443"
+
+    def list_remove_duplicate(self, lst1):
+        lst2 = sorted(set(lst1), key=lst1.index)
+        return lst2
 
     def __init__(self, api_key, secret_key, server_url="https://api.huobi.pro"):
         self.__api_key = api_key
@@ -31,7 +36,10 @@ class RestApiRequestImpl(object):
         request.host = self.__server_url
         create_signature(self.__api_key, self.__secret_key, request.method, request.host + url, builder)
         request.header.update({'Content-Type': 'application/json'})
-        request.post_body = builder.post_map
+        if (len(builder.post_list)):  # specify for case : /v1/order/batch-orders
+            request.post_body = builder.post_list
+        else:
+            request.post_body = builder.post_map
         request.url = url + builder.build_url()
         return request
 
@@ -489,6 +497,76 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
+    def batch_create_order(self, create_params_list):
+        check_should_not_none(create_params_list, "order_config_list")
+        check_list(create_params_list, 1, 10, "create order config list")
+
+        new_config_list = list()
+        for item in create_params_list:
+            symbol = item.get("symbol", None)
+            account_type = item.get("account_type", None)
+            order_type = item.get("order_type", None)
+            amount = item.get("amount", None)
+            price = None
+
+            check_symbol(symbol)
+            check_should_not_none(account_type, "account_type")
+            check_should_not_none(order_type, "order_type")
+            check_should_not_none(amount, "amount")
+            if order_type == OrderType.SELL_LIMIT \
+                    or order_type == OrderType.BUY_LIMIT \
+                    or order_type == OrderType.BUY_LIMIT_MAKER \
+                    or order_type == OrderType.SELL_LIMIT_MAKER:
+                check_should_not_none(item.get("price", None), "price for limit order")
+                price = item.get("price", None)
+            elif order_type == OrderType.SELL_MARKET or order_type == OrderType.BUY_MARKET:
+                price = None
+
+
+            global account_info_map
+            user = account_info_map.get_user(self.__api_key)
+
+            account = user.get_account_by_type(account_type=account_type, subtype=symbol)
+            new_item = {
+                'account-id' : account.id,
+                "symbol" : symbol,
+                'type' : order_type,
+                'amount': amount,
+                'price': price,
+                'source': RestApiRequestImpl.order_source_desc(account_type=account_type)
+            }
+
+            client_order_id = item.get("client_order_id", None)
+            if client_order_id:
+                new_item['client-order-id'] = client_order_id
+
+            stop_price = item.get("stop-price", None)
+            if stop_price:
+                new_item['stop-price'] = stop_price
+
+            operator = item.get("operator", None)
+            if operator:
+                new_item['operator'] = operator
+
+            new_config_list.append(new_item)
+
+        builder = UrlParamsBuilder()
+        builder.post_list = new_config_list
+
+        request = self.__create_request_by_post_with_signature("/v1/order/batch-orders", builder)
+
+        def parse(json_wrapper):
+            create_result_list = list()
+            data_array = json_wrapper.get_array("data")
+            for item in data_array.get_items():
+                item_obj = BatchCreateOrder.json_parse(item)
+                create_result_list.append(item_obj)
+
+            return create_result_list
+
+        request.json_parser = parse
+        return request
+
     def get_open_orders(self, symbol, account_type, size=None, side=None, from_id=None, direct=None):
         check_symbol(symbol)
         check_range(size, 1, 500, "size")
@@ -544,19 +622,34 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
-    def cancel_orders(self, symbol, order_id_list):
-        check_symbol(symbol)
-        check_should_not_none(order_id_list, "order_id_list")
-        check_list(order_id_list, 1, 50, "order_id_list")
-        string_list = list()
-        for order_id in order_id_list:
-            string_list.append(str(order_id))
+    def cancel_orders(self, order_id_list_param, client_order_id_list_param):
+
+        if (order_id_list_param is None or len(order_id_list_param) == 0) \
+                and (client_order_id_list_param is None or len(client_order_id_list_param) == 0):
+            raise HuobiApiException(HuobiApiException.INPUT_ERROR, "[Input] order_id_list or client_order_id_list must input only one")
+
         builder = UrlParamsBuilder()
-        builder.put_post("order-ids", string_list)
+        string_list = list()
+        if len(order_id_list_param):
+            order_id_list = self.list_remove_duplicate(order_id_list_param)
+            check_list(order_id_list, 1, 50, "order_id_list")
+            for order_id in order_id_list:
+                string_list.append(str(order_id))
+
+            builder.put_post("order-ids", string_list)
+        elif len(client_order_id_list_param):
+            client_order_id_list = self.list_remove_duplicate(client_order_id_list_param)
+            check_list(client_order_id_list, 1, 50, "client_order_id_list")
+
+            string_list = list()
+            for order_id in client_order_id_list:
+                string_list.append(str(order_id))
+            builder.put_post("client-order-ids", string_list)
+
         request = self.__create_request_by_post_with_signature("/v1/order/orders/batchcancel", builder)
 
         def parse(json_wrapper):
-            return
+            return BatchCancelOrder.json_parse(json_wrapper)
 
         request.json_parser = parse
         return request
@@ -740,7 +833,7 @@ class RestApiRequestImpl(object):
         return request
 
     def get_historical_orders(self, symbol, order_state, order_type=None, start_date=None, end_date=None, start_id=None,
-                              size=None):
+                              size=None, start_time=None, end_time=None):
         check_symbol(symbol),
         check_should_not_none(order_state, "order_state")
         start_date = format_date(start_date, "start_date")
@@ -748,6 +841,8 @@ class RestApiRequestImpl(object):
         builder = UrlParamsBuilder()
         builder.put_url("symbol", symbol)
         builder.put_url("types", order_type)
+        builder.put_url("start-time", start_time)
+        builder.put_url("end-time", end_time)
         builder.put_url("start-date", start_date)
         builder.put_url("end-date", end_date)
         builder.put_url("from", start_id)
@@ -1019,6 +1114,58 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
+    def get_margin_loan_info(self, symbols):
+        check_symbol(symbols)
+        builder = UrlParamsBuilder()
+        builder.put_url("symbols", symbols)
+        request = self.__create_request_by_get_with_signature("/v1/margin/loan-info", builder)
+
+        def parse(json_wrapper):
+            result_list = list()
+            data_array = json_wrapper.get_array("data")
+            for item_in_data in data_array.get_items():
+                margin_loan = MarginLoanInfo.json_parse(item_in_data)
+                result_list.append(margin_loan)
+            return result_list
+
+
+        request.json_parser = parse
+        return request
+
+    def get_cross_margin_loan_info(self):
+        builder = UrlParamsBuilder()
+        request = self.__create_request_by_get_with_signature("/v1/cross-margin/loan-info", builder)
+
+        def parse(json_wrapper):
+            result_list = list()
+            data_array = json_wrapper.get_array("data")
+            for item_in_data in data_array.get_items():
+                margin_loan = CrossMarginLoanInfo.json_parse(item_in_data)
+                result_list.append(margin_loan)
+            return result_list
+
+
+        request.json_parser = parse
+        return request
+
+    def get_reference_transact_fee_rate(self, symbols):
+        builder = UrlParamsBuilder()
+        check_symbol(symbol=symbols)
+        builder.put_url("symbols", symbols)
+        request = self.__create_request_by_get_with_signature("/v2/reference/transact-fee-rate", builder)
+
+        def parse(json_wrapper):
+            result_list = list()
+            data_array = json_wrapper.get_array("data")
+            for item_in_data in data_array.get_items():
+                fee_rate = TransactFeeRate.json_parse(item_in_data)
+                result_list.append(fee_rate)
+            return result_list
+
+
+        request.json_parser = parse
+        return request
+
     def transfer_between_futures_and_pro(self, currency, amount, transfer_type):
         check_currency(currency)
         check_should_not_none(currency, "currency")
@@ -1067,6 +1214,8 @@ class RestApiRequestImpl(object):
                     chain_obj = Chain()
 
                     chain_obj.chain = chain_in_data.get_string("chain")
+                    chain_obj.baseChain = chain_in_data.get_string_or_default("baseChain", "")
+                    chain_obj.baseChainProtocol = chain_in_data.get_string_or_default("baseChainProtocol", "")
                     chain_obj.numOfConfirmations = chain_in_data.get_float("numOfConfirmations")
                     chain_obj.numOfFastConfirmations = chain_in_data.get_float("numOfFastConfirmations")
 
@@ -1397,6 +1546,21 @@ class RestApiRequestImpl(object):
                 account_history_list.append(account_history)
 
             return account_history_list
+
+        request.json_parser = parse
+        return request
+
+    def sub_user_management(self, sub_uid, action):
+        check_should_not_none(sub_uid, "sub_uid")
+        check_should_not_none(action, "action")
+        builder = UrlParamsBuilder()
+        builder.put_post("subUid", sub_uid)
+        builder.put_post("action", action)
+        request = self.__create_request_by_post_with_signature("/v2/sub-user/management", builder)
+
+        def parse(json_wrapper):
+            data = json_wrapper.get_object("data")
+            return SubUidManagement.json_parse(data)
 
         request.json_parser = parse
         return request

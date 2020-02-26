@@ -15,7 +15,7 @@ data ='''
 	"ts": 1550556381242,
 	"topic": "accounts",
 	"data": {
-		"event": "order.place",
+		"event": "order-place",
 		"list": [{
 			"account-id": 123,
 			"currency": "ht",
@@ -71,7 +71,9 @@ class TestSubscribeAccountEvent(unittest.TestCase):
 
         self.assertEqual(1550556381242, event.timestamp)
         self.assertEqual(1, len(event.account_change_list))
-        self.assertEqual(AccountChangeType.NEWORDER, event.change_type)
+        print(event)
+        print(event.change_type)
+        self.assertEqual(AccountChangeType.ORDER_PLACE, event.change_type)
         self.assertEqual(AccountType.SPOT, event.account_change_list[0].account_type)
         self.assertEqual("ht", event.account_change_list[0].currency)
         self.assertEqual(10.8208984536412, event.account_change_list[0].balance)

@@ -250,3 +250,9 @@ class FeeDeductType:
     DEDUCT_BY_HT = "ht"
     DEDUCT_BY_POINT = "point"
     INVALID = None
+
+
+class SubUidState:
+    UNLOCK = "unlock"
+    LOCK = "lock"
+    INVALID = None

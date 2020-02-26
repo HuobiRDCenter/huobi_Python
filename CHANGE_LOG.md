@@ -16,6 +16,10 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 ## Table of Contents
 
+- [Huobi Global API Python SDK version 1.0.10](#Huobi-Global-API-Python-SDK-version-1.0.10)
+
+- [Huobi Global API Python SDK version 1.0.9](#Huobi-Global-API-Python-SDK-version-1.0.9)
+
 - [Huobi Global API Python SDK version 1.0.8](#Huobi-Global-API-Python-SDK-version-1.0.8)
 
 - [Huobi Global API Python SDK version 1.0.7](#Huobi-Global-API-Python-SDK-version-1.0.7)
@@ -31,6 +35,49 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 - [Huobi Global API Python SDK version 1.0.2](#Huobi-Global-API-Python-SDK-version-1.0.2)
 
 - [Huobi Global API Python SDK version 1.0.1](#Huobi-Global-API-Python-SDK-version-1.0.1)
+
+
+# Huobi Global API Python SDK version 1.0.10
+
+## 1.RELEASE NOTE - Huobi Global API SDK  1.0.10
+***2020-02-26***
+
+
+-  modify api for response&params
+    ```
+     GET /v1/order/orders/{order-id}      1. add client-order-id in response
+     GET /v1/order/orders/getClientOrder  1. add client-order-id in response
+     GET /v1/order/openOrders             1. add client-order-id in response
+     GET /v1/order/orders                 1. add client-order-id in response   2.add params start-time and end-time
+     GET /v1/order/history                1. add client-order-id in response
+     GET /v2/reference/currencies         1. add baseChain,baseChainProtocol in response
+    ```
+
+- add new api
+    ```
+     GET /v2/reference/transact-fee-rate
+     GET /v1/margin/loan-info
+     GET /v1/cross-margin/loan-info
+    ```
+
+# Huobi Global API Python SDK version 1.0.9
+
+## 1.RELEASE NOTE - Huobi Global API SDK  1.0.9
+***2020-01-07***
+
+
+- add new api
+    ```
+     1. POST /v1/order/batch-orders
+     2. POST /v2/sub-user/management
+    ```
+- modify api
+    ```
+     1. POST /v1/order/orders/batchcancel
+        param remove symbol
+        param add client-order-ids 
+        return success and failed detail info
+    ```
 
 # Huobi Global API Python SDK version 1.0.8
 

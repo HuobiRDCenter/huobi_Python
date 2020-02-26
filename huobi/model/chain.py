@@ -28,6 +28,8 @@ class Chain:
 
     def __init__(self):
         self.chain = ""
+        self.baseChain = ""
+        self.baseChainProtocol = ""
         self.numOfConfirmations = 0
         self.numOfFastConfirmations = 0
         self.depositStatus = ChainDepositStatus.INVALID
@@ -48,6 +50,8 @@ class Chain:
     def print_object(self, format_data=""):
         from huobi.base.printobject import PrintBasic
         PrintBasic.print_basic(self.chain, format_data + "Chain")
+        PrintBasic.print_basic(self.baseChain, format_data + "Base Chain")
+        PrintBasic.print_basic(self.baseChainProtocol, format_data + "Base Chain Protocol")
         PrintBasic.print_basic(self.numOfConfirmations, format_data + "numOfConfirmations")
         PrintBasic.print_basic(self.numOfFastConfirmations, format_data + "numOfFastConfirmations")
         PrintBasic.print_basic(self.depositStatus, format_data + "depositStatus")

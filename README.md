@@ -10,6 +10,10 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 ## Huobi Python SDK Download
 
+- [Huobi Global API Python SDK version 1.0.10](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.10)
+
+- [Huobi Global API Python SDK version 1.0.9](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.9)
+
 - [Huobi Global API Python SDK version 1.0.8](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.8)
 
 - [Huobi Global API Python SDK version 1.0.7](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.7)

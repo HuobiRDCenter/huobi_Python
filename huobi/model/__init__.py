@@ -46,5 +46,12 @@ from huobi.model.tradeclearingevent import TradeClearingEvent
 from huobi.model.accountsupdate import AccountsUpdate
 from huobi.model.accountsupdateevent import AccountsUpdateEvent
 
+from huobi.model.batchcreateorder import BatchCreateOrder
+from huobi.model.batchcancelorder import BatchCancelOrder
+from huobi.model.subuidmanagement import SubUidManagement
 
+from huobi.model.marginloaninfo import MarginLoanInfo
+from huobi.model.crossmarginloaninfo import CrossMarginLoanInfo
+
+from huobi.model.transactfeerate import TransactFeeRate
 

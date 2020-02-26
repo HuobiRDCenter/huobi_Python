@@ -4,6 +4,7 @@ import time
 
 from performance.requsttest import RequestTest
 import sys
+from huobi.constant.test import *
 
 class RunStatus:
     SUCCESS = "OK"
@@ -413,6 +414,54 @@ class RestfulTestCaseSeq:
                     result.state in [OrderState.CANCELLING, OrderState.CANCELED]) else RunStatus.FAILED
         tc.add_record()
 
+    def test_batch_create_cancel_order(self):
+
+        client_order_id_header = str(int(time.time()))
+
+        symbol_eosusdt = "eosusdt"
+        symbol_btcusdt = "btcusdt"
+
+        client_order_id_eos = client_order_id_header + symbol_eosusdt
+        client_order_id_btc = client_order_id_header + symbol_btcusdt
+
+        buy_limit_eos = {
+            "account_type": AccountType.SPOT,
+            "symbol": symbol_eosusdt,
+            "order_type": OrderType.BUY_LIMIT,
+            "amount": 1,
+            "price": 0.12,
+            "client_order_id": client_order_id_eos
+        }
+
+        buy_limit_btc = {
+            "account_type": AccountType.SPOT,
+            "symbol": symbol_btcusdt,
+            "order_type": OrderType.BUY_LIMIT,
+            "amount": 1,
+            "price": 1.12,
+            "client_order_id": client_order_id_btc
+        }
+
+        order_config_list = [
+            buy_limit_eos,
+            buy_limit_btc
+        ]
+
+        # case batch create orders
+        tc = TimeCost(function_name=self.test_client.batch_create_order.__name__)
+        create_result, tc.server_req_cost, tc.server_api_cost = self.test_client.batch_create_order(order_config_list=order_config_list)
+        tc.run_status = RunStatus.SUCCESS if len(create_result) else RunStatus.FAILED
+        tc.add_record()
+
+        time.sleep(1)  # need wait
+
+        # case batch cancel orders
+        tc = TimeCost(function_name=self.test_client.cancel_orders.__name__)
+        cancel_result, tc.server_req_cost, tc.server_api_cost = self.test_client.cancel_orders(order_id_list=[],
+                                                     client_order_id_list=[client_order_id_eos, client_order_id_btc])
+        tc.run_status = RunStatus.SUCCESS if (len(cancel_result.success) and len(cancel_result.failed) ==0) else RunStatus.FAILED
+        tc.add_record()
+
     def test_batch_cancel_get_orders(self):
         # case create orders
         create_order_symbol_test = "trxusdt"
@@ -451,8 +500,10 @@ class RestfulTestCaseSeq:
 
         # case cancel_orders
         tc = TimeCost(function_name=self.test_client.cancel_orders.__name__)
-        _, tc.server_req_cost, tc.server_api_cost = self.test_client.cancel_orders(symbol=create_order_symbol_test,
-                                                                              order_id_list=order_id_list[0:first_batch_cancel_count])
+        _, tc.server_req_cost, tc.server_api_cost = self.test_client.cancel_orders(
+            order_id_list=order_id_list[0:first_batch_cancel_count],
+            client_order_id_list=[]
+        )
         tc.run_status = RunStatus.SUCCESS
         tc.add_record()
 
@@ -585,6 +636,19 @@ class RestfulTestCaseSeq:
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
 
+    def test_sub_uid_management(self):
+        # case sub_uid_management
+        tc = TimeCost(function_name=self.test_client.sub_uid_management.__name__)
+        result, tc.server_req_cost, tc.server_api_cost = self.test_client.sub_uid_management(sub_uid=g_sub_uid, action=SubUidState.LOCK)
+        tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
+        tc.add_record()
+
+        tc = TimeCost(function_name=self.test_client.sub_uid_management.__name__)
+        result, tc.server_req_cost, tc.server_api_cost = self.test_client.sub_uid_management(sub_uid=g_sub_uid,
+                                                                                             action=SubUidState.UNLOCK)
+        tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
+        tc.add_record()
+
 
 
 if __name__ == "__main__":
@@ -594,12 +658,15 @@ if __name__ == "__main__":
     test_case.test_transfer()
     test_case.test_load_repay()
     test_case.test_create_cancel_order()
+    test_case.test_batch_create_cancel_order()
     test_case.test_batch_cancel_get_orders()
     test_case.test_match_result()
     test_case.test_account()
     test_case.test_etf()
     test_case.test_trade()
     test_case.test_cross_margin()
+	test_case.test_sub_uid_management()
+
 
     print("\n\n==================api execute sequence=========================")
     TimeCost.output_sort_cost(by_key_name="", is_sorted=False)

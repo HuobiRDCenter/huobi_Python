@@ -9,5 +9,5 @@ else:
 
 g_account_id = 12345678
 
-
+g_sub_uid = 87654321
 

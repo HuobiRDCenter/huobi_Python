@@ -298,6 +298,23 @@ class RequestTest(object):
         """
         return call_sync_perforence_test(self.request_impl.create_order(symbol, account_type, order_type, amount, price, client_order_id, stop_price, operator))
 
+    def batch_create_order(self, order_config_list) -> int:
+        """
+        Make an order in huobi.
+        :param order_config_list: order config list, it can batch create orders, and each order config check as below
+            : items as below
+                :param symbol: The symbol, like "btcusdt". (mandatory)
+                :param account_type: Account type. (mandatory)
+                :param order_type: The order type. (mandatory)
+                :param amount: The amount to buy (quote currency) or to sell (base currency). (mandatory)
+                :param price: The limit price of limit order, only needed for limit order. (mandatory for buy-limit, sell-limit, buy-limit-maker and sell-limit-maker)
+                :param client_order_id: unique Id which is user defined and must be unique in recent 24 hours
+                :param stop_price: Price for auto sell to get the max benefit
+                :param operator: the condition for stop_price, value can be "gte" or "lte",  gte – greater than and equal (>=), lte – less than and equal (<=)
+        :return: The order id.
+        """
+        return call_sync_perforence_test(self.request_impl.batch_create_order(order_config_list))
+
     def get_open_orders(self, symbol: 'str', account_type: 'AccountType', side: 'OrderSide' = None,
                         size: 'int' = 100, from_id=None, direct=None) -> list:
         """
@@ -323,15 +340,15 @@ class RequestTest(object):
         """
         return call_sync_perforence_test(self.request_impl.cancel_order(symbol, order_id))
 
-    def cancel_orders(self, symbol: 'str', order_id_list: 'list') -> None:
+    def cancel_orders(self, order_id_list: 'list', client_order_id_list: 'list') -> None:
         """
         Submit cancel request for cancelling multiple orders.
 
-        :param symbol: The symbol, like "btcusdt". (mandatory)
-        :param order_id_list: The list of order id. the max size is 50. (mandatory)
+        :param order_id_list: The list of order id. the max size is 50. (optional, but order_id_list or client_order_id_list only one is mandatory)
+        :param client_order_id_list: The list of client order id. the max size is 50. (optional, but order_id_list or client_order_id_list only one is mandatory)
         :return: No return
         """
-        return call_sync_perforence_test(self.request_impl.cancel_orders(symbol, order_id_list))
+        return call_sync_perforence_test(self.request_impl.cancel_orders(order_id_list, client_order_id_list))
 
     def cancel_open_orders(self, symbol: 'str', account_type: 'AccountType', side: 'OrderSide' = None,
                            size: 'int' = None) -> BatchCancelResult:
@@ -701,3 +718,10 @@ class RequestTest(object):
                             sort, size))
 
 
+    def sub_uid_management(self, sub_uid:'int', action:'str'):
+        """
+        get account change record
+
+        :return: account change record list.
+        """
+        return call_sync_perforence_test(self.request_impl.sub_user_management(sub_uid, action))
