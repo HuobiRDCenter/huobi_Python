@@ -1,4 +1,4 @@
-# Huobi Python SDK (beta version)
+# Huobi Python SDK
 
 This is Huobi Ptyhon SDK, This is a lightweight python library, you can import to your ptyhon project and use this SDK to query all market data, trading and manage your account.
 
