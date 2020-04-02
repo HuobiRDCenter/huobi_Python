@@ -16,6 +16,8 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 ## Table of Contents
 
+- [Huobi Global API Python SDK version 1.0.11](#Huobi-Global-API-Python-SDK-version-1.0.11)
+
 - [Huobi Global API Python SDK version 1.0.10](#Huobi-Global-API-Python-SDK-version-1.0.10)
 
 - [Huobi Global API Python SDK version 1.0.9](#Huobi-Global-API-Python-SDK-version-1.0.9)
@@ -36,6 +38,18 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 - [Huobi Global API Python SDK version 1.0.1](#Huobi-Global-API-Python-SDK-version-1.0.1)
 
+
+
+# Huobi Global API Python SDK version 1.0.11
+
+## 1.RELEASE NOTE - Huobi Global API SDK  1.0.11
+***2020-04-02***
+
+
+-  modify subscribe for account update with currency balance information
+    ```
+     subscribe : account update
+    ```
 
 # Huobi Global API Python SDK version 1.0.10
 

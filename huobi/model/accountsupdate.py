@@ -33,8 +33,8 @@ class AccountsUpdate:
             upd.accountId = json_data.get_int_or_default("accountId", 0)
             upd.balance = json_data.get_string_or_default("balance", "0")
             upd.available = json_data.get_string_or_default("available", "0")
-            upd.changeType = json_data.get_string("changeType")
-            upd.accountType = json_data.get_string("accountType")
+            upd.changeType = json_data.get_string_or_default("changeType", "")
+            upd.accountType = json_data.get_string_or_default("accountType", "")
             upd.changeTime = json_data.get_int_or_default("changeTime", 0)
         return upd
 

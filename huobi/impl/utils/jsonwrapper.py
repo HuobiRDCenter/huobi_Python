@@ -63,13 +63,13 @@ class JsonWrapper:
         return int(self.json_object[name])
 
     def get_string_or_default(self, name, default):
-        if self.contain_key(name):
+        if self.contain_key(name) and self.json_object[name] is not None:
             return str(self.json_object[name])
         else:
             return default
 
     def get_int_or_default(self, name, default):
-        if self.contain_key(name):
+        if self.contain_key(name) and self.json_object[name] is not None: #
             return int(self.json_object[name])
         else:
             return default
@@ -79,7 +79,7 @@ class JsonWrapper:
         return float(self.json_object[name])
 
     def get_float_or_default(self, name, default):
-        if self.contain_key(name):
+        if self.contain_key(name) and self.json_object[name] is not None:
             return float(self.json_object[name])
         else:
             return default
