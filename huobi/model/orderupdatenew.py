@@ -12,7 +12,7 @@ class OrderUpdateNew:
         state: The order state: submitted, partial-filled, cancelling, filled, canceled.
         role: value is taker or maker
         price: The limit price of limit order.
-        order_type: The order type, possible values are: buy-market, sell-market, buy-limit, sell-limit, buy-ioc, sell-ioc, buy-limit-maker, sell-limit-maker.
+        order_type: The order type, possible values are: buy-market, sell-market, buy-limit, sell-limit, buy-ioc, sell-ioc, buy-limit-maker, sell-limit-maker, buy-limit-fok, sell-limit-fok.
         filled_amount: The amount which has been filled.
         filled_cash_amount: The filled total in quote currency.
         unfilled_amount: The amount which is unfilled.

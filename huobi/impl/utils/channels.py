@@ -29,6 +29,12 @@ def mbp_channel(symbol, levels):
     channel["id"] = str(get_current_timestamp())
     return json.dumps(channel)
 
+def full_mbp_channel(symbol, levels):
+    channel = dict()
+    channel["sub"] = "market.{symbol}.mbp.refresh.{levels}".format(symbol=symbol, levels=levels)
+    channel["id"] = str(get_current_timestamp())
+    return json.dumps(channel)
+
 def price_depth_bbo_channel(symbol):
     channel = dict()
     channel["sub"] = "market." + symbol + ".bbo"

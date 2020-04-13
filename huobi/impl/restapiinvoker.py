@@ -32,11 +32,13 @@ def check_response(json_wrapper):
         raise HuobiApiException(HuobiApiException.RUNTIME_ERROR, "[Invoking] Status cannot be found in response.")
 
 
-def call_sync(request):
+def call_sync(request, is_checked=False):
     if request.method == "GET":
         # print("call_sync url : " , request.host + request.url)
         response = requests.get(request.host + request.url, headers=request.header)
         # print("receive data : " + response.text)
+        if is_checked is True:
+            return response.text
         json_wrapper = parse_json_from_string(response.text)
         check_response(json_wrapper)
         return request.json_parser(json_wrapper)
@@ -47,7 +49,7 @@ def call_sync(request):
         check_response(json_wrapper)
         return request.json_parser(json_wrapper)
 
-def call_sync_perforence_test(request):
+def call_sync_perforence_test(request, is_checked=False):
     if request.method == "GET":
         inner_start_time = time.time()
         response = requests.get(request.host + request.url, headers=request.header)
@@ -55,6 +57,8 @@ def call_sync_perforence_test(request):
         inner_end_time = time.time()
         cost_manual = round(inner_end_time - inner_start_time, 6)
         req_cost = response.elapsed.total_seconds()
+        if is_checked is True:
+            return response.text, req_cost, cost_manual
         json_wrapper = parse_json_from_string(response.text)
         check_response(json_wrapper)
         return request.json_parser(json_wrapper), req_cost, cost_manual

@@ -566,7 +566,7 @@ class RequestTest(object):
         """
         return call_sync_perforence_test(self.request_impl.transfer_between_futures_and_pro(currency, amount, transfer_type))
 
-    def get_order_recent_48hour(self, symbol=None, start_time=None, end_time=None, size=None, direct=None)-> list:
+    def get_order_in_recent_48hour(self, symbol=None, start_time=None, end_time=None, size=None, direct=None)-> list:
         """
         Transfer Asset between Futures and Contract.
 
@@ -577,7 +577,7 @@ class RequestTest(object):
         :param size: The type of transfer, need be "futures-to-pro" or "pro-to-futures" (mandatory)
         :return: The Order list.
         """
-        return call_sync_perforence_test(self.request_impl.get_order_recent_48hour(symbol, start_time, end_time, size, direct))
+        return call_sync_perforence_test(self.request_impl.get_order_in_recent_48hour(symbol, start_time, end_time, size, direct))
 
 
     def get_reference_currencies(self, currency:'str'=None, is_authorized_user:'bool' =None) ->list:
@@ -689,21 +689,21 @@ class RequestTest(object):
 
     def get_cross_margin_loan_orders(self, currency:'str'=None, state:'str'=None,
                                      start_date:'str'=None, end_date:'str'=None,
-                                     from_id:'int'=None, size:'int'=None, direct:'str'=None) -> list:
+                                     from_id:'int'=None, size:'int'=None, direct:'str'=None, sub_uid:'int'=None) -> list:
         """
         get cross margin loan orders
 
         :return: return list.
         """
-        return call_sync_perforence_test(self.request_impl.get_cross_margin_loan_orders(currency, state, start_date, end_date, from_id, size, direct))
+        return call_sync_perforence_test(self.request_impl.get_cross_margin_loan_orders(currency, state, start_date, end_date, from_id, size, direct, sub_uid))
 
-    def get_cross_margin_account_balance(self):
+    def get_cross_margin_account_balance(self, sub_uid:'int'=None):
         """
         get cross margin account balance
 
         :return: cross-margin account.
         """
-        return call_sync_perforence_test(self.request_impl.get_cross_margin_account_balance())
+        return call_sync_perforence_test(self.request_impl.get_cross_margin_account_balance(sub_uid))
 
     def get_account_history(self, account_id:'int', currency:'str'=None,
                             transact_types:'str'=None, start_time:'int'=None, end_time:'int'=None,
@@ -725,3 +725,29 @@ class RequestTest(object):
         :return: account change record list.
         """
         return call_sync_perforence_test(self.request_impl.sub_user_management(sub_uid, action))
+
+    def get_market_tickers(self) -> list:
+        """
+        get market tickers
+
+        :return: market ticker list.
+        """
+        return call_sync_perforence_test(self.request_impl.get_market_tickers())
+
+    def get_account_ledger(self, account_id:'int', currency:'str'=None, transact_types:'str'=None,
+                           start_time:'int'=None, end_time:'int'=None, sort:'str'=None, limit:'int'=None,
+                           from_id:'int'=None) -> list:
+        """
+        get account ledger
+
+        :return: account ledger list.
+        """
+        return call_sync_perforence_test(self.request_impl.get_account_ledger(account_id, currency, transact_types, start_time, end_time, sort, limit, from_id))
+
+    def get_system_status(self) -> str:
+        """
+        get system status
+
+        :return: system status.
+        """
+        return call_sync_perforence_test(self.request_impl.get_system_status(), is_checked=True)

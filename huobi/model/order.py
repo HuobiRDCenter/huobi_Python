@@ -14,7 +14,7 @@ class Order:
         finished_timestamp: The UNIX formatted timestamp in UTC when the order was changed to a final state. This is not the time the order is matched.
         order_id: The order id.
         symbol: The symbol, like "btcusdt".
-        order_type: The order type, possible values are: buy-market, sell-market, buy-limit, sell-limit, buy-ioc, sell-ioc, buy-limit-maker, sell-limit-maker.
+        order_type: The order type, possible values are: buy-market, sell-market, buy-limit, sell-limit, buy-ioc, sell-ioc, buy-limit-maker, sell-limit-maker, buy-limit-fok, sell-limit-fok, buy-stop-limit-fok, sell-stop-limit-fok.
         filled_amount: The amount which has been filled.
         filled_cash_amount: The filled total in quote currency.
         filled_fees: The transaction fee paid so far.

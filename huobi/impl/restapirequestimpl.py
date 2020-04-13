@@ -6,7 +6,9 @@ from huobi.impl.accountinfomap import account_info_map
 from huobi.impl.utils.inputchecker import *
 from huobi.impl.utils.timeservice import *
 from huobi.model import *
+from huobi.model.accountledger import AccountLedger
 from huobi.model.feerate import FeeRate
+from huobi.model.marketticker import MarketTicker
 
 
 class RestApiRequestImpl(object):
@@ -467,10 +469,10 @@ class RestApiRequestImpl(object):
         check_should_not_none(account_type, "account_type")
         check_should_not_none(order_type, "order_type")
         check_should_not_none(amount, "amount")
-        if order_type == OrderType.SELL_LIMIT \
-                or order_type == OrderType.BUY_LIMIT \
-                or order_type == OrderType.BUY_LIMIT_MAKER \
-                or order_type == OrderType.SELL_LIMIT_MAKER:
+        need_checked_order_type_list = [OrderType.SELL_LIMIT, OrderType.BUY_LIMIT, OrderType.BUY_LIMIT_MAKER, OrderType.SELL_LIMIT_MAKER,
+                                        OrderType.BUY_STOP_LIMIT, OrderType.SELL_STOP_LIMIT, OrderType.BUY_LIMIT_FOK, OrderType.SELL_LIMIT_FOK,
+                                        OrderType.BUY_STOP_LIMIT_FOK, OrderType.SELL_STOP_LIMIT_FOK]
+        if order_type in need_checked_order_type_list:
             check_should_not_none(price, "price")
         if order_type == OrderType.SELL_MARKET or order_type == OrderType.BUY_MARKET:
             price = None
@@ -513,10 +515,10 @@ class RestApiRequestImpl(object):
             check_should_not_none(account_type, "account_type")
             check_should_not_none(order_type, "order_type")
             check_should_not_none(amount, "amount")
-            if order_type == OrderType.SELL_LIMIT \
-                    or order_type == OrderType.BUY_LIMIT \
-                    or order_type == OrderType.BUY_LIMIT_MAKER \
-                    or order_type == OrderType.SELL_LIMIT_MAKER:
+            need_checked_order_type_list = [OrderType.SELL_LIMIT, OrderType.BUY_LIMIT, OrderType.BUY_LIMIT_MAKER, OrderType.SELL_LIMIT_MAKER,
+                                            OrderType.BUY_STOP_LIMIT, OrderType.SELL_STOP_LIMIT, OrderType.BUY_LIMIT_FOK, OrderType.SELL_LIMIT_FOK,
+                                            OrderType.BUY_STOP_LIMIT_FOK, OrderType.SELL_STOP_LIMIT_FOK]
+            if order_type in need_checked_order_type_list:
                 check_should_not_none(item.get("price", None), "price for limit order")
                 price = item.get("price", None)
             elif order_type == OrderType.SELL_MARKET or order_type == OrderType.BUY_MARKET:
@@ -765,7 +767,7 @@ class RestApiRequestImpl(object):
         check_symbol(symbol)
         start_date = format_date(start_date, "start_date")
         end_date = format_date(end_date, "end_date")
-        check_range(size, 1, 100, "size")
+        check_range(size, 1, 500, "size")
         builder = UrlParamsBuilder()
         builder.put_url("symbol", symbol)
         builder.put_url("types", order_type)
@@ -904,6 +906,7 @@ class RestApiRequestImpl(object):
             for item in data_array.get_items():
                 balance = Balance()
                 balance.currency = item.get_string("currency")
+                balance.type = item.get_string("type")
                 balance.balance = item.get_float("balance")
                 balances.append(balance)
             return balances
@@ -1183,7 +1186,7 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
-    def get_order_recent_48hour(self, symbol, start_time, end_time, size, direct):
+    def get_order_in_recent_48hour(self, symbol, start_time, end_time, size, direct):
         builder = UrlParamsBuilder()
         builder.put_url("symbol", symbol)
         builder.put_url("start-time", start_time)
@@ -1447,7 +1450,7 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
-    def get_cross_margin_loan_orders(self, currency, state, start_date, end_date, from_id, size, direct):
+    def get_cross_margin_loan_orders(self, currency, state, start_date, end_date, from_id, size, direct, sub_uid):
 
         path = "/v1/cross-margin/loan-orders"
         builder = UrlParamsBuilder()
@@ -1458,6 +1461,7 @@ class RestApiRequestImpl(object):
         builder.put_url("from", from_id)
         builder.put_url("size", size)
         builder.put_url("direct", direct)
+        builder.put_url("sub-uid", sub_uid)
 
         request = self.__create_request_by_get_with_signature(path, builder)
 
@@ -1486,11 +1490,15 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
-    def get_cross_margin_account_balance(self):
+    def get_cross_margin_account_balance(self, sub_uid):
 
         path = "/v1/cross-margin/accounts/balance"
+        builder = UrlParamsBuilder()
+        builder.put_url("sub-uid", sub_uid)
 
-        request = self.__create_request_by_get_with_signature(path, UrlParamsBuilder())
+
+
+        request = self.__create_request_by_get_with_signature(path, builder)
 
         def parse(json_wrapper):
             account_balance = CrossMarginAccountBalance()
@@ -1563,4 +1571,49 @@ class RestApiRequestImpl(object):
             return SubUidManagement.json_parse(data)
 
         request.json_parser = parse
+        return request
+
+    def get_market_tickers(self):
+        request = self.__create_request_by_get_with_signature("/market/tickers", UrlParamsBuilder())
+
+        def parse(json_wrapper):
+            result_list = list()
+            data_array = json_wrapper.get_array("data")
+            for item_in_data in data_array.get_items():
+                market_ticker = MarketTicker.json_parse(item_in_data)
+                result_list.append(market_ticker)
+            return result_list
+
+        request.json_parser = parse
+        return request
+
+    def get_account_ledger(self, account_id, currency, transact_types, start_time, end_time, sort, limit, from_id):
+        builder = UrlParamsBuilder()
+        builder.put_url("accountId", account_id)
+        builder.put_url("currency", currency)
+        builder.put_url("transactTypes", transact_types)
+        builder.put_url("startTime", start_time)
+        builder.put_url("endTime", end_time)
+        builder.put_url("sort", sort)
+        builder.put_url("limit", limit)
+        builder.put_url("fromId", from_id)
+        request = self.__create_request_by_get_with_signature("/v2/account/ledger", builder)
+
+        def parse(json_wrapper):
+            result_list = list()
+            data_array = json_wrapper.get_array("data")
+            for item_in_data in data_array.get_items():
+                account_ledger = AccountLedger.json_parse(item_in_data)
+                result_list.append(account_ledger)
+            return result_list
+
+        request.json_parser = parse
+        return request
+
+    def get_system_status(self):
+        request = RestApiRequest()
+        request.method = "GET"
+        request.host = "https://status.huobigroup.com"
+        request.header.update({'Content-Type': 'application/json'})
+        request.url = "/api/v2/summary.json"
         return request
