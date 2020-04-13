@@ -40,9 +40,32 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 
 
+# Huobi Global API Python SDK version 1.0.12
+
+***2020-04-13***
+
+- Modify API request and response field
+
+  ```
+  GET /v1/cross-margin/loan-orders				Add sub-id as optional parameters
+  GET /v1/cross-margin/accounts/balance		Add sub-id as optional parameters
+  GET /market/tickers											Add best bid offer response field
+  POST /v1/order/orders/place							Add FOK order types
+  POST /v1/order/batch-orders							Add FOK order types
+  ```
+
+- Add new API
+
+  ```
+  GET https://status.huobigroup.com/api/v2/summary.json
+  WebSocket topic market.$symbol.mbp.refresh.$levels
+  GET /v2/account/ledger
+  ```
+
+  
+
 # Huobi Global API Python SDK version 1.0.11
 
-## 1.RELEASE NOTE - Huobi Global API SDK  1.0.11
 ***2020-04-02***
 
 
@@ -53,7 +76,6 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 # Huobi Global API Python SDK version 1.0.10
 
-## 1.RELEASE NOTE - Huobi Global API SDK  1.0.10
 ***2020-02-26***
 
 
@@ -76,7 +98,6 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 # Huobi Global API Python SDK version 1.0.9
 
-## 1.RELEASE NOTE - Huobi Global API SDK  1.0.9
 ***2020-01-07***
 
 
@@ -95,7 +116,6 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 # Huobi Global API Python SDK version 1.0.8
 
-## 1.RELEASE NOTE - Huobi Global API SDK  1.0.8
 ***2019-12-11***
 
 
@@ -107,7 +127,6 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 # Huobi Global API Python SDK version 1.0.7
 
-## 1.RELEASE NOTE - Huobi Global API SDK  1.0.7
 ***2019-12-06***
 
 
@@ -116,7 +135,6 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 # Huobi Global API Python SDK version 1.0.6
 
-## 1.RELEASE NOTE - Huobi Global API SDK  1.0.6
 ***2019-11-27***
 
 
@@ -137,8 +155,6 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
     UT code update
     ```
 
-## Huobi Global API Python SDK version 1.0.5
-
 [***version 1.0.5***](https://github.com/HuobiRDCenter/huobi_Python/releases)
 
 ***2019-11-02***
@@ -149,7 +165,6 @@ Trade model no change and no impact to user test case
 
 # Huobi Global API Python SDK version 1.0.4
 
-## 1.RELEASE NOTE - Huobi Global API SDK  1.0.4 
 ***2019-10-30***
 
 
@@ -185,8 +200,6 @@ Trade model no change and no impact to user test case
 
 
 # Huobi Global API Python SDK version 1.0.3
-
-## 1.RELEASE NOTE - Huobi Global API SDK  1.0.3
 
 ***2019-10-28***
 
@@ -236,7 +249,7 @@ Trade model no change and no impact to user test case
 
 
 
-## Huobi Global API Python SDK version 1.0.2
+# Huobi Global API Python SDK version 1.0.2
 
 [***version 1.0.2***](https://github.com/HuobiRDCenter/huobi_Python/releases)
 
@@ -269,7 +282,7 @@ market.$symbol.bbo
 
  
 
-## Huobi Global API Python SDK version 1.0.1
+# Huobi Global API Python SDK version 1.0.1
 
 [***version 1.0.1***](https://github.com/HuobiRDCenter/huobi_Python/releases)
 
