@@ -233,9 +233,9 @@ class RestfulTestCaseSeq:
         tc.run_status = RunStatus.SUCCESS if result and result.bid_amount else RunStatus.FAILED
         tc.add_record()
 
-        # case get_order_recent_48hour
-        tc = TimeCost(function_name=self.test_client.get_order_recent_48hour.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = self.test_client.get_order_recent_48hour()
+        # case get_order_in_recent_48hour
+        tc = TimeCost(function_name=self.test_client.get_order_in_recent_48hour.__name__)
+        result, tc.server_req_cost, tc.server_api_cost = self.test_client.get_order_in_recent_48hour()
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
 
@@ -614,6 +614,11 @@ class RestfulTestCaseSeq:
         tc.run_status = RunStatus.SUCCESS
         tc.add_record()
 
+        # case get_account_ledger
+        tc = TimeCost(function_name=self.test_client.get_account_ledger.__name__)
+        result, tc.server_req_cost, tc.server_api_cost = self.test_client.get_account_ledger(account_id=g_account_id)
+        tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
+        tc.add_record()
 
     def test_etf(self):
 
@@ -649,6 +654,19 @@ class RestfulTestCaseSeq:
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
 
+    def test_get_market_tickers(self):
+        # case get_market_tickers
+        tc = TimeCost(function_name=self.test_client.get_market_tickers.__name__)
+        result, tc.server_req_cost, tc.server_api_cost = self.test_client.get_market_tickers()
+        tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
+        tc.add_record()
+
+    def test_get_system_status(self):
+        # case get_system_status
+        tc = TimeCost(function_name=self.test_client.get_system_status.__name__)
+        result, tc.server_req_cost, tc.server_api_cost = self.test_client.get_system_status()
+        tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
+        tc.add_record()
 
 
 if __name__ == "__main__":
@@ -665,7 +683,9 @@ if __name__ == "__main__":
     test_case.test_etf()
     test_case.test_trade()
     test_case.test_cross_margin()
-	test_case.test_sub_uid_management()
+    test_case.test_sub_uid_management()
+    test_case.test_get_market_tickers()
+    test_case.test_get_system_status()
 
 
     print("\n\n==================api execute sequence=========================")

@@ -104,7 +104,7 @@ class SubscriptionClient(object):
 
     def subscribe_price_depth_bbo_event(self, symbols: 'str', callback, error_handler=None):
         """
-        Subscribe price depth event. If the price depth is updated, server will send the data to client and onReceive in callback will be called.
+        Subscribe price depth bbo event. If the price depth is updated, server will send the data to client and onReceive in callback will be called.
 
         :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
         :param callback: The implementation is required. onReceive will be called if receive server's update.
@@ -156,7 +156,7 @@ class SubscriptionClient(object):
 
     def subscribe_trade_event(self, symbols: 'str', callback, error_handler=None):
         """
-        Subscribe price depth event. If the price depth is updated, server will send the data to client and onReceive in callback will be called.
+        Subscribe trade event. If the trade is updated, server will send the data to client and onReceive in callback will be called.
 
         :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
         :param callback: The implementation is required. onReceive will be called if receive server's update.
@@ -267,7 +267,7 @@ class SubscriptionClient(object):
 
     def request_trade_event(self, symbols: 'str', callback, auto_close = True, error_handler=None):
         """
-        Subscribe price depth event. If the price depth is updated, server will send the data to client and onReceive in callback will be called.
+        Subscribe trade event. If the trade is updated, server will send the data to client and onReceive in callback will be called.
 
         :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
         :param callback: The implementation is required. onReceive will be called if receive server's update.
@@ -344,7 +344,7 @@ class SubscriptionClient(object):
 
     def subscribe_mbp_event(self, symbols: 'str', level: 'int', callback, error_handler=None):
         """
-        Subscribe price depth event. If the price depth is updated, server will send the data to client and onReceive in callback will be called.
+        Subscribe mbp event. If the mbp is updated, server will send the data to client and onReceive in callback will be called.
 
         :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
         :param level: level, 5，10，20，150. current only support 150
@@ -361,9 +361,28 @@ class SubscriptionClient(object):
         request = self.websocket_request_impl.subscribe_mbp_event(symbol_list, level, callback, error_handler)
         self.__create_connection(request)
 
+    def subscribe_full_mbp_event(self, symbols: 'str', level: 'int', callback, error_handler=None):
+        """
+        Subscribe full mbp event. If the mbp is updated, server will send the data to client and onReceive in callback will be called.
+
+        :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
+        :param level: level, 5，10，20
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(price_depth_event: 'PriceDepthEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+
+        :return:  No return
+        """
+        symbol_list = symbols.split(",")
+        request = self.websocket_request_impl.subscribe_full_mbp_event(symbol_list, level, callback, error_handler)
+        self.__create_connection(request)
+
     def request_mbp_event(self, symbols: 'str', level: 'int', callback, auto_close = True, error_handler=None):
         """
-        Subscribe price depth event. If the price depth is updated, server will send the data to client and onReceive in callback will be called.
+        Subscribe mbp event. If the mbp is updated, server will send the data to client and onReceive in callback will be called.
 
         :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
         :param level: level, 5，10，20，150. current only support 150

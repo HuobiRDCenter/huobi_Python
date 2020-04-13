@@ -16,7 +16,7 @@ class MatchResult:
         source: The source where the order was triggered, possible values: sys, web, api, app.
         symbol: The symbol, like "btcusdt".
         order_type: The order type, possible values are: buy-market, sell-market, buy-limit, sell-limit,
-            buy-ioc, sell-ioc, buy-limit-maker, sell-limit-maker.
+            buy-ioc, sell-ioc, buy-limit-maker, sell-limit-maker, buy-limit-fok, sell-limit-fok, buy-stop-limit-fok, sell-stop-limit-fok.
         filled_points: deduct points
         fee_deduct_currency: deduct type, it means deduct from HT/ HT points / or other currency
     """

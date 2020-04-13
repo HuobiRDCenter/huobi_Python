@@ -191,6 +191,23 @@ class WebsocketRequestImpl(object):
         request.error_handler = error_handler
         return request
 
+    def subscribe_full_mbp_event(self, symbols, level, callback, error_handler=None):
+        check_symbol_list(symbols)
+        check_should_not_none(callback, "callback")
+
+        def subscription_handler(connection):
+            for val in symbols:
+                connection.send(full_mbp_channel(val, level))
+                time.sleep(0.01)
+
+        request = WebsocketRequest()
+        request.subscription_handler = subscription_handler
+        request.is_trading = False
+        request.json_parser = MbpEvent.json_parse
+        request.update_callback = callback
+        request.error_handler = error_handler
+        return request
+
     def subscribe_price_depth_bbo_event(self, symbols, callback, error_handler=None):
         check_symbol_list(symbols)
         check_should_not_none(callback, "callback")

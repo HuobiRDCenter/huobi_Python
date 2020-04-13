@@ -9,7 +9,7 @@ print(account_balance_list)
 if account_balance_list and len(account_balance_list):
     for balance in account_balance_list:
         print("\tBalance Currency", balance.currency)
-        print("\tBalance Type", balance.balance_type)
+        print("\tType", balance.type)
         print("\tBalance", balance.balance)
         print()
 
