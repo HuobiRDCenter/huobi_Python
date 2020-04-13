@@ -16,6 +16,8 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 ## Table of Contents
 
+- [Huobi Global API Python SDK version 1.0.12](#Huobi-Global-API-Python-SDK-version-1.0.12)
+- 
 - [Huobi Global API Python SDK version 1.0.11](#Huobi-Global-API-Python-SDK-version-1.0.11)
 
 - [Huobi Global API Python SDK version 1.0.10](#Huobi-Global-API-Python-SDK-version-1.0.10)
