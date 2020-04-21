@@ -401,6 +401,22 @@ class SubscriptionClient(object):
                                                                           auto_close, error_handler)
         self.__create_connection(request)
 
+    def subscribe_orders_update_event(self, symbol: 'str', callback, error_handler=None):
+        """
+        Subscribe trade clearing by symbol
+
+        :param symbol: The symbol, like "btcusdt".
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(price_depth_event: 'PriceDepthEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+
+        :return:  No return
+        """
+        request = self.websocket_request_impl_v2.subscribe_orders_update_event(symbol, callback, error_handler)
+        self.__create_connection(request)
 
     def subscribe_trade_clearing_event(self, symbols: 'str', callback, error_handler=None):
         """

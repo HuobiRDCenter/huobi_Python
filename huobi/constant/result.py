@@ -4,6 +4,7 @@ class OutputKey:
     KeyTick = "tick"
     KeyChannelCh = "ch"
     KeyChannelRep = "rep"
+    KeyAction = "action"
 
 
 

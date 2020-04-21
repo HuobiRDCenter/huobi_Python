@@ -4,35 +4,9 @@ This is Huobi Python SDK, This is a lightweight python library, you can import t
 
 The SDK supports both synchronous RESTful API invoking, and subscribe the market data from the Websocket connection.
 
+## Huobi Python SDK Releases
 
-## Huobi Python SDK (change log)
-[Python SDK Change Log](https://github.com/HuobiRDCenter/huobi_Python/blob/master/CHANGE_LOG.md)
-
-## Huobi Python SDK Download
-
-- [Huobi Global API Python SDK version 1.0.12](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.12)
-
-- [Huobi Global API Python SDK version 1.0.11](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.11)
-
-- [Huobi Global API Python SDK version 1.0.10](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.10)
-
-- [Huobi Global API Python SDK version 1.0.9](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.9)
-
-- [Huobi Global API Python SDK version 1.0.8](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.8)
-
-- [Huobi Global API Python SDK version 1.0.7](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.7)
-
-- [Huobi Global API Python SDK version 1.0.6](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.6)
-
-- [Huobi Global API Python SDK version 1.0.5](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.5)
-
-- [Huobi Global API Python SDK version 1.0.4](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.4)
-
-- [Huobi Global API Python SDK version 1.0.3](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.3)
-
-- [Huobi Global API Python SDK version 1.0.2](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.2)
-
-- [Huobi Global API Python SDK version 1.0.1](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.1)
+Go to [Releases](https://github.com/HuobiRDCenter/huobi_Python/releases) page to view and download each release.
 
 
 ## Table of Contents
@@ -510,15 +484,15 @@ def callback(candlestick_event: 'CandlestickEvent'):
 subscription_client.subscribe_candlestick_event("btcusdt", CandlestickInterval.MIN15, callback)
 ```
 
-### Subscribe order update
+### Subscribe orders update
 
 *Authentication is required.*
 
 ```python
-def callback(order_update_event: 'OrderUpdateEvent'):
+def callback(order_update_event: 'OrdersUpdateEvent'):
     print(order_update_event.data.price)
 
-subscription_client.subscribe_order_update_event("btcusdt", callback)
+subscription_client.subscribe_orders_update_event("btcusdt", callback)
 ```
 
 ### Subscribe account change
@@ -526,11 +500,10 @@ subscription_client.subscribe_order_update_event("btcusdt", callback)
 *Authentication is required.*
 
 ```python
-def callback(account_event: 'AccountEvent'):
-    for change in account_event.account_change_list:
-        print(change.account_type)
+def callback(account_event: 'AccountsUpdateEvent'):
+    account_event.print_object()
 
-subscription_client.subscribe_account_event(BalanceMode.TOTAL, callback)
+subscription_client.subscribe_accounts_update_event(AccountBalanceMode.TOTAL, callback)
 ```
 
 ### Unsubscribe

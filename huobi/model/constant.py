@@ -84,6 +84,7 @@ class WithdrawState:
     REPEALED = "repealed"
     INVALID = None
 
+
 class DepositWithdraw:
     DEPOSIT = "deposit"
     WITHDRAW = "withdraw"
@@ -183,28 +184,34 @@ class BalanceMode:
     TOTAL = "1"
     INVALID = None
 
+
 class AccountBalanceMode:
     BALANCE = "0"
     TOTAL = "1"
     INVALID = None
+
 
 class OperateMode:
     PING = "ping"
     PONG = "pong"
     INVALID = None
 
+
 class QueryDirection:
     PREV = "prev"
     NEXT = "next"
     INVALID = None
 
+
 class TransferFuturesPro:
     TO_PRO = "futures-to-pro"
-    TO_FETURES ="pro-to-futures"
+    TO_FUTURES = "pro-to-futures"
+
 
 class MatchRole:
     MAKER = "maker"
     TAKER = "taker"
+
 
 class DepthStep:
     STEP0 = "step0"
@@ -227,15 +234,18 @@ class ChainDepositStatus:
     PROHIBITED = "prohibited"
     INVALID = None
 
+
 class ChainWithdrawStatus:
     ALLOWED = "allowed"
     PROHIBITED = "prohibited"
     INVALID = None
 
+
 class InstrumentStatus:
     NORMAL = "normal"
     DELISTED = "delisted"
     INVALID = None
+
 
 class AccountChangeType:
     ORDER_PLACE = "order-place"
@@ -250,6 +260,7 @@ class AccountChangeType:
     OTHER = "other"
     INVALID = None
 
+
 class FeeDeductType:
     DEDUCT_BY_HT = "ht"
     DEDUCT_BY_POINT = "point"
@@ -259,4 +270,11 @@ class FeeDeductType:
 class SubUidState:
     UNLOCK = "unlock"
     LOCK = "lock"
+    INVALID = None
+
+
+class OrderUpdateEventType:
+    CREATION = "creation"
+    TRADE = "trade"
+    CANCELLATION = "cancellation"
     INVALID = None

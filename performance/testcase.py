@@ -307,7 +307,7 @@ class RestfulTestCaseSeq:
         result, tc.server_req_cost, tc.server_api_cost = self.test_client.transfer_between_futures_and_pro(
             currency="trx",
             amount=transfer_trx_amount,
-            transfer_type=TransferFuturesPro.TO_FETURES)
+            transfer_type=TransferFuturesPro.TO_FUTURES)
         tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
         tc.add_record()
 
