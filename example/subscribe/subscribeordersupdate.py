@@ -1,6 +1,7 @@
 import logging
 from huobi import SubscriptionClient
 from huobi.constant.test import *
+from huobi.model.ordersupdateevent import OrdersUpdateEvent
 
 logger = logging.getLogger("huobi-client")
 logger.setLevel(level=logging.INFO)
@@ -11,7 +12,7 @@ logger.addHandler(handler)
 sub_client = SubscriptionClient(api_key=g_api_key, secret_key=g_secret_key)
 
 
-def callback(orders_update_event: 'OrderUpdateV2Event'):
+def callback(orders_update_event: 'OrdersUpdateEvent'):
     print("---- orders update : ----")
     orders_update_event.print_object()
     print()
