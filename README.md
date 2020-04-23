@@ -489,8 +489,8 @@ subscription_client.subscribe_candlestick_event("btcusdt", CandlestickInterval.M
 *Authentication is required.*
 
 ```python
-def callback(order_update_event: 'OrdersUpdateEvent'):
-    print(order_update_event.data.price)
+def callback(orders_update_event: 'OrdersUpdateEvent'):
+    orders_update_event.print_object()
 
 subscription_client.subscribe_orders_update_event("btcusdt", callback)
 ```
