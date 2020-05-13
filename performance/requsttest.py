@@ -1,13 +1,18 @@
+import aiohttp
+import asyncio
+
 from huobi.constant.system import RestApiDefine
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
 from huobi.impl.restapiinvoker import call_sync_perforence_test
 from huobi.impl.accountinfomap import account_info_map
 from huobi.impl.utils.inputchecker import *
 from huobi.model import *
-
+from huobi.model.balance import Balance
+import time
 
 class RequestTest(object):
-
+    api_key = None
+    server_url = None
     def __init__(self, **kwargs):
         """
         Create the request client instance.
@@ -16,18 +21,17 @@ class RequestTest(object):
             secret_key: The private key applied from Huobi.
             server_url: The URL name like "https://api.huobi.pro".
         """
-        api_key = None
         secret_key = None
-        url = RestApiDefine.Url
+        self.server_url = RestApiDefine.Url
         if "api_key" in kwargs:
-            api_key = kwargs["api_key"]
+            self.api_key = kwargs["api_key"]
         if "secret_key" in kwargs:
             secret_key = kwargs["secret_key"]
         if "url" in kwargs:
-            url = kwargs["url"]
+            self.server_url = kwargs["url"]
         try:
-            self.request_impl = RestApiRequestImpl(api_key, secret_key, url)
-            account_info_map.update_user_info(api_key, self.request_impl)
+            self.request_impl = RestApiRequestImpl(self.api_key, secret_key, self.server_url)
+            account_info_map.update_user_info(self.api_key, self.request_impl)
         except Exception:
             pass
 
@@ -241,7 +245,7 @@ class RequestTest(object):
         :param symbol: The symbol, like "btcusdt". (mandatory)
         :return: The data includes last trade, best bid and best ask.
         """
-        best_quote = call_sync_perforence_test(self.request_impl.get_best_quote(symbol))
+        best_quote, req_cost, cost_manual = call_sync_perforence_test(self.request_impl.get_best_quote(symbol))
         last_trade = self.get_last_trade(symbol)
         last_trade_and_best_quote = LastTradeAndBestQuote()
         last_trade_and_best_quote.bid_amount = best_quote.bid_amount
@@ -250,7 +254,27 @@ class RequestTest(object):
         last_trade_and_best_quote.ask_price = best_quote.ask_price
         last_trade_and_best_quote.last_trade_price = last_trade.price
         last_trade_and_best_quote.last_trade_amount = last_trade.amount
-        return last_trade_and_best_quote
+        return last_trade_and_best_quote, req_cost, cost_manual
+
+    def get_accounts(self) -> list:
+        """
+        Get all accounts.
+
+        :return: The information of all account balance.
+        """
+        global account_info_map
+        accounts = account_info_map.get_all_accounts_without_check(self.api_key)
+        if accounts and len(accounts):
+            return accounts, 0.0, 0.0
+
+        return call_sync_perforence_test(self.request_impl.get_accounts())
+
+    async def async_get_account_balance(self, balance_full_url, account_id, ret_map):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(balance_full_url) as resp:
+                json = await resp.json()
+                ret_map[account_id] = json
+
 
     def get_account_balance(self) -> list:
         """
@@ -258,13 +282,40 @@ class RequestTest(object):
 
         :return: The information of all account balance.
         """
-        accounts, req_cost, cost_manual = call_sync_perforence_test(self.request_impl.get_accounts())
+        start_time = time.time()
+
+        tasks = []
+        accounts,req_cost, cost_manual = self.get_accounts()
+
+        if (accounts is not None and len(accounts)):
+            for account_item in accounts:
+                print ("account id in : ", account_item.id)
+
+        account_balance_map = {}
         for item in accounts:
-            balances, req_cost_tmp, cost_manual_tmp = call_sync_perforence_test(self.request_impl.get_balance(item))
-            item.balances = balances
-            req_cost = req_cost + req_cost_tmp
-            cost_manual = cost_manual + cost_manual_tmp
-        return accounts, req_cost, cost_manual
+            balance_requset = self.request_impl.get_balance(item)
+            balance_url = self.server_url + balance_requset.url
+            tasks.append(asyncio.ensure_future(self.async_get_account_balance(balance_url, item.id, account_balance_map)))
+
+        loop = asyncio.get_event_loop()
+
+        try:
+            loop.run_until_complete(asyncio.wait(tasks))
+        except Exception as ee:
+            print(ee)
+        finally:
+            # loop.close()  for thread safe, the event loop can't be closed
+            pass
+
+        for item in accounts:
+            item.balances = Balance.parse_from_api_response(account_balance_map[item.id])
+        end_time = time.time()
+
+        cost_time = end_time - start_time
+        del account_balance_map
+        del tasks
+
+        return accounts, cost_time, cost_time
 
     def get_account_balance_by_account_type(self, account_type: "AccountType") -> Account:
         """
@@ -274,12 +325,12 @@ class RequestTest(object):
         :return: The information of the account that is specified type.
         """
         check_should_not_none(account_type, "account_type")
-        accounts = call_sync_perforence_test(self.request_impl.get_accounts())
+        accounts = self.get_accounts()
         for item in accounts:
             if account_type == item.account_type:
-                balances = call_sync_perforence_test(self.request_impl.get_balance(item))
+                balances, req_cost, cost_manual = call_sync_perforence_test(self.request_impl.get_balance(item))
                 item.balances = balances
-                return item
+                return item, req_cost, cost_manual
 
     def create_order(self, symbol: 'str', account_type: 'AccountType', order_type: 'OrderType', amount: 'float',
                      price: 'float', client_order_id=None, stop_price=None, operator=None) -> int:
@@ -321,7 +372,7 @@ class RequestTest(object):
         The request of get open orders.
 
         :param symbol: The symbol, like "btcusdt". (mandatory)
-        :param account_type: The order side, buy or sell. If no side defined, will return all open orders of the account. (mandatory)
+        :param account_type: account type, all defination to see AccountType in SDK. (mandatory)
         :param side: The order side, buy or sell. If no side defined, will return all open orders of the account. (optional)
         :param size: The number of orders to return. Range is [1, 500]. Default is 100. (optional)
         :param direct: 1:prev  order by ID asc from from_id, 2:next order by ID desc from from_id
@@ -443,7 +494,7 @@ class RequestTest(object):
 
     def get_historical_orders(self, symbol: 'str', order_state: 'OrderState', order_type: 'OrderType' = None,
                               start_date: 'str' = None, end_date: 'str' = None, start_id: 'int' = None,
-                              size: 'int' = None) -> list:
+                              size: 'int' = None, start_time:'int'=None, end_time:'int'=None) -> list:
         """
         Get historical orders.
 
@@ -454,11 +505,13 @@ class RequestTest(object):
         :param end_date: End date in format yyyy-mm-dd. (optional)
         :param start_id: Start id. (optional)
         :param size: The size of orders. (optional)
+        :param start_time: millseconds time. (optional)
+        :param end_time: millseconds time and (end_time - start_time) must less than 48 hours. (optional)
         :return:
         """
         return call_sync_perforence_test(
             self.request_impl.get_historical_orders(symbol, order_state, order_type, start_date, end_date, start_id,
-                                                    size))
+                                                    size, start_time, end_time))
 
     def transfer_between_parent_and_sub(self, sub_uid: 'int', currency: 'str', amount: 'float',
                                         transfer_type: 'TransferMasterType'):
@@ -552,6 +605,32 @@ class RequestTest(object):
         :return: The fee information.
         """
         return call_sync_perforence_test(self.request_impl.get_fee_rate(symbols))
+
+    def get_margin_loan_info(self, symbols: 'str'=None) -> list:
+        """
+        The request of get margin loan info, can return currency loan info list.
+
+        :param symbols: The symbol, like "btcusdt,htusdt". (optional)
+        :return: The cross margin loan info.
+        """
+        return call_sync_perforence_test(self.request_impl.get_margin_loan_info(symbols))
+
+    def get_cross_margin_loan_info(self) -> list:
+        """
+        The request of currency loan info list.
+
+        :return: The cross margin loan info list.
+        """
+        return call_sync_perforence_test(self.request_impl.get_cross_margin_loan_info())
+
+    def get_reference_transact_fee_rate(self, symbols: 'str') -> list:
+        """
+        The request of get transact fee rate list.
+
+        :param symbols: The symbol, like "btcusdt,htusdt". (mandatory)
+        :return: The transact fee rate list.
+        """
+        return call_sync_perforence_test(self.request_impl.get_reference_transact_fee_rate(symbols))
 
     def transfer_between_futures_and_pro(self, currency: 'str', amount: 'float',
                                         transfer_type: 'TransferFuturesPro')-> int:

@@ -1,13 +1,19 @@
+import aiohttp
+import asyncio
+
 from huobi.constant.system import RestApiDefine
 from huobi.impl.restapirequestimpl import RestApiRequestImpl
 from huobi.impl.restapiinvoker import call_sync
-from huobi.impl.accountinfomap import account_info_map
 from huobi.impl.utils.inputchecker import *
 from huobi.model import *
+from huobi.impl.accountinfomap import account_info_map
+from huobi.model.balance import Balance
+from huobi.model.deposithistory import DepositHistory
 
 
 class RequestClient(object):
-
+    api_key = None
+    server_url = None
     def __init__(self, **kwargs):
         """
         Create the request client instance.
@@ -16,18 +22,17 @@ class RequestClient(object):
             secret_key: The private key applied from Huobi.
             server_url: The URL name like "https://api.huobi.pro".
         """
-        api_key = None
         secret_key = None
-        url = RestApiDefine.Url
+        self.server_url = RestApiDefine.Url
         if "api_key" in kwargs:
-            api_key = kwargs["api_key"]
+            self.api_key = kwargs["api_key"]
         if "secret_key" in kwargs:
             secret_key = kwargs["secret_key"]
         if "url" in kwargs:
-            url = kwargs["url"]
+            self.server_url = kwargs["url"]
         try:
-            self.request_impl = RestApiRequestImpl(api_key, secret_key, url)
-            account_info_map.update_user_info(api_key, self.request_impl)
+            self.request_impl = RestApiRequestImpl(self.api_key, secret_key, self.server_url)
+            account_info_map.update_user_info(self.api_key, self.request_impl)
         except Exception:
             pass
 
@@ -182,6 +187,23 @@ class RequestClient(object):
         """
         return call_sync(self.request_impl.get_deposit_history(currency, from_id, size, direct))
 
+    def get_sub_user_deposit_history(self, sub_uid: 'int', currency: 'str' = None,
+                                     start_time: 'int' = None, end_time: 'int' = None,
+                                     sort: 'str' = None, limit: 'int' = None, from_id: 'int' = None) -> DepositHistory:
+        """
+        Parent get sub user depoist history.
+
+        :param sub_uid: Sub user id. (mandatory)
+        :param currency: Cryptocurrency.
+        :param start_time: Farthest time
+        :param end_time: Nearest time
+        :param sort: Sorting order
+        :param limit: Maximum number of items in one page
+        :param from_id: First record Id in this query
+        """
+        return call_sync(self.request_impl.get_sub_user_deposit_history(sub_uid, currency, start_time, end_time,
+                                                                        sort, limit, from_id))
+
     def transfer(self, symbol: 'str', from_account: 'AccountType', to_account: 'AccountType', currency: 'str',
                  amount: 'float') -> int:
         """
@@ -252,16 +274,55 @@ class RequestClient(object):
         last_trade_and_best_quote.last_trade_amount = last_trade.amount
         return last_trade_and_best_quote
 
+    def get_accounts(self) -> list:
+        """
+        Get all accounts.
+
+        :return: The information of all account balance.
+        """
+        global account_info_map
+        accounts = account_info_map.get_all_accounts_without_check(self.api_key)
+        if accounts and len(accounts):
+            return accounts
+
+        return call_sync(self.request_impl.get_accounts())
+
+    async def async_get_account_balance(self, balance_full_url, account_id, ret_map):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(balance_full_url) as resp:
+                json = await resp.json()
+                ret_map[account_id] = json
+                return json
+
+
     def get_account_balance(self) -> list:
         """
         Get the balance of a all accounts.
 
         :return: The information of all account balance.
         """
-        accounts = call_sync(self.request_impl.get_accounts())
+        tasks = []
+        accounts = self.get_accounts()
+        account_balance_map = {}
         for item in accounts:
-            balances = call_sync(self.request_impl.get_balance(item))
-            item.balances = balances
+            balance_requset = self.request_impl.get_balance(item)
+            balance_url = self.server_url + balance_requset.url
+            tasks.append(asyncio.ensure_future(self.async_get_account_balance(balance_url, item.id, account_balance_map)))
+
+        loop = asyncio.get_event_loop()
+        try:
+            loop.run_until_complete(asyncio.wait(tasks))
+        except Exception as ee:
+            print(ee)
+        finally:
+            # loop.close()  #for thread safe, the event loop can't be closed
+            pass
+
+        for item in accounts:
+            item.balances = Balance.parse_from_api_response(account_balance_map[ item.id])
+
+        del account_balance_map
+        del tasks
         return accounts
 
     def get_account_balance_by_account_type(self, account_type: "AccountType") -> Account:
@@ -272,7 +333,7 @@ class RequestClient(object):
         :return: The information of the account that is specified type.
         """
         check_should_not_none(account_type, "account_type")
-        accounts = call_sync(self.request_impl.get_accounts())
+        accounts = self.get_accounts()
         for item in accounts:
             if account_type == item.account_type:
                 balances = call_sync(self.request_impl.get_balance(item))
@@ -635,6 +696,16 @@ class RequestClient(object):
         :return:
         """
         return call_sync(self.request_impl.get_account_withdraw_quota(currency))
+
+    def get_sub_user_deposit_address(self, sub_uid: 'int', currency: 'str') -> list:
+        """
+        Parent get sub user deposit address
+
+        :param sub_uid: Sub user id
+        :param currency: Cryptocurrency, like "btc". (mandatory)
+        :return:
+        """
+        return call_sync(self.request_impl.get_sub_user_deposit_address(sub_uid, currency))
 
     def get_deposit_withdraw(self, op_type:'str', currency: 'str'=None, from_id: 'int'=None, size: 'int'=None, direct:'str'=None) -> list:
         """

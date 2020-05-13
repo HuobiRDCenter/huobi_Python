@@ -7,6 +7,7 @@ from huobi.impl.utils.inputchecker import *
 from huobi.impl.utils.timeservice import *
 from huobi.model import *
 from huobi.model.accountledger import AccountLedger
+from huobi.model.deposithistory import DepositHistory, History
 from huobi.model.feerate import FeeRate
 from huobi.model.marketticker import MarketTicker
 
@@ -325,6 +326,41 @@ class RestApiRequestImpl(object):
                 deposit.updated_timestamp = item.get_int("updated-at")
                 deposits.append(deposit)
             return deposits
+
+        request.json_parser = parse
+        return request
+
+    def get_sub_user_deposit_history(self, sub_uid, currency=None, start_time=None, end_time=None, sort=None, limit=None, from_id=None):
+        check_should_not_none(sub_uid, "sub_uid")
+
+        builder = UrlParamsBuilder()
+        builder.put_url("subUid", sub_uid)
+        builder.put_url("currency", currency)
+        builder.put_url("startTime", start_time)
+        builder.put_url("endTime", end_time)
+        builder.put_url("sort", sort)
+        builder.put_url("limit", limit)
+        builder.put_url("fromId", from_id)
+        request = self.__create_request_by_get_with_signature("/v2/sub-user/query-deposit", builder)
+
+        def parse(json_wrapper):
+            deposit_history = DepositHistory()
+            deposit_history.nextId = json_wrapper.get_int_or_default("nextId", 0)
+            deposit_history.data = list()
+            list_array = json_wrapper.get_array("data")
+            for item in list_array.get_items():
+                history = History()
+                history.id = item.get_int("id")
+                history.currency = item.get_string("currency")
+                history.txHash = item.get_string("txHash")
+                history.amount = item.get_float("amount")
+                history.address = item.get_string("address")
+                history.addressTag = item.get_string("addressTag")
+                history.deposit_state = item.get_string("state")
+                history.created_timestamp = item.get_int("createTime")
+                history.updated_timestamp = item.get_int("updateTime")
+                deposit_history.data.append(history)
+            return deposit_history
 
         request.json_parser = parse
         return request
@@ -1322,6 +1358,26 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
+    def get_sub_user_deposit_address(self, sub_uid, currency):
+        builder = UrlParamsBuilder()
+        builder.put_url("subUid", sub_uid)
+        builder.put_url("currency", currency)
+        request = self.__create_request_by_get_with_signature("/v2/sub-user/deposit-address", builder)
+
+        def parse(json_wrapper):
+            ret_list = []
+            data_array = json_wrapper.get_array("data")
+            for address_data in data_array.get_items():
+                obj = ChainDepositAddress()
+                obj.currency = address_data.get_string("currency")
+                obj.address = address_data.get_string("address")
+                obj.addressTag = address_data.get_string("addressTag")
+                obj.chain = address_data.get_string("chain")
+                ret_list.append(obj)
+            return ret_list
+
+        request.json_parser = parse
+        return request
 
     def get_account_withdraw_quota(self, currency):
         check_should_not_none(currency, "currency")

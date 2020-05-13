@@ -566,12 +566,22 @@ class RestfulTestCaseSeq:
         tc.add_record()
 
     def test_account(self):
+        spot_account_id = 0
+
+        # case get_account_balance
+        tc = TimeCost(function_name="(" + self.test_client.get_accounts.__name__ + " GET request call once)")
+        result, tc.server_req_cost, tc.server_api_cost = self.test_client.get_accounts()
+        tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
+        tc.add_record()
+        for row in result:
+            if row.account_type == AccountType.SPOT:
+                spot_account_id = row.id
+                break
+        print("test_account spot account id : ", spot_account_id)
 
         # case get_account_balance
         tc = TimeCost(function_name="(" + self.test_client.get_account_balance.__name__ + " GET request call once)")
         result, tc.server_req_cost, tc.server_api_cost = self.test_client.get_account_balance()
-        global count_offset
-        count_offset = count_offset + len(result)   # call get balance in loop
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
         spot_account_id = 0
@@ -616,7 +626,7 @@ class RestfulTestCaseSeq:
 
         # case get_account_ledger
         tc = TimeCost(function_name=self.test_client.get_account_ledger.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = self.test_client.get_account_ledger(account_id=g_account_id)
+        result, tc.server_req_cost, tc.server_api_cost = self.test_client.get_account_ledger(account_id=spot_account_id)
         tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
         tc.add_record()
 
@@ -668,6 +678,19 @@ class RestfulTestCaseSeq:
         tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
         tc.add_record()
 
+    def test_account_balance_performance(self):
+
+        # case get_account_balance
+        tc = TimeCost(function_name="(" + self.test_client.get_account_balance.__name__ + " GET request call once)")
+        result, tc.server_req_cost, tc.server_api_cost = self.test_client.get_account_balance()
+        tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
+        tc.add_record()
+        spot_account_id = 0
+        for row in result:
+            if row.account_type == AccountType.SPOT:
+                spot_account_id = row.id
+                break
+        print("test_account spot account id : ", spot_account_id)
 
 if __name__ == "__main__":
     test_case = RestfulTestCaseSeq()
@@ -680,6 +703,7 @@ if __name__ == "__main__":
     test_case.test_batch_cancel_get_orders()
     test_case.test_match_result()
     test_case.test_account()
+    test_case.test_account_balance_performance()
     test_case.test_etf()
     test_case.test_trade()
     test_case.test_cross_margin()
