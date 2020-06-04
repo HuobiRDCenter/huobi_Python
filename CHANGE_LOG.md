@@ -15,6 +15,21 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 
 ## Table of Contents
+- [Huobi Global API Python SDK version 1.0.13](#Huobi-Global-API-Python-SDK-version-1.0.13)
+
+- [Huobi Global API Python SDK version 1.0.12](#Huobi-Global-API-Python-SDK-version-1.0.12)
+- 
+- [Huobi Global API Python SDK version 1.0.11](#Huobi-Global-API-Python-SDK-version-1.0.11)
+
+- [Huobi Global API Python SDK version 1.0.10](#Huobi-Global-API-Python-SDK-version-1.0.10)
+
+- [Huobi Global API Python SDK version 1.0.9](#Huobi-Global-API-Python-SDK-version-1.0.9)
+
+- [Huobi Global API Python SDK version 1.0.8](#Huobi-Global-API-Python-SDK-version-1.0.8)
+
+- [Huobi Global API Python SDK version 1.0.7](#Huobi-Global-API-Python-SDK-version-1.0.7)
+
+- [Huobi Global API Python SDK version 1.0.6](#Huobi-Global-API-Python-SDK-version-1.0.6)
 
 - [Huobi Global API Python SDK version 1.0.5](#Huobi-Global-API-Python-SDK-version-1.0.5)
 
@@ -27,7 +42,131 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 - [Huobi Global API Python SDK version 1.0.1](#Huobi-Global-API-Python-SDK-version-1.0.1)
 
 
-## Huobi Global API Python SDK version 1.0.5
+# Huobi Global API Python SDK version 1.0.13
+
+***2020-04-30***
+
+- Optimize request performance
+
+  ```
+  need install aiohttp
+  ```
+
+
+# Huobi Global API Python SDK version 1.0.12
+
+***2020-04-13***
+
+- Modify API request and response field
+
+  ```
+  GET /v1/cross-margin/loan-orders				Add sub-id as optional parameters
+  GET /v1/cross-margin/accounts/balance		Add sub-id as optional parameters
+  GET /market/tickers											Add best bid offer response field
+  POST /v1/order/orders/place							Add FOK order types
+  POST /v1/order/batch-orders							Add FOK order types
+  ```
+
+- Add new API
+
+  ```
+  GET https://status.huobigroup.com/api/v2/summary.json
+  WebSocket topic market.$symbol.mbp.refresh.$levels
+  GET /v2/account/ledger
+  ```
+
+  
+
+# Huobi Global API Python SDK version 1.0.11
+
+***2020-04-02***
+
+
+-  modify subscribe for account update with currency balance information
+    ```
+     subscribe : account update
+    ```
+
+# Huobi Global API Python SDK version 1.0.10
+
+***2020-02-26***
+
+
+-  modify api for response&params
+    ```
+     GET /v1/order/orders/{order-id}      1. add client-order-id in response
+     GET /v1/order/orders/getClientOrder  1. add client-order-id in response
+     GET /v1/order/openOrders             1. add client-order-id in response
+     GET /v1/order/orders                 1. add client-order-id in response   2.add params start-time and end-time
+     GET /v1/order/history                1. add client-order-id in response
+     GET /v2/reference/currencies         1. add baseChain,baseChainProtocol in response
+    ```
+
+- add new api
+    ```
+     GET /v2/reference/transact-fee-rate
+     GET /v1/margin/loan-info
+     GET /v1/cross-margin/loan-info
+    ```
+
+# Huobi Global API Python SDK version 1.0.9
+
+***2020-01-07***
+
+
+- add new api
+    ```
+     1. POST /v1/order/batch-orders
+     2. POST /v2/sub-user/management
+    ```
+- modify api
+    ```
+     1. POST /v1/order/orders/batchcancel
+        param remove symbol
+        param add client-order-ids 
+        return success and failed detail info
+    ```
+
+# Huobi Global API Python SDK version 1.0.8
+
+***2019-12-11***
+
+
+- add subscribe
+    ```
+    add subscribe accounts.update#{mode}
+    add subscribe trade.clearing#${symbol}
+    ```
+
+# Huobi Global API Python SDK version 1.0.7
+
+***2019-12-06***
+
+
+- fix bug in websocketconnection.py to support wss://api-aws.huobi.pro
+
+
+# Huobi Global API Python SDK version 1.0.6
+
+***2019-11-27***
+
+
+- add performance test code
+
+- align response timestamp to UTC time
+    ```
+    remove convert_cst_in_second_to_utc function
+    remove convert_cst_in_millisecond_to_utc function
+    ```
+- add subscribe mbp and request mbp
+    ```
+    market.$symbol.mbp.$levels
+    ```
+  
+- UT code update
+    ```
+    UT code update
+    ```
 
 [***version 1.0.5***](https://github.com/HuobiRDCenter/huobi_Python/releases)
 
@@ -39,7 +178,6 @@ Trade model no change and no impact to user test case
 
 # Huobi Global API Python SDK version 1.0.4
 
-## 1.RELEASE NOTE - Huobi Global API SDK  1.0.4 
 ***2019-10-30***
 
 
@@ -75,8 +213,6 @@ Trade model no change and no impact to user test case
 
 
 # Huobi Global API Python SDK version 1.0.3
-
-## 1.RELEASE NOTE - Huobi Global API SDK  1.0.3
 
 ***2019-10-28***
 
@@ -126,7 +262,7 @@ Trade model no change and no impact to user test case
 
 
 
-## Huobi Global API Python SDK version 1.0.2
+# Huobi Global API Python SDK version 1.0.2
 
 [***version 1.0.2***](https://github.com/HuobiRDCenter/huobi_Python/releases)
 
@@ -159,7 +295,7 @@ market.$symbol.bbo
 
  
 
-## Huobi Global API Python SDK version 1.0.1
+# Huobi Global API Python SDK version 1.0.1
 
 [***version 1.0.1***](https://github.com/HuobiRDCenter/huobi_Python/releases)
 

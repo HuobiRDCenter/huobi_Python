@@ -1,25 +1,12 @@
 # Huobi Python SDK (beta version)
 
-This is Huobi Ptyhon SDK, This is a lightweight python library, you can import to your ptyhon project and use this SDK to query all market data, trading and manage your account.
+This is Huobi Python SDK, This is a lightweight python library, you can import to your python project and use this SDK to query all market data, trading and manage your account.
 
 The SDK supports both synchronous RESTful API invoking, and subscribe the market data from the Websocket connection.
 
+## Huobi Python SDK Releases
 
-## Huobi Python SDK (change log)
-[Python SDK Change Log](https://github.com/HuobiRDCenter/huobi_Python/blob/master/CHANGE_LOG.md)
-
-## Huobi Python SDK Download
-
-- [Huobi Global API Python SDK version 1.0.5](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.5)
-
-- [Huobi Global API Python SDK version 1.0.4](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.4)
-
-- [Huobi Global API Python SDK version 1.0.3](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.3)
-
-- [Huobi Global API Python SDK version 1.0.2](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.2)
-
-- [Huobi Global API Python SDK version 1.0.1](https://github.com/HuobiRDCenter/huobi_Python/releases/tag/1.0.1)
-
+Go to [Releases](https://github.com/HuobiRDCenter/huobi_Python/releases) page to view and download each release.
 
 ## Table of Contents
 
@@ -496,15 +483,15 @@ def callback(candlestick_event: 'CandlestickEvent'):
 subscription_client.subscribe_candlestick_event("btcusdt", CandlestickInterval.MIN15, callback)
 ```
 
-### Subscribe order update
+### Subscribe orders update
 
 *Authentication is required.*
 
 ```python
-def callback(order_update_event: 'OrderUpdateEvent'):
-    print(order_update_event.data.price)
+def callback(orders_update_event: 'OrdersUpdateEvent'):
+    orders_update_event.print_object()
 
-subscription_client.subscribe_order_update_event("btcusdt", callback)
+subscription_client.subscribe_orders_update_event("btcusdt", callback)
 ```
 
 ### Subscribe account change
@@ -512,11 +499,10 @@ subscription_client.subscribe_order_update_event("btcusdt", callback)
 *Authentication is required.*
 
 ```python
-def callback(account_event: 'AccountEvent'):
-    for change in account_event.account_change_list:
-        print(change.account_type)
+def callback(account_event: 'AccountsUpdateEvent'):
+    account_event.print_object()
 
-subscription_client.subscribe_account_event(BalanceMode.TOTAL, callback)
+subscription_client.subscribe_accounts_update_event(AccountBalanceMode.TOTAL, callback)
 ```
 
 ### Unsubscribe
