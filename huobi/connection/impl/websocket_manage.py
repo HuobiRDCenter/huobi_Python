@@ -61,7 +61,7 @@ class WebsocketManage:
     def __init__(self, api_key, secret_key, uri, request):
         self.__thread = None
         self.__market_url = HUOBI_WEBSOCKET_URI_PRO + "/ws"
-        self.__trading_url = HUOBI_WEBSOCKET_URI_PRO + "/ws/v1"
+        self.__trading_url = HUOBI_WEBSOCKET_URI_PRO + "/ws/" + request.api_version
         self.__api_key = api_key
         self.__secret_key = secret_key
         self.request = request
@@ -74,12 +74,12 @@ class WebsocketManage:
         connection_id += 1
         self.id = connection_id
         host = urllib.parse.urlparse(uri).hostname
-        if host.find("api.") == 0:
+        if host.find("api") == 0:
             self.__market_url = "wss://" + host + "/ws"
+            self.__trading_url = "wss://" + host + "/ws/" + request.api_version
         else:
             self.__market_url = "wss://" + host + "/api/ws"
-
-        self.__trading_url = "wss://" + host + "/ws/v1"
+            self.__trading_url = "wss://" + host + "/ws/" + request.api_version
         if request.is_trading:
             self.url = self.__trading_url
         else:
@@ -106,7 +106,7 @@ class WebsocketManage:
             self.__thread.start()
 
     def send(self, data):
-        #print("Send Data : " + data)
+        # print("Send Data : " + data)
         self.original_connection.send(data)
 
     def close(self):
@@ -122,11 +122,20 @@ class WebsocketManage:
         self.state = ConnectionState.CONNECTED
         if self.request.is_trading:
             try:
-                builder = UrlParamsBuilder()
-                create_signature(self.__api_key, self.__secret_key,
-                                 "GET", self.url, builder)
-                builder.put_url("op", "auth")
-                self.send(builder.build_url_to_json())
+                if self.request.api_version == ApiVersion.VERSION_V1:
+                    builder = UrlParamsBuilder()
+                    create_signature(self.__api_key, self.__secret_key,
+                                     "GET", self.url, builder)
+                    builder.put_url("op", "auth")
+                    self.send(builder.build_url_to_json())
+                elif self.request.api_version == ApiVersion.VERSION_V2:
+                    builder = UrlParamsBuilder()
+                    create_signature_v2(self.__api_key, self.__secret_key,
+                                     "GET", self.url, builder)
+                    self.send(builder.build_url_to_json())
+                else:
+                    self.on_error("api version for create the signature fill failed")
+
             except Exception as e:
                 self.on_error("Unexpected error when create the signature: " + str(e))
         else:
@@ -146,12 +155,20 @@ class WebsocketManage:
 
     def on_message(self, message):
         self.last_receive_time = get_current_timestamp()
-        dict_data = json.loads(gzip.decompress(message).decode("utf-8"), encoding="utf-8")
-        #print("Receive Message", dict_data)
+        if isinstance(message, (str)): # V2
+            # print("RX string : ", message)
+            dict_data = json.loads(message)
+        elif isinstance(message, (bytes)): # V1
+            # print("RX bytes: " + gzip.decompress(message).decode("utf-8"))
+            dict_data = json.loads(gzip.decompress(message).decode("utf-8"))
+        else:
+            print("RX unknow type : ", type(message))
+            return
 
         status_outer = dict_data.get("status", "")
         err_code_outer = dict_data.get("err-code", 0)
         op_outer = dict_data.get("op", "")
+        action_outer = dict_data.get("action", "")
         ch_outer = dict_data.get("ch", "")
         rep_outer = dict_data.get("rep", "")
         ping_market_outer = int(dict_data.get("ping", 0))
@@ -163,7 +180,7 @@ class WebsocketManage:
             error_code = dict_data.get("err-code", "Unknown error")
             error_msg = dict_data.get("err-msg", "Unknown error")
             self.on_error(error_code + ": " + error_msg)
-        elif op_outer and len(op_outer):
+        elif op_outer and len(op_outer): # for V1
             if op_outer == "notify":
                 self.__on_receive(dict_data)
             elif op_outer == "ping":
@@ -175,6 +192,32 @@ class WebsocketManage:
                     self.request.subscription_handler(self)
             elif op_outer == "req":
                 self.__on_receive(dict_data)
+        elif action_outer and len(action_outer):  # for V2
+            if action_outer == "ping":
+                action_data = dict_data.get("data")
+                ping_ts = action_data.get("ts")
+                self.__process_ping_on_v2_trade(ping_ts)
+            elif action_outer == "sub":
+                action_code = dict_data.get("code", -1)
+                if action_code == 200:
+                    logging.info("subscribe ACK received")
+                else:
+                    logging.error("receive error data : " + message)
+            elif action_outer == "req": #
+                action_code = dict_data.get("code", -1)
+                if action_code == 200:
+                    logging.info("signature ACK received")
+                    if self.request.subscription_handler is not None:
+                        self.request.subscription_handler(self)
+                else:
+                    logging.error("receive error data : " + message)
+            elif action_outer == "push":
+                action_data = dict_data.get("data")
+                if action_data:
+                    self.__on_receive(dict_data)
+                else:
+                    logging.error("receive error push data : " + message)
+
         elif ch_outer and len(ch_outer):
             self.__on_receive(dict_data)
         elif rep_outer and len(rep_outer):
@@ -218,6 +261,11 @@ class WebsocketManage:
         #self.send("{\"pong\":" + str(get_current_timestamp()) + "}")
         PrintBasic.print_basic(ping_ts, "response time")
         self.send("{\"pong\":" + str(ping_ts) + "}")
+        return
+
+    def __process_ping_on_v2_trade(self, ping_ts):
+        # PrintDate.timestamp_to_date(ping_ts)
+        self.send("{\"action\": \"pong\",\"data\": {\"ts\": " + str(ping_ts) +"}}")
         return
 
     def close_on_error(self):

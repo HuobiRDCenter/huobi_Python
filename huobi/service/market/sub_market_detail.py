@@ -2,7 +2,7 @@ import time
 
 from huobi.utils import *
 
-from huobi.connection import SubscribeClient
+from huobi.connection.subscribe_client import SubscribeClient
 from huobi.model.market import *
 
 
@@ -22,7 +22,7 @@ class SubMarketDetailService:
         def parse(dict_data):
             return default_parse(dict_data, MarketDetailEvent, MarketDetail)
 
-        SubscribeClient(**kwargs).execute_subscribe(subscription,
+        SubscribeClient(**kwargs).execute_subscribe_v1(subscription,
                                             parse,
                                             callback,
                                             error_handler)

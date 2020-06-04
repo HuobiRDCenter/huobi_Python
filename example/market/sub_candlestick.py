@@ -13,6 +13,6 @@ def callback(candlestick_event: 'CandlestickEvent'):
 def error(e: 'HuobiApiException'):
     print(e.error_code + e.error_message)
 
-market_client = MarketClient(url=HUOBI_WEBSOCKET_URI_VN)
+market_client = MarketClient()
 market_client.sub_candlestick("btcusdt,ethusdt", CandlestickInterval.MIN1, callback, error)
 

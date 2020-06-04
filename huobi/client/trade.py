@@ -36,6 +36,22 @@ class TradeClient(object):
         from huobi.service.trade.get_feerate import GetFeeRateService
         return GetFeeRateService(params).request(**self.__kwargs)
 
+    def get_transact_feerate(self, symbols: 'str') -> list:
+        """
+        The request of get transact fee rate list.
+
+        :param symbols: The symbol, like "btcusdt,htusdt". (mandatory)
+        :return: The transact fee rate list.
+        """
+        check_symbol(symbols)
+
+        params = {
+            "symbols": symbols
+        }
+
+        from huobi.service.trade.get_transact_feerate import GetTransactFeeRateService
+        return GetTransactFeeRateService(params).request(**self.__kwargs)
+
     def sub_order_update(self, symbols: 'str', callback, error_handler=None):
         """
         Subscribe order changing event. If a order is created, canceled etc, server will send the data to client and onReceive in callback will be called.
@@ -57,8 +73,8 @@ class TradeClient(object):
             "symbol_list" : symbol_list,
         }
 
-        from huobi.service.trade.sub_order_update import SubOrderUpdateService
-        SubOrderUpdateService(params).subscribe(callback, error_handler, **self.__kwargs)
+        from huobi.service.trade.sub_order_update_v2 import SubOrderUpdateV2Service
+        SubOrderUpdateV2Service(params).subscribe(callback, error_handler, **self.__kwargs)
 
     def req_order_list(self, symbol: 'str', account_id: int, callback, order_states:'str',
                        order_types:'str'=None, start_date:'str'=None, end_date:'str'=None, from_id=None,
@@ -278,26 +294,8 @@ class TradeClient(object):
                 return "margin-api"
         return default_source
 
-    def create_order(self, symbol: 'str', account_id: 'int', order_type: 'OrderType', amount: 'float',
-                     price: 'float', source:'str'=None, client_order_id=None, stop_price=None, operator=None) -> int:
-        """
-        Make an order in huobi.
-
-        :param symbol: The symbol, like "btcusdt". (mandatory)
-        :param account_id: Account id. (mandatory)
-        :param order_type: The order type. (mandatory)
-        :param source: The order type. (mandatory)
-                for spot, it's "api"
-                for margin, it's "margin-api",
-                for super margin, it's "super-margin-api"
-        :param amount: The amount to buy (quote currency) or to sell (base currency). (mandatory)
-        :param price: The limit price of limit order, only needed for limit order. (mandatory for buy-limit, sell-limit, buy-limit-maker and sell-limit-maker)
-        :param client_order_id: unique Id which is user defined and must be unique in recent 24 hours
-        :param stop_price: Price for auto sell to get the max benefit
-        :param operator: the condition for stop_price, value can be "gte" or "lte",  gte – greater than and equal (>=), lte – less than and equal (<=)
-        :return: The order id.
-        """
-
+    def create_order_param_check(self, symbol: 'str', account_id: 'int', order_type: 'OrderType', amount: 'float',
+                     price: 'float', source:'str', client_order_id=None, stop_price=None, operator=None):
         check_symbol(symbol)
         check_should_not_none(account_id, "account_id")
         check_should_not_none(order_type, "order_type")
@@ -309,7 +307,7 @@ class TradeClient(object):
                 or order_type == OrderType.BUY_LIMIT_MAKER \
                 or order_type == OrderType.SELL_LIMIT_MAKER:
             check_should_not_none(price, "price")
-        if order_type == OrderType.SELL_MARKET or order_type == OrderType.BUY_MARKET:
+        if order_type in [OrderType.SELL_MARKET, OrderType.BUY_MARKET]:
             price = None
 
         params = {
@@ -324,8 +322,30 @@ class TradeClient(object):
             "operator": operator
         }
 
-        print("create order params :", params)
+        return params
 
+    def create_order(self, symbol: 'str', account_id: 'int', order_type: 'OrderType', amount: 'float',
+                     price: 'float', source:'str', client_order_id=None, stop_price=None, operator=None) -> int:
+        """
+        Make an order in huobi.
+
+        :param symbol: The symbol, like "btcusdt". (mandatory)
+        :param account_id: Account id. (mandatory)
+        :param order_type: The order type. (mandatory)
+        :param source: The order source. (mandatory)
+                for spot, it's "api", see OrderSource.API
+                for margin, it's "margin-api", see OrderSource.MARGIN_API
+                for super margin, it's "super-margin-api", see OrderSource.SUPER_MARGIN_API
+        :param amount: The amount to buy (quote currency) or to sell (base currency). (mandatory)
+        :param price: The limit price of limit order, only needed for limit order. (mandatory for buy-limit, sell-limit, buy-limit-maker and sell-limit-maker)
+        :param client_order_id: unique Id which is user defined and must be unique in recent 24 hours
+        :param stop_price: Price for auto sell to get the max benefit
+        :param operator: the condition for stop_price, value can be "gte" or "lte",  gte – greater than and equal (>=), lte – less than and equal (<=)
+        :return: The order id.
+        """
+
+        params = self.create_order_param_check(symbol, account_id, order_type, amount,
+                     price, source, client_order_id, stop_price, operator)
         from huobi.service.trade.post_create_order import PostCreateOrderService
         return PostCreateOrderService(params).request(**self.__kwargs)
 
@@ -450,3 +470,71 @@ class TradeClient(object):
 
         from huobi.service.trade.post_transfer_futures_pro import PostTransferFuturesProService
         return PostTransferFuturesProService(params).request(**self.__kwargs)
+
+    def batch_create_order(self, order_config_list) -> int:
+        """
+        Make an order in huobi.
+        :param order_config_list: order config list, it can batch create orders, and each order config check as below
+            : items as below
+                :param symbol: The symbol, like "btcusdt". (mandatory)
+                :param account_type: Account type. (mandatory)
+                :param order_type: The order type. (mandatory)
+                :param amount: The amount to buy (quote currency) or to sell (base currency). (mandatory)
+                :param price: The limit price of limit order, only needed for limit order. (mandatory for buy-limit, sell-limit, buy-limit-maker and sell-limit-maker)
+                :param client_order_id: unique Id which is user defined and must be unique in recent 24 hours
+                :param stop_price: Price for auto sell to get the max benefit
+                :param operator: the condition for stop_price, value can be "gte" or "lte",  gte – greater than and equal (>=), lte – less than and equal (<=)
+        :return: The order id.
+        """
+
+        check_should_not_none(order_config_list, "order_config_list")
+        check_list(order_config_list, 1, 10, "create order config list")
+
+        new_config_list = list()
+        for item in order_config_list:
+            new_item = self.create_order_param_check(
+                item.get("symbol", None),
+                item.get("account_id", None),
+                item.get("order_type", None),
+                item.get("amount", None),
+                item.get("price", None),
+                item.get("source", None),
+                item.get("client_order_id", None),
+                item.get("stop-price", None),
+                item.get("operator", None))
+
+            new_config_list.append(new_item)
+
+        from huobi.service.trade.post_batch_create_order import PostBatchCreateOrderService
+        return PostBatchCreateOrderService(new_config_list).request(**self.__kwargs)
+
+    def sub_trade_clearing(self, symbols: 'str', callback, error_handler=None):
+        """
+        Subscribe trade clearing by symbol
+
+        :param symbols: The symbols, like "btcusdt". Use comma to separate multi symbols, like "btcusdt,ethusdt".
+                        "*" for all symbols
+        :param callback: The implementation is required. onReceive will be called if receive server's update.
+            example: def callback(price_depth_event: 'PriceDepthEvent'):
+                        pass
+        :param error_handler: The error handler will be called if subscription failed or error happen between client and Huobi server
+            example: def error_handler(exception: 'HuobiApiException')
+                        pass
+
+        :return:  No return
+        """
+        check_should_not_none(symbols, "symbols")
+        symbol_list = symbols.split(",")
+        if ("*" in symbol_list):
+            symbol_list = ["*"]
+        else:
+            check_symbol_list(symbol_list)
+
+        check_should_not_none(callback, "callback")
+
+        params = {
+            "symbol_list": symbol_list,
+        }
+
+        from huobi.service.trade.sub_trade_clearing_v2 import SubTradeClearingV2Service
+        SubTradeClearingV2Service(params).subscribe(callback, error_handler, **self.__kwargs)

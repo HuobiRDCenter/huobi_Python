@@ -27,7 +27,7 @@ class MarketDetailMerged:
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
-        PrintBasic.print_basic(self.version, format_data + "Version")
+        # PrintBasic.print_basic(self.version, format_data + "Version")
         PrintBasic.print_basic(self.amount, format_data + "Amount")
         PrintBasic.print_basic(self.count, format_data + "Count")
         PrintBasic.print_basic(self.vol, format_data + "Volume")

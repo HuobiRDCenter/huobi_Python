@@ -49,6 +49,19 @@ def default_parse(dict_data, outer_class_name=object, inner_class_name=object):
 
     return rsp_obj
 
+def default_parse_data_as_long(ret_original_json, key_name = None, default_value=0):
+    if ret_original_json:
+        # from data get value by key_name
+        if key_name and len(key_name):
+            data_json = ret_original_json.get("data", {})
+            ret_val =  data_json.get(key_name, default_value)
+        else:
+            # get data value
+            ret_val = ret_original_json.get("data", 0)
+        return None if ret_val is None else int(ret_val)
+    else:
+        return default_value
+
 def default_parse_list_dict(inner_data, inner_class_name=object, default_value=None):
     from huobi.utils.print_mix_object import TypeCheck
 

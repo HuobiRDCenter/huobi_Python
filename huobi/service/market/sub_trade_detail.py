@@ -1,9 +1,8 @@
 import time
 
 from huobi.model.market import *
-from huobi.serialize.market import *
 from huobi.utils import *
-from huobi.connection import SubscribeClient
+from huobi.connection.subscribe_client import SubscribeClient
 
 
 class SubTradeDetailService:
@@ -24,7 +23,7 @@ class SubTradeDetailService:
             trade_detail_event.ch = dict_data.get("ch", "")
             return trade_detail_event
 
-        SubscribeClient(**kwargs).execute_subscribe(subscription,
+        SubscribeClient(**kwargs).execute_subscribe_v1(subscription,
                                             parse,
                                             callback,
                                             error_handler)

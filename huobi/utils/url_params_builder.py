@@ -7,17 +7,18 @@ class UrlParamsBuilder(object):
     def __init__(self):
         self.param_map = dict()
         self.post_map = dict()
+        self.post_list = list()
 
     def put_url(self, name, value):
         if value is not None:
-            if isinstance(value, list):
+            if isinstance(value, (list, dict)):
                 self.param_map[name] = value
             else:
                 self.param_map[name] = str(value)
 
     def put_post(self, name, value):
         if value is not None:
-            if isinstance(value, list):
+            if isinstance(value, (list, dict)):
                 self.post_map[name] = value
             else:
                 self.post_map[name] = str(value)

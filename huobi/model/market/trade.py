@@ -16,7 +16,6 @@ class Trade:
         self.amount = 0.0
         self.trade_id = 0
         self.ts = 0
-        #self.id = 0   # replace by trade_id
         self.direction = ""
 
 

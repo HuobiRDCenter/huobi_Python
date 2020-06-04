@@ -1,8 +1,9 @@
 from huobi.client.generic import GenericClient
-from huobi.constant import *
+from huobi.utils import *
 
-generic_client = GenericClient(url=HUOBI_URL_VN)
+
+generic_client = GenericClient()
 list_obj = generic_client.get_exchange_currencies()
-if len(list_obj):
-    for currency in list_obj:
-        print(currency)
+LogInfo.output("---- Supported currency ----")
+for currency in list_obj:
+    LogInfo.output(currency)

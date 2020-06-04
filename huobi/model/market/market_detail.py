@@ -35,4 +35,4 @@ class MarketDetail:
         PrintBasic.print_basic(self.low, format_data + "Low")
         PrintBasic.print_basic(self.count, format_data + "Count")
         PrintBasic.print_basic(self.vol, format_data + "Volume")
-        PrintBasic.print_basic(self.version, format_data + "Version")
+        # PrintBasic.print_basic(self.version, format_data + "Version")

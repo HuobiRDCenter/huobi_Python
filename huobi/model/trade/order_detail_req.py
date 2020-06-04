@@ -1,4 +1,4 @@
-from huobi.model.trade import Order
+from huobi.model.trade.order_list_item import OrderListItem
 
 
 class OrderDetailReq:
@@ -15,18 +15,15 @@ class OrderDetailReq:
     """
 
     def __init__(self):
-        self.symbol = ""
-        self.timestamp = 0
+        self.ts = 0
         self.topic = ""
-        self.client_req_id = ""
-        self.data = Order()
+        self.cid = ""
+        self.data = OrderListItem()
 
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
-        PrintBasic.print_basic(self.symbol, format_data + "Symbol")
-        PrintBasic.print_basic(self.timestamp, format_data + "Timestamp")
-        PrintBasic.print_basic(self.client_req_id, format_data + "Client Req ID")
+        PrintBasic.print_basic(self.ts, format_data + "Timestamp")
+        PrintBasic.print_basic(self.cid, format_data + "Client Req ID")
         PrintBasic.print_basic(self.topic, format_data + "Topic")
-        print("order detail as below :")
-        self.data.print_object()
+        self.data.print_object("\t")

@@ -1,13 +1,13 @@
 from huobi.client.generic import GenericClient
-from huobi.constant import *
+from huobi.utils import *
 
-generic_client = GenericClient(url=HUOBI_URL_VN)
+
+generic_client = GenericClient()
 list_obj = generic_client.get_exchange_info()
-print("---- Supported symbols ----")
+LogInfo.output("---- Supported symbols ----")
 for symbol in list_obj.symbol_list:
-    print(symbol.symbol)
-    #symbol.print_object() # to print details
+    LogInfo.output(symbol.symbol)
 
-print("---- Supported currencies ----");
+LogInfo.output("---- Supported currencies ----");
 for currency in list_obj.currencies:
-    print(currency)
+    LogInfo.output(currency)

@@ -1,3 +1,4 @@
+from huobi.connection.impl.restapi_request import RestApiRequest
 from huobi.constant import *
 from huobi.model.generic import *
 
@@ -86,3 +87,14 @@ class GenericClient(object):
 
         from huobi.service.generic.get_reference_currencies import GetReferenceCurrenciesService
         return GetReferenceCurrenciesService(params).request(**self.__kwargs)
+
+
+    def get_system_status(self) -> str:
+        """
+        get system status
+
+        :return: system status.
+        """
+
+        from huobi.service.generic.get_system_status import GetSystemStatusService
+        return GetSystemStatusService({}).request(**self.__kwargs)

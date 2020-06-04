@@ -1,7 +1,6 @@
 import time
 
-from huobi.serialize.market import *
-from huobi.connection import *
+from huobi.connection.websocket_req_client import *
 from huobi.utils.channels_request import *
 from huobi.model.market import *
 
@@ -24,11 +23,11 @@ class ReqPriceDepthService:
             price_depth_event.id = dict_data.get("id")
             price_depth_event.rep = dict_data.get("rep")
             data = dict_data.get("data", {})
-            price_depth_obj = PriceDepthSerial.json_parse(data)
+            price_depth_obj = PriceDepth.json_parse(data)
             price_depth_event.data = price_depth_obj
             return price_depth_event
 
-        WebSocketReqClient(**kwargs).execute_subscribe(subscription,
+        WebSocketReqClient(**kwargs).execute_subscribe_v1(subscription,
                                             parse,
                                             callback,
                                             error_handler)

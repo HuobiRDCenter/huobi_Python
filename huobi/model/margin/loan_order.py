@@ -9,7 +9,6 @@ class LoanOrder:
         id: The order id.
         user_id: The user id.
         account_type: The account type which created the loan order.
-        symbol: The symbol, like "btcusdt".
         currency: The currency name.
         loan_amount: The amount of the origin loan.
         loan_balance: The amount of the loan left.
@@ -17,13 +16,12 @@ class LoanOrder:
         interest_amount: The accumulated loan interest.
         interest_balance: The amount of loan interest left.
         state: The loan stats, possible values: created, accrual, cleared, invalid.
-        created_timestamp: The UNIX formatted timestamp in UTC when the order was created.
-        accrued_timestamp: The UNIX formatted timestamp in UTC when the last accrue happened.
+        created_at: The UNIX formatted timestamp in UTC when the order was created.
+        accrued_at: The UNIX formatted timestamp in UTC when the last accrue happened.
     """
 
     def __init__(self):
         self.currency = ""
-        self.symbol = ""
         self.deduct_rate = 0
         self.paid_point = 0.0
         self.deduct_currency = ""
@@ -45,7 +43,6 @@ class LoanOrder:
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.currency, format_data + "Currency")
-        PrintBasic.print_basic(self.symbol, format_data + "Symbol")
         PrintBasic.print_basic(self.deduct_rate, format_data + "Deduct Rate")
         PrintBasic.print_basic(self.paid_point, format_data + "Paid Point")
         PrintBasic.print_basic(self.deduct_currency, format_data + "Deduct Currency")

@@ -1,10 +1,6 @@
 from huobi.connection.restapi_sync_client import RestApiSyncClient
 from huobi.constant.system import HttpMethod
 from huobi.model.etf import *
-from huobi.serialize.etf import *
-from huobi.utils import *
-
-
 
 class GetEtfSwapListService:
 
@@ -12,18 +8,13 @@ class GetEtfSwapListService:
         self.params = params
 
     def request(self, **kwargs):
-        channel = "/etf/swap/list"
+      channel = "/etf/swap/list"
 
-        def parse(dict_data):
-          ret_list = []
-          data_list = dict_data.get("data", [])
-          if data_list and len(data_list):
-            for data_item in data_list:
-              obj = EtfSwapListSerial.json_parse(data_item)
-              ret_list.append(obj)
-          return ret_list
+      def parse(dict_data):
+        return EtfSwapList.json_parse_list(dict_data.get("data", []))
 
-        return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
+      return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
+
 
 
 

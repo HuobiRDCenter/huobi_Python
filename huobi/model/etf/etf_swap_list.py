@@ -1,4 +1,6 @@
 from huobi.constant import *
+from huobi.model.etf.unitprice import UnitPrice
+from huobi.utils import default_parse_list_dict
 
 
 class EtfSwapList:
@@ -35,6 +37,33 @@ class EtfSwapList:
         self.used_currency_list = list()
         self.obtain_currency_list = list()
 
+    @staticmethod
+    def json_parse(dict_data):
+        if dict_data and len(dict_data):
+            detail = dict_data.get("detail", {})
+            dict_data.pop("detail")
+            etf_swap_obj = default_parse_list_dict(dict_data, EtfSwapList)
+            if detail and len(detail):
+                etf_swap_obj.rate = detail.get("rate", 0)
+                etf_swap_obj.fee = detail.get("fee", 0)
+                etf_swap_obj.point_card_amount = detail.get("point_card_amount", 0)
+                etf_swap_obj.used_currency_list = default_parse_list_dict(detail.get("used_currency_list"), UnitPrice, [])
+                etf_swap_obj.obtain_currency_list = default_parse_list_dict(detail.get("obtain_currency_list"), UnitPrice, [])
+            return etf_swap_obj
+
+        return None
+
+    @staticmethod
+    def json_parse_list(dict_data):
+        ret_list = list()
+        for item in dict_data:
+            item_obj = EtfSwapList.json_parse(item)
+            if item_obj is not None:
+                ret_list.append(item_obj)
+
+        return ret_list
+
+
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.id, format_data + "Operater Id")
@@ -47,16 +76,13 @@ class EtfSwapList:
         PrintBasic.print_basic(self.status, format_data + "Status")
         PrintBasic.print_basic(self.point_card_amount, format_data + "Point Card Amount")
 
-        print()
         if len(self.used_currency_list):
-            print("used_currency_list as below:")
+            PrintBasic.print_basic("used_currency_list as below:")
             for row in self.used_currency_list:
-                row.print_object(format_data)
-                print()
+                row.print_object(format_data + "\t")
 
         if len(self.obtain_currency_list):
-            print()
-            print("obtain_currency_list as below:")
+            PrintBasic.print_basic("obtain_currency_list as below:")
             for row in self.obtain_currency_list:
-                row.print_object(format_data)
-                print()
+                row.print_object(format_data + "\t")
+

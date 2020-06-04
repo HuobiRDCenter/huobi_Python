@@ -1,5 +1,6 @@
 from huobi.connection.restapi_sync_client import RestApiSyncClient
 from huobi.constant import *
+from huobi.utils.json_parser import default_parse_data_as_long
 
 
 class PostRepayMarginOrderService:
@@ -8,14 +9,13 @@ class PostRepayMarginOrderService:
         self.params = params
 
     def request(self, **kwargs):
-        load_id = self.params["load_id"]
+        loan_id = self.params["loan_id"]
         def get_channel():
             path = "/v1/margin/orders/{}/repay"
-            return path.format(load_id)
+            return path.format(loan_id)
 
         def parse(dict_data):
-            margin_order_id = int(dict_data.get("data", 0))
-            return margin_order_id
+            return default_parse_data_as_long(dict_data, None)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, get_channel(), self.params, parse)
 

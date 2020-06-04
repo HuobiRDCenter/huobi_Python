@@ -1,6 +1,6 @@
 from huobi.connection.restapi_sync_client import RestApiSyncClient
 from huobi.constant import *
-
+from huobi.utils.json_parser import default_parse_data_as_long
 
 
 class PostCancelOrderService:
@@ -16,8 +16,7 @@ class PostCancelOrderService:
             return path.format(order_id)
 
         def parse(dict_data):
-            return int(dict_data.get("data", -1))  # order-id
-
+            return default_parse_data_as_long(dict_data, None)
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, get_channel(), self.params, parse)
 
 

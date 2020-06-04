@@ -1,5 +1,4 @@
 from huobi.client.market import MarketClient
-from huobi.constant import *
 
 
 def callback(trade_event: 'TradeDetailEvent'):
@@ -9,6 +8,6 @@ def callback(trade_event: 'TradeDetailEvent'):
 
 
 
-market_client = MarketClient(url=HUOBI_WEBSOCKET_URI_VN, init_log=True)
+market_client = MarketClient(init_log=True)
 market_client.sub_trade_detail("btcusdt,eosusdt", callback)
 

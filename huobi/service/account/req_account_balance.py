@@ -1,9 +1,8 @@
 
 from huobi.utils import *
 
-from huobi.connection import *
+from huobi.connection.websocket_req_client import *
 from huobi.model.account import *
-from huobi.serialize.account import *
 
 
 
@@ -22,13 +21,10 @@ class ReqAccountBalanceService:
             req_obj.topic = dict_data.get("topic", 0)
             req_obj.cid = dict_data.get("cid", 0)
             data_list = dict_data.get("data", [])
-            if len(data_list):
-                for row in data_list:
-                    account_balance_obj = AccountBalanceSerial.json_parse(row)
-                    req_obj.data.append(account_balance_obj)
+            req_obj.data = AccountBalance.json_parse_list(data_list)
             return req_obj
 
-        WebSocketReqClient(**kwargs).execute_subscribe(subscription,
+        WebSocketReqClient(**kwargs).execute_subscribe_v1(subscription,
                                             parse,
                                             callback,
                                             error_handler,

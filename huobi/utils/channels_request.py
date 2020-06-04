@@ -9,7 +9,7 @@ def dict_add_new(old_dict, new_dict):
         for key_val, val in new_dict.items():
             if val:
                 exist_val = old_dict.get(key_val, None)
-                if exist_val and len(exist_val):
+                if exist_val and len(str(exist_val)):
                     pass
                 else:
                     old_dict[key_val] = str(val)
@@ -63,7 +63,6 @@ def request_order_list_channel(symbol, account_id, states_str= None, client_req_
         if states_str and len(states_str):
             channel["states"] = str(states_str)
         channel["cid"] = str(client_req_id) if client_req_id else str(get_current_timestamp())
-
         channel = dict_add_new(channel, more_key)
 
     except Exception as e:

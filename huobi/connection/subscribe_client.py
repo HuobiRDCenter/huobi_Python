@@ -3,7 +3,7 @@ import logging
 from huobi.connection.impl.websocket_watchdog import WebSocketWatchDog
 from huobi.connection.impl.websocket_manage import WebsocketManage
 from huobi.connection.impl.websocket_request import WebsocketRequest
-from huobi.constant.system import WebSocketDefine
+from huobi.constant.system import WebSocketDefine, ApiVersion
 
 
 class SubscribeClient(object):
@@ -40,7 +40,7 @@ class SubscribeClient(object):
         manager.connect()
         SubscribeClient.subscribe_watch_dog.on_connection_created(manager)
 
-    def create_request(self, subscription_handler, parse, callback, error_handler, is_trade = False):
+    def create_request(self, subscription_handler, parse, callback, error_handler, is_trade):
         request = WebsocketRequest()
         request.subscription_handler = subscription_handler
         request.is_trading = is_trade
@@ -50,8 +50,22 @@ class SubscribeClient(object):
         request.error_handler = error_handler
         return request
 
-    def execute_subscribe(self, subscription_handler, parse, callback, error_handler, is_trade = False):
-        request = self.create_request(subscription_handler, parse, callback, error_handler, is_trade)
+    def create_request_v1(self, subscription_handler, parse, callback, error_handler, is_trade=False):
+        request = self.create_request(subscription_handler=subscription_handler, parse=parse, callback=callback, error_handler=error_handler, is_trade=is_trade)
+        request.api_version = ApiVersion.VERSION_V1
+        return request
+
+    def create_request_v2(self, subscription_handler, parse, callback, error_handler, is_trade=False):
+        request = self.create_request(subscription_handler=subscription_handler, parse=parse, callback=callback, error_handler=error_handler, is_trade=is_trade)
+        request.api_version = ApiVersion.VERSION_V2
+        return request
+
+    def execute_subscribe_v1(self, subscription_handler, parse, callback, error_handler, is_trade = False):
+        request = self.create_request_v1(subscription_handler, parse, callback, error_handler, is_trade)
+        self.__create_websocket_manage(request)
+
+    def execute_subscribe_v2(self, subscription_handler, parse, callback, error_handler, is_trade=False):
+        request = self.create_request_v2(subscription_handler, parse, callback, error_handler, is_trade)
         self.__create_websocket_manage(request)
 
     def unsubscribe_all(self):

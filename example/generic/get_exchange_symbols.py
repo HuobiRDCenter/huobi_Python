@@ -1,13 +1,13 @@
 from huobi.client.generic import GenericClient
-from huobi.constant import *
+from huobi.utils import *
 
-generic_client = GenericClient(url=HUOBI_URL_VN)
+
+generic_client = GenericClient()
 list_obj = generic_client.get_exchange_symbols()
 if len(list_obj):
     for idx, row in enumerate(list_obj):
-        print("------- number " + str(idx) + " -------")
+        LogInfo.output("------- number " + str(idx) + " -------")
         row.print_object()
-        print()
 
 
 

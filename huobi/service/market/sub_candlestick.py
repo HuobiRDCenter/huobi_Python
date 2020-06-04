@@ -24,7 +24,7 @@ class SubCandleStickService:
         def parse(dict_data):
             return default_parse(dict_data, CandlestickEvent, Candlestick)
 
-        SubscribeClient(**kwargs).execute_subscribe(subscription,
+        SubscribeClient(**kwargs).execute_subscribe_v1(subscription,
                                             parse,
                                             callback,
                                             error_handler)

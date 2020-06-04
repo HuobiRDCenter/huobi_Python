@@ -1,7 +1,6 @@
-import time
 
 
-from huobi.connection import *
+from huobi.connection.websocket_req_client import *
 from huobi.model.trade import *
 from huobi.utils import *
 
@@ -22,7 +21,7 @@ class ReqOrderDetailService:
 
             return order_update_event
 
-        WebSocketReqClient(**kwargs).execute_subscribe(subscription,
+        WebSocketReqClient(**kwargs).execute_subscribe_v1(subscription,
                                             parse,
                                             callback,
                                             error_handler,

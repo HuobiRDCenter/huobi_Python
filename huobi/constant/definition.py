@@ -4,6 +4,7 @@ class CandlestickInterval:
     MIN15 = "15min"
     MIN30 = "30min"
     MIN60 = "60min"
+    HOUR4 = "4hour"
     DAY1 = "1day"
     MON1 = "1mon"
     WEEK1 = "1week"
@@ -34,6 +35,10 @@ class OrderType:
     SELL_LIMIT_MAKER = "sell-limit-maker"
     BUY_STOP_LIMIT = "buy-stop-limit"
     SELL_STOP_LIMIT = "sell-stop-limit"
+    BUY_LIMIT_FOK = "buy-limit-fok"
+    SELL_LIMIT_FOK = "sell-limit-fok"
+    BUY_STOP_LIMIT_FOK = "buy-stop-limit-fok"
+    SELL_STOP_LIMIT_FOK = "sell-stop-limit-fok"
     INVALID = None
 
 
@@ -55,7 +60,7 @@ class AccountState:
     INVALID = None
 
 
-class BalanceType:
+class AccountBalanceUpdateType:
     TRADE = "trade"
     FROZEN = "frozen"
     LOAN = "loan"
@@ -83,6 +88,7 @@ class WithdrawState:
 class DepositWithdraw:
     DEPOSIT = "deposit"
     WITHDRAW = "withdraw"
+
 
 class DepositState:
     CONFIRMING = "confirming"
@@ -122,12 +128,17 @@ class OrderSource:
 
 
 class OrderState:
+    CREATED = "created"   #for stop loss order
+    PRE_SUBMITTED = "pre-submitted"
+    SUBMITTING = "submitting"
     SUBMITTED = "submitted"
     PARTIAL_FILLED = "partial-filled"
     CANCELLING = "cancelling"
     PARTIAL_CANCELED = "partial-canceled"
     FILLED = "filled"
     CANCELED = "canceled"
+    FAILED = "failed"
+    PLACE_TIMEOUT = "place_timeout"
     INVALID = None
 
 
@@ -173,6 +184,13 @@ class BalanceMode:
     TOTAL = "1"
     INVALID = None
 
+
+class AccountBalanceMode:
+    BALANCE = "0"
+    TOTAL = "1"
+    INVALID = None
+
+
 class OperateMode:
     PING = "ping"
     PONG = "pong"
@@ -185,7 +203,7 @@ class QueryDirection:
 
 class TransferFuturesPro:
     TO_PRO = "futures-to-pro"
-    TO_FETURES ="pro-to-futures"
+    TO_FUTURES = "pro-to-futures"
 
 class MatchRole:
     MAKER = "maker"
@@ -199,6 +217,17 @@ class DepthStep:
     STEP4 = "step4"
     STEP5 = "step5"
 
+class DepthSize:
+    SIZE5 = 5
+    SIZE10 = 10
+    SIZE20 = 20
+
+class MbpLevel:
+    MBP5 = 5
+    MBP10 = 10
+    MBP20 = 20
+    MBP150 = 150
+	
 class ChainDepositStatus:
     ALLOWED = "allowed"
     PROHIBITED = "prohibited"
@@ -214,3 +243,59 @@ class InstrumentStatus:
     DELISTED = "delisted"
     INVALID = None
 
+
+class AccountChangeType:
+    ORDER_PLACE = "order-place"
+    ORDER_MATCH = "order-match"
+    ORDER_REFUND = "order-refund"
+    ORDER_CANCEL = "order-cancel"
+    ORDER_FEE_REFUND = "order-fee-refund"
+    MARGIN_TRANSFER = "margin-transfer"
+    MARGIN_LOAN = "margin-loan"
+    MARGIN_INTEREST = "margin-interest"
+    MARGIN_REPAY = "margin-repay"
+    OTHER = "other"
+    INVALID = None
+
+
+class FeeDeductType:
+    DEDUCT_BY_HT = "ht"
+    DEDUCT_BY_POINT = "point"
+    INVALID = None
+
+class SubUidAction:
+    UNLOCK = "unlock"
+    LOCK = "lock"
+    INVALID = None
+
+class SubUidState:
+    NORMAL = "normal"
+    LOCK = "lock"
+    INVALID = None
+
+
+class OrderUpdateEventType:
+    CREATION = "creation"
+    TRADE = "trade"
+    CANCELLATION = "cancellation"
+    INVALID = None
+
+
+class AccountTransactType:
+    TRADE = "trade"
+    ETF = "etf"
+    TRANSACT_FEE = "transact-fee"
+    DEDUCTION = "deduction"
+    TRANSFER = "transfer"
+    CREDIT = "credit"
+    LIQUIDATION = "liquidation"
+    INTEREST = "interest"
+    DEPOSIT = "deposit"
+    WITHDRAW = "withdraw"
+    WITHDRAW_FEE = "withdraw-fee"
+    EXCHANGE = "exchange"
+    OTHER = "other-types"
+
+class SortDesc:
+    ASC = "asc"
+    DESC = "desc"

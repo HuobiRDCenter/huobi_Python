@@ -35,9 +35,8 @@ def price_depth_bbo_channel(symbol):
 
 def orders_update_channel(symbol):
     channel = dict()
-    channel["op"] = "sub"
-    channel["cid"] = str(get_current_timestamp())
-    channel["topic"] = "orders." + symbol + ".update"
+    channel["action"] = "sub"
+    channel["ch"] = "orders#{symbol}".format(symbol=symbol)
     return json.dumps(channel)
 
 
@@ -48,10 +47,37 @@ def market_detail_channel(symbol):
     return json.dumps(channel)
 
 
-def account_change_channel(model):
+def accounts_update_channel(mode=0):
     channel = dict()
-    channel["op"] = "sub"
-    channel["cid"] = str(get_current_timestamp())
-    channel["topic"] = "accounts"
-    channel["model"] = model
+    channel["action"] = "sub"
+    if mode is None:
+        channel["ch"] = "accounts.update"
+    else:
+        channel["ch"] = "accounts.update#{mode}".format(mode=mode)
+    return json.dumps(channel)
+
+
+def mbp_increase_channel(symbol, levels):
+    channel = dict()
+    channel["sub"] = "market.{symbol}.mbp.{levels}".format(symbol=symbol, levels=levels)
+    channel["id"] = str(get_current_timestamp())
+    return json.dumps(channel)
+
+
+def mbp_full_channel(symbol, levels):
+    channel = dict()
+    channel["sub"] = "market.{symbol}.mbp.refresh.{levels}".format(symbol=symbol, levels=levels)
+    channel["id"] = str(get_current_timestamp())
+    return json.dumps(channel)
+
+def request_mbp_channel(symbol, levels):
+    channel = dict()
+    channel["req"] = "market.{symbol}.mbp.{levels}".format(symbol=symbol, levels=levels)
+    channel["id"] = str(get_current_timestamp())
+    return json.dumps(channel)
+
+def trade_clearing_channel(symbol="*"):
+    channel = dict()
+    channel["action"] = "sub"
+    channel["ch"] = "trade.clearing#" + symbol
     return json.dumps(channel)

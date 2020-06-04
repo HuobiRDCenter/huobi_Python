@@ -43,7 +43,7 @@ class WebSocketReqClient(object):
         request.error_handler = error_handler
         return request
 
-    def execute_subscribe(self, subscription_handler, parse, callback, error_handler, is_trade = False):
+    def execute_subscribe_v1(self, subscription_handler, parse, callback, error_handler, is_trade = False):
         request = self.create_request(subscription_handler, parse, callback, error_handler, is_trade)
         self.__create_websocket_manage(request)
 

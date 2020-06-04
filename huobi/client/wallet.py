@@ -1,5 +1,6 @@
 
 from huobi.utils.input_checker import *
+from huobi.model.wallet import *
 
 
 class WalletClient(object):
@@ -115,3 +116,50 @@ class WalletClient(object):
         from huobi.service.wallet.get_account_withdraw_quota import GetAccountWithdrawQuotaService
         return GetAccountWithdrawQuotaService(params).request(**self.__kwargs)
 
+    def get_sub_user_deposit_history(self, sub_uid: 'int', currency: 'str' = None,
+                                     start_time: 'int' = None, end_time: 'int' = None,
+                                     sort: 'str' = None, limit: 'int' = None, from_id: 'int' = None) -> DepositHistory:
+        """
+        Parent get sub user depoist history.
+
+        :param sub_uid: Sub user id. (mandatory)
+        :param currency: Cryptocurrency.
+        :param start_time: Farthest time
+        :param end_time: Nearest time
+        :param sort: Sorting order
+        :param limit: Maximum number of items in one page
+        :param from_id: First record Id in this query
+        """
+        check_should_not_none(sub_uid, "sub_uid")
+
+        params = {
+            "subUid": sub_uid,
+            "currency": currency,
+            "startTime": start_time,
+            "endTime": end_time,
+            "sort": sort,
+            "limit": limit,
+            "fromId": from_id
+        }
+
+        from huobi.service.wallet.get_sub_user_deposit_history import GetSubUserDepositHistoryService
+        return GetSubUserDepositHistoryService(params).request(**self.__kwargs)
+
+    def get_sub_user_deposit_address(self, sub_uid: 'int', currency: 'str') -> list:
+        """
+        Parent get sub user deposit address
+
+        :param sub_uid: Sub user id
+        :param currency: Cryptocurrency, like "btc". (mandatory)
+        :return:
+        """
+
+        check_should_not_none(sub_uid, "subUid")
+        check_should_not_none(currency, "currency")
+        params = {
+            "subUid": sub_uid,
+            "currency": currency
+        }
+
+        from huobi.service.wallet.get_sub_user_deposit_address import GetSubUserDepositAddressService
+        return GetSubUserDepositAddressService(params).request(**self.__kwargs)

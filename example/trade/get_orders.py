@@ -1,37 +1,25 @@
 from huobi.client.trade import TradeClient
 from huobi.constant import *
+from huobi.utils import *
 
-trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key, url=HUOBI_URL_VN)
-list_obj = trade_client.get_orders(symbol="htusdt", order_state=OrderState.FILLED,
+symbol = "htusdt"
+trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key)
+list_obj = trade_client.get_orders(symbol=symbol, order_state=OrderState.FILLED,
                                     order_type=OrderType.BUY_LIMIT, start_date=None, end_date=None,
                                    start_id=None, size=None, direct=QueryDirection.PREV)
 
-counts = len(list_obj)
-print(str(counts) + " found ")
-if len(list_obj):
-    for order in list_obj:
-        order.print_object()
-        print()
+LogInfo.output("===== step 1 ==== {symbol} {count} orders found".format(symbol=symbol, count=len(list_obj)))
+LogInfo.output_list(list_obj)
 
-trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key, url=HUOBI_URL_VN)
-list_obj = trade_client.get_orders(symbol="eosusdt", order_state=OrderState.FILLED,
-                                    order_type=OrderType.BUY_LIMIT, start_date="2019-09-30", end_date=None,
+symbol = "eosusdt"
+list_obj = trade_client.get_orders(symbol=symbol, order_state=OrderState.CANCELED,
+                                    order_type=OrderType.BUY_LIMIT, start_date="2020-05-21", end_date=None,
                                    start_id=None, size=None, direct=QueryDirection.PREV)
+LogInfo.output("===== step 2 ==== {symbol} {count} canceled buy limit orders found".format(symbol=symbol, count=len(list_obj)))
+LogInfo.output_list(list_obj)
 
-counts = len(list_obj)
-print(str(counts) + " found ")
-if len(list_obj):
-    for order in list_obj:
-        order.print_object()
-        print()
-
-list_obj = trade_client.get_orders(symbol="trxusdt", order_state=OrderState.FILLED,
+list_obj = trade_client.get_orders(symbol=symbol, order_state=OrderState.FILLED,
                                     order_type=None, start_date=None, end_date=None,
                                    start_id=None, size=None, direct=QueryDirection.PREV)
-
-counts = len(list_obj)
-print(str(counts) + " found ")
-if len(list_obj):
-    for order in list_obj:
-        order.print_object()
-        print()
+LogInfo.output("===== step 3 ==== {symbol} {count} filled orders found".format(symbol=symbol, count=len(list_obj)))
+LogInfo.output_list(list_obj)

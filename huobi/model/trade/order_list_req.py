@@ -19,7 +19,7 @@ class OrderListReq:
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
-        PrintBasic.print_basic(self.ts, format_data + "Time")
+        PrintBasic.print_basic(self.ts, format_data + "Timestamp")
         PrintBasic.print_basic(self.topic, format_data + "Channel")
         print("Order List as below : count " + str(len(self.data)))
         if len(self.data):

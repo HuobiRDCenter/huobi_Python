@@ -1,7 +1,8 @@
 from huobi.client.generic import GenericClient
-from huobi.constant import *
+from huobi.utils import *
 
-generic_client = GenericClient(url=HUOBI_URL_VN)
+
+generic_client = GenericClient()
 ts = generic_client.get_exchange_timestamp()
-print("Timestamp", ts)
+LogInfo.output(ts)
 

@@ -14,7 +14,7 @@ class GetOrdersService:
 
         def parse(dict_data):
             data_list = dict_data.get("data", [])
-            return default_parse_list_dict(data_list, Order, [])
+            return Order.json_parse_list(data_list)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
 

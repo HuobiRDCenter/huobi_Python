@@ -1,15 +1,13 @@
 from huobi.client.generic import GenericClient
-from huobi.constant import *
+from huobi.utils import *
 
-generic_client = GenericClient(url=HUOBI_URL_VN)
+
+generic_client = GenericClient()
 
 list_obj = generic_client.get_reference_currencies()
-if len(list_obj):
-    for reference_currency in list_obj:
-        reference_currency.print_object()
+LogInfo.output_list(list_obj)
 
 
 list_obj = generic_client.get_reference_currencies(currency="usdt")
-if len(list_obj):
-    for reference_currency in list_obj:
-        reference_currency.print_object()
+LogInfo.output_list(list_obj)
+

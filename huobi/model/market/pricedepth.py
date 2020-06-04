@@ -1,3 +1,5 @@
+from huobi.model.market.depth_entry import DepthEntry
+
 
 class PriceDepth:
     """
@@ -16,7 +18,25 @@ class PriceDepth:
         self.bids = list()
         self.asks = list()
 
+    @staticmethod
+    def json_parse(dict_data):
+        price_depth_obj = PriceDepth()
+        price_depth_obj.ts = dict_data.get("ts")
+        price_depth_obj.version = dict_data.get("version")
+        bid_list = list()
+        bids_array = dict_data.get("bids", [])
+        for item in bids_array:
+            depth_entry = DepthEntry.json_parse(item)
+            bid_list.append(depth_entry)
+        ask_list = list()
+        asks_array = dict_data.get("asks", [])
+        for item in asks_array:
+            depth_entry = DepthEntry.json_parse(item)
+            ask_list.append(depth_entry)
+        price_depth_obj.bids = bid_list
+        price_depth_obj.asks = ask_list
 
+        return price_depth_obj
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic

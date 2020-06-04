@@ -16,8 +16,8 @@ class GetOrderByIdService:
             return path.format(order_id)
 
         def parse(dict_data):
-            data_list = dict_data.get("data", [])
-            return default_parse_list_dict(data_list, Order, [])
+            data_dict = dict_data.get("data")
+            return Order.json_parse(data_dict)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, get_channel(), self.params, parse)
 

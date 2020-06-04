@@ -2,7 +2,7 @@ import time
 
 from huobi.utils import *
 
-from huobi.connection import *
+from huobi.connection.websocket_req_client import *
 from huobi.model.market import *
 from huobi.utils.channels_request import *
 
@@ -22,7 +22,7 @@ class ReqMarketDetailService:
         def parse(dict_data):
             return default_parse(dict_data, MarketDetailReq, MarketDetail)
 
-        WebSocketReqClient(**kwargs).execute_subscribe(subscription,
+        WebSocketReqClient(**kwargs).execute_subscribe_v1(subscription,
                                             parse,
                                             callback,
                                             error_handler)

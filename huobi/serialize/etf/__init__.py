@@ -1,1 +1,0 @@
-from huobi.serialize.etf.etf_swap_list import EtfSwapListSerial

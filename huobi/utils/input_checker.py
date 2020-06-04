@@ -44,6 +44,10 @@ def check_should_none(value, name):
     if value is not None:
         raise HuobiApiException(HuobiApiException.INPUT_ERROR, "[Input] " + name + " should be null")
 
+def check_in_list(value, list_configed, name):
+    if (value is not None) and (value not in list_configed):
+        raise HuobiApiException(HuobiApiException.INPUT_ERROR, "[Input] " + name + " should be one in " + (",".join(list_configed)))
+
 
 def check_list(list_value, min_value, max_value, name):
     if list_value is None:

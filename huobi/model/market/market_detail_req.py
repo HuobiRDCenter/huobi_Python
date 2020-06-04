@@ -11,14 +11,12 @@ class MarketDetailReq:
      """
 
     def __init__(self):
-        self.id = 0
         self.rep = 0
         self.ts = 0
         self.data = MarketDetail()
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
-        PrintBasic.print_basic(self.id, format_data + "Id")
         PrintBasic.print_basic(self.ts, format_data + "Timestamp")
         PrintBasic.print_basic(self.rep, format_data + "Channel")
         self.data.print_object()

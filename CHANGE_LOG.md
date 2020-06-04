@@ -15,6 +15,11 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 
 ## Table of Contents
+
+- [Huobi Global API Python SDK version 1.0.5](#Huobi-Global-API-Python-SDK-version-1.0.5)
+
+- [Huobi Global API Python SDK version 1.0.4](#Huobi-Global-API-Python-SDK-version-1.0.4)
+
 - [Huobi Global API Python SDK version 1.0.3](#Huobi-Global-API-Python-SDK-version-1.0.3)
 
 - [Huobi Global API Python SDK version 1.0.2](#Huobi-Global-API-Python-SDK-version-1.0.2)
@@ -22,13 +27,102 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 - [Huobi Global API Python SDK version 1.0.1](#Huobi-Global-API-Python-SDK-version-1.0.1)
 
 
-## Huobi Global API Python SDK version 1.0.3
+## Huobi Global API Python SDK version 1.0.5
 
-[***version 1.0.3***](https://github.com/HuobiRDCenter/huobi_Python/releases)
+[***version 1.0.5***](https://github.com/HuobiRDCenter/huobi_Python/releases)
+
+***2019-11-02***
+```
+compatiable tradeId for subscribe trade detail and request trade detail.
+Trade model no change and no impact to user test case
+```
+
+# Huobi Global API Python SDK version 1.0.4
+
+## 1.RELEASE NOTE - Huobi Global API SDK  1.0.4 
+***2019-10-30***
+
+
+- add new api
+
+    ```
+    /v2/reference/currencies
+    /v2/account/deposit/address
+    /v2/account/withdraw/quota
+    /v1/account/history
+    
+    /v1/cross-margin/transfer-in
+    /v1/cross-margin/transfer-out
+    /v1/cross-margin/orders
+    /v1/cross-margin/orders/{order-id}/repay
+    /v1/cross-margin/loan-orders
+    /v1/cross-margin/accounts/balance
+    ```
+
+- add data item tradeId in below apis
+    ```
+    /market/trade
+    /market/history/trade
+    market.$symbol.trade.detail
+    ```
+
+- align output data with API document for below apis
+    ```
+    /v1/margin/loan-orders   
+    /v1/query/deposit-withdraw 
+    ```
+
+
+
+# Huobi Global API Python SDK version 1.0.3
+
+## 1.RELEASE NOTE - Huobi Global API SDK  1.0.3
 
 ***2019-10-28***
 
-1. **add new state defination in order state and account type**
+1. **add new state defination in order state and account type**修改的点：
+
+- model类中增加字段
+
+  - ```
+    Account 
+    中加入subtype字段
+    ```
+
+- 新增状态定义：
+
+  - LoanOrderState 增加 `failed`字段
+
+  - OrderSource 中增加如下值的定义
+
+    ```
+    super-margin-api
+    super-margin-app
+    super-margin-web
+    super-margin-fl-sys
+    super-margin-fl-mgt
+    ```
+
+
+  - AccountType增加如下值的定义
+    ```
+    minepool;
+    etf;
+    agency;
+    super-margin;
+    ```
+  
+- 方法重载
+
+
+  - User类重载以下方法，增加subtype字段
+
+  ```
+  getAccount
+  ```
+
+- account解析时增加subtype字段
+
 
 
 

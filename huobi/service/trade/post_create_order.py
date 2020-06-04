@@ -1,5 +1,6 @@
 from huobi.connection.restapi_sync_client import RestApiSyncClient
 from huobi.constant import *
+from huobi.utils.json_parser import default_parse_data_as_long
 
 
 class PostCreateOrderService:
@@ -11,9 +12,8 @@ class PostCreateOrderService:
         channel = "/v1/order/orders/place"
 
         def parse(dict_data):
-            return int(dict_data.get("data", 0))
+            return default_parse_data_as_long(dict_data, None)
 
-        print("params in PostCreateOrderService", self.params)
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, channel, self.params, parse)
 
 

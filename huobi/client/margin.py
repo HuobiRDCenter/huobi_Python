@@ -97,7 +97,7 @@ class MarginClient(object):
         from huobi.service.margin.post_create_margin_order import PostCreateMarginOrderService
         return PostCreateMarginOrderService(params).request(**self.__kwargs)
 
-    def post_repay_margin_order(self, load_id: 'int', amount: 'float') -> int:
+    def post_repay_margin_order(self, loan_id: 'int', amount: 'float') -> int:
         """
         Get the margin loan records.
 
@@ -105,11 +105,11 @@ class MarginClient(object):
         :param amount: The amount of currency to repay. (mandatory)
         :return: The margin order id.
         """
-        check_should_not_none(load_id, "load_id")
+        check_should_not_none(loan_id, "loan_id")
         check_should_not_none(amount, "amount")
 
         params = {
-            "load_id": load_id,
+            "loan_id": loan_id,
             "amount": amount
         }
 
@@ -148,3 +148,145 @@ class MarginClient(object):
 
         from huobi.service.margin.get_margin_loan_orders import GetMarginLoanOrdersService
         return GetMarginLoanOrdersService(params).request(**self.__kwargs)
+
+    def get_margin_loan_info(self, symbols: 'str'=None) -> list:
+        """
+        The request of get margin loan info, can return currency loan info list.
+
+        :param symbols: The symbol, like "btcusdt,htusdt". (optional)
+        :return: The cross margin loan info.
+        """
+
+        check_symbol(symbols)
+        params = {
+            "symbols" : symbols
+        }
+
+        from huobi.service.margin.get_margin_loan_info import GetMarginLoanInfoService
+        return GetMarginLoanInfoService(params).request(**self.__kwargs)
+
+    def get_cross_margin_loan_info(self) -> list:
+        """
+        The request of currency loan info list.
+
+        :return: The cross margin loan info list.
+        """
+        params = {}
+
+        from huobi.service.margin.get_cross_margin_loan_info import GetCrossMarginLoanInfoService
+        return GetCrossMarginLoanInfoService(params).request(**self.__kwargs)
+
+
+    def post_cross_margin_transfer_in(self, currency: 'str', amount:'float') -> int:
+        """
+        transfer currency to cross account.
+
+        :param currency: currency name (mandatory)
+        :param amount: transfer amount (mandatory)
+        :return: return transfer id.
+        """
+        check_should_not_none(currency, "currency")
+        check_should_not_none(amount, "amount")
+
+        params = {
+            "amount": amount,
+            "currency": currency
+        }
+
+        from huobi.service.margin.post_cross_margin_transfer_in import PostCrossMarginTransferInService
+        return PostCrossMarginTransferInService(params).request(**self.__kwargs)
+
+    def post_cross_margin_transfer_out(self, currency: 'str', amount:'float') -> int:
+        """
+        transfer currency to cross account.
+
+        :param currency: currency name (mandatory)
+        :param amount: transfer amount (mandatory)
+        :return: return transfer id.
+        """
+        check_should_not_none(currency, "currency")
+        check_should_not_none(amount, "amount")
+
+        params = {
+            "amount": amount,
+            "currency": currency
+        }
+
+        from huobi.service.margin.post_cross_margin_transfer_out import PostCrossMarginTransferOutService
+        return PostCrossMarginTransferOutService(params).request(**self.__kwargs)
+
+    def post_cross_margin_create_loan_orders(self, currency:'str', amount: 'float') -> int:
+        """
+        create cross margin loan orders
+
+        :param currency: currency name (mandatory)
+        :param amount: transfer amount (mandatory)
+        :return: return order id.
+        """
+
+        check_should_not_none(currency, "currency")
+        check_should_not_none(amount, "amount")
+
+        params = {
+            "amount": amount,
+            "currency": currency
+        }
+
+        from huobi.service.margin.post_cross_margin_create_loan_orders import PostCrossMarginCreateLoanOrdersService
+        return PostCrossMarginCreateLoanOrdersService(params).request(**self.__kwargs)
+
+    def post_cross_margin_loan_order_repay(self, order_id: 'str', amount: 'float'):
+        """
+        repay cross margin loan orders
+
+        :param order_id: order_id for loan (mandatory)
+        :param amount: transfer amount (mandatory)
+        :return: return order id.
+        """
+
+        check_should_not_none(order_id, "order-id")
+        check_should_not_none(amount, "amount")
+
+        params = {
+            "amount": amount,
+            "order-id": order_id
+        }
+
+        from huobi.service.margin.post_cross_margin_loan_order_repay import PostCrossMarginLoanOrderRepayService
+        return PostCrossMarginLoanOrderRepayService(params).request(**self.__kwargs)
+
+    def get_cross_margin_loan_orders(self, currency: 'str' = None, state: 'str' = None,
+                                     start_date: 'str' = None, end_date: 'str' = None,
+                                     from_id: 'int' = None, size: 'int' = None, direct: 'str' = None,
+                                     sub_uid: 'int' = None) -> list:
+        """
+        get cross margin loan orders
+
+        :return: return list.
+        """
+        params = {
+            "currency": currency,
+            "state": state,
+            "start-date": start_date,
+            "end-date": end_date,
+            "from": from_id,
+            "size": size,
+            "direct": direct,
+            "sub-uid": sub_uid
+        }
+
+        from huobi.service.margin.get_cross_margin_loan_orders import GetCrossMarginLoanOrdersService
+        return GetCrossMarginLoanOrdersService(params).request(**self.__kwargs)
+
+    def get_cross_margin_account_balance(self, sub_uid:'int'=None):
+        """
+        get cross margin account balance
+
+        :return: cross-margin account.
+        """
+        params = {
+            "sub-uid": sub_uid
+        }
+
+        from huobi.service.margin.get_cross_margin_account_balance import GetCrossMarginAccountBalanceService
+        return GetCrossMarginAccountBalanceService(params).request(**self.__kwargs)

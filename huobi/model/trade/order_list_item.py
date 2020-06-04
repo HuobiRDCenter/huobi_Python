@@ -23,7 +23,7 @@ class OrderListItem:
         self.created_at = 0
         self.type = OrderType.INVALID
         self.finished_at = 0
-        self.source = ""
+        self.source = OrderSource.INVALID
         self.state = OrderState.INVALID
         self.canceled_at = 0
         self.filled_amount = 0.0
@@ -37,6 +37,7 @@ class OrderListItem:
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.id, format_data + "ID")
         PrintBasic.print_basic(self.symbol, format_data + "Symbol")
+        PrintBasic.print_basic(self.account_id, format_data + "Account Id")
         PrintBasic.print_basic(self.amount, format_data + "Amount")
         PrintBasic.print_basic(self.price, format_data + "Price")
         PrintBasic.print_basic(self.created_at, format_data + "Create Time")

@@ -1,4 +1,5 @@
 from huobi.constant import *
+from huobi.utils import default_parse_list_dict
 
 
 class Balance:
@@ -14,9 +15,8 @@ class Balance:
 
     def __init__(self):
         self.currency = ""
-        self.type = BalanceType.INVALID
+        self.type = AccountBalanceUpdateType.INVALID
         self.balance = 0.0
-
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic

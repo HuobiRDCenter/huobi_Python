@@ -1,26 +1,24 @@
-
+from huobi.client.account import AccountClient
 from huobi.client.trade import TradeClient
 from huobi.constant import *
-from huobi.service.account.get_accounts_select import GetAccountsSelectService
+from huobi.utils import *
 
 
-def print_obj_list(list_obj):
-    if list_obj and len(list_obj):
-        for obj in list_obj:
-            obj.print_object()
-            print()
+symbol = "eosusdt"
 
-trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key, url=HUOBI_URL_VN)
+trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key)
+account_client = AccountClient(api_key=g_api_key,
+                              secret_key=g_secret_key)
 
-print("\n==============test case 1===============\n")
-list_obj = trade_client.get_open_orders_by_type(symbol="htusdt", account_type=AccountType.SPOT, direct="next")
-print_obj_list(list_obj)
+account_spot = account_client.get_account_by_type_and_symbol(account_type=AccountType.SPOT, symbol=None)
+account_id_test = account_spot.id
 
-print("\n==============test case 2===============\n")
-accounts = GetAccountsSelectService({"account_type" : AccountType.SPOT}).get_accounts_id_by_type(api_key=g_api_key, secret_key=g_secret_key, url=HUOBI_URL_VN)
-if accounts and len(accounts):
-    for account_id in accounts:
-        list_obj = trade_client.get_open_orders(symbol="htusdt", account_id=account_id, direct="prev")
-        print_obj_list(list_obj)
+direct_tmp = QueryDirection.NEXT
+LogInfo.output("==============test case 1 for {direct}===============".format(direct=direct_tmp))
+list_obj = trade_client.get_open_orders(symbol=symbol, account_id=account_id_test, direct=direct_tmp)
+LogInfo.output_list(list_obj)
 
-
+direct_tmp = QueryDirection.PREV
+LogInfo.output("==============test case 2 for {direct}===============".format(direct=direct_tmp))
+list_obj = trade_client.get_open_orders(symbol=symbol, account_id=account_id_test, direct=direct_tmp)
+LogInfo.output_list(list_obj)

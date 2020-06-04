@@ -22,5 +22,5 @@ class ReferenceCurrency:
         PrintBasic.print_basic(self.instStatus, format_data + "Instrument Status")
         if self.chains and len(self.chains):
             for chain_obj in self.chains:
-                chain_obj.print_object()
+                chain_obj.print_object("\t")
                 print()
