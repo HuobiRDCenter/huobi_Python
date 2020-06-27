@@ -1,43 +1,33 @@
-# Huobi Python SDK (beta version)
+# Huobi Python SDK v2
 
-This is Huobi Python SDK, This is a lightweight python library, you can import to your python project and use this SDK to query all market data, trading and manage your account.
+This is Huobi Python SDK, you can import to your python project and use this SDK to query all market data, trading and manage your account.
 
-The SDK supports both synchronous RESTful API invoking, and subscribe the market data from the Websocket connection.
+The SDK supports RESTful API invoking, and concurrently subscribing the market, account and order update from the Websocket connection.
 
-## Huobi Python SDK Releases
-
-Go to [Releases](https://github.com/HuobiRDCenter/huobi_Python/releases) page to view and download each release.
 
 ## Table of Contents
 
-- [Beginning](#Beginning)
-  - [Installation](#Installation)
-  - [Quick Start](#Quick-Start)
-  - [Request vs. Subscription](#Request-vs.-Subscription)
-  - [Clients](#Clients)
-  - [Create client](#create-client)
-  - [Custom host](#custom-host)
+- [Quick Start](#Quick-Start)
 - [Usage](#Usage)
-
-  - [Request](#Request)
-  - [Subscription](#Subscription)
-  - [Error handling](#error-handling)
+- [Folder structure](#Folder-structure)
+  - [Run Examples](#Run-examples)
+  - [Client](#client)
+    - [Public and Private](#Public-and-Private)
+    - [Rest and WebSocket](#Rest-and-WebSocket)
 - [Request example](#Request-example)
-
-  - [Reference data](#Reference-data)
+- [Reference data](#Reference-data)
     - [Exchange timestamp](#Exchange-timestamp)
     - [Symbol and currencies](#symbol-and-currencies)
   - [Market data](#Market-data)
-    - [Candlestick/KLine](#Candlestick/KLine)
+    - [Candlestick](#Candlestick)
     - [Depth](#Depth)
     - [Latest trade](#latest-trade)
-    - [Best bid/ask](#best-bid/ask)
     - [Historical](#historical)
-    - [24H Statistics](#24h-statistics)
   - [Account](#account)
+    - [Get account balance](#get-account-balance)
   - [Wallet](#wallet)
-    - [Withdraw](@Withdraw)
-    - [Cancel withdraw](@cancel-withdraw)
+    - [Withdraw](#Withdraw)
+    - [Cancel withdraw](#cancel-withdraw)
     - [Withdraw and deposit history](#withdraw-and-deposit-history)
   - [Trading](#trading)
     - [Create order](#create-order)
@@ -46,237 +36,131 @@ Go to [Releases](https://github.com/HuobiRDCenter/huobi_Python/releases) page to
     - [Get order info](#get-order-info)
   - [Margin Loan](#margin-loan)
     - [Apply loan](#apply-loan)
-    - [Reply loan](#reply-loan)
+    - [Repay loan](#repay-loan)
     - [Loan history](#loan-history)
 - [Subscription example](#Subscription-example)
-  - [Implement the listener](#Implement-the0listener)
-  - [Subscribe market data](#Subscribe-market-data)
-  - [Subscribe order update](#subscribe-order-update)
+  - [Subscribe trade update](#Subscribe-trade-update)
+  - [Subscribe candlestick update](#subscribe-candlestick-update)
+  - [Subscribe order update](#Subscribe-order-update)
   - [Subscribe account change](#subscribe-account-change)
-  - [Unsubscribe](#unsubscribe)
 
-  
 
-## Beginning
-
-### Installation
+## Quick Start
 
 *The SDK is compiled by Python 3.7 and above*
 
-#### Pip
-
-*The pip installation will be supported in final version.*
-
-For Beta version, please import the source code directly.
-
-The example code is in python3/example.
-
-
-
-To install by source code, run below command
-
-```python
-python3 setup.py install
-```
-
-
-
-### Quick Start
-
-In your python project, you can follow below steps:
+You can download and open the source code directly in your python project, and then you can follow below steps:
 
 * Create the client instance.
 * Call the interfaces provided by client.
 
 ```python
-request_client = RequestClient()
-
-# Get the timestamp from Huobi server and print on console
-timestamp = request_client.get_exchange_timestamp
+# Create generic client instance and get the timestamp
+generic_client = GenericClient()
+ts = generic_client.get_exchange_timestamp()
 print(timestamp)
 
-# Get the latest btcusdt‘s candlestick data and print the highest price on console
-candlestick_list = request_client.get_latest_candlestick("btcusdt", CandlestickInterval.DAY1, 20)
-for item in candlestick_list:
-    print(item.high)
+# Create the market client instance and get the latest btcusdt‘s candlestick
+market_client = MarketClient()
+list_obj = market_client.get_candlestick("btcusdt", CandlestickInterval.MIN5, 10)
+LogInfo.output_list(list_obj)
 ```
-
-Please NOTE:
-
-All timestamp which is got from SDK is the Unix timestamp based on UTC.
-
-
-
-### Request vs. Subscription
-
-Huobi API supports 2 types of invoking.
-
-1. Request method: You can use request method to trade, withdraw and loan. You can also use it to get the market related data from Huobi server.
-2. Subscription method: You can subscribe the market updated data and account change from Huobi server. For example, if you subscribed the price depth update, you will receive the price depth message when the price depth updates on Huobi server.
-
-We recommend developers to use request method to trade, withdraw and loan, to use subscription method to access the market related data.
-
-
-
-### Clients
-
-There are 2 clients, one is for request method, ```RequestClient``` , another is for subscription method ```SubscriptionClient```. 
-
-* **RequestClient**: It is a synchronous request, it will invoke the Huobi API via synchronous method, all invoking will be blocked until receiving the response from server.
-
-* **SubscriptionClient**: It is the subscription, it is used for subscribing any market data update and account change.  It is asynchronous, so you must implement  ```callback()``` function. The server will push any update for the client. if client receive the update, the ```callback()``` function will be called. See [Subscription usage](#Subscription) for detail. 
-
-  
-
-### Create client
-
-You can assign the API key and Secret key when you create the client. See below:
-
-```python
-request_client = RequestClient(api_key="xxxxxxxx-xxxxxxxx-xxxxxxxx-xxxxx", secret_key="xxxxxxxx-xxxxxxxx-xxxxxxxx-xxxxx")
-```
-
-```python
-subscription_client = SubscriptionClient(api_key="xxxxxxxx-xxxxxxxx-xxxxxxxx-xxxxx", secret_key="xxxxxxxx-xxxxxxxx-xxxxxxxx-xxxxx")
-```
-
-The API key and Secret key are used for authentication.
-
-Some APIs related with account, trading, deposit and withdraw etc require the authentication. We can name them after private interface.
-
-The APIs only return the market data that don't need the authentication. We can name them after public interface.
-
-If you want to invoke both public interface and private interface. You must apply API Key and Secret Key from Huobi and put them into the client you created.
-
-If the authentication cannot pass, the invoking of private interface will fail.
-
-If you want to invoke public interface only. You can create the client as follow:
-
-```python
-request_client = RequestClient()
-```
-
-```python
-subscription_client = SubscriptionClient()
-```
-
-
-
-### Custom host
-
-To support huobi cloud, you can specify the custom host.
-
-1. Set your custom host to ```RequestClient``` or ```SubscriptionClient```.
-2. Set the url or uri string to client when creating the client instance.
-
-See below example
-
-```python
-# Set custom host for request
-request_client = RequestClient(api_key="xxxxxxxx-xxxxxxxx-xxxxxxxx-xxxxx", secret_key="xxxxxxxx-xxxxxxxx-xxxxxxxx-xxxxx", url="https://www.xxx.yyy/")
-
-
-# Set custom host for subscription
-subscription_client = SubscriptionClient(api_key="xxxxxxxx-xxxxxxxx-xxxxxxxx-xxxxx", secret_key="xxxxxxxx-xxxxxxxx-xxxxxxxx-xxxxx", uri="wss://www.xxx.yyy")
-```
-
-If you do not set yout custom host, below default host will be used:
-
-For request: https://api.huobi.pro
-
-For subscription: wss://api.huobi.pro
-
-
 
 ## Usage
 
-### Request
+After above section, this SDK should be already download to your local machine, this section introduce this SDK and how to use it correctly.
 
-To invoke the interface by synchronous, you can create the ```RequestClient``` and call the API directly.
+### Folder structure
 
+This is the folder and package structure of SDK source code and the description
+
+- **huobi**: The core of the SDK
+  - **client**: The client that are responsible to access data, this is the external interface layer.
+  - **connection**: Responsible to manage the remote server connection
+  - **constant**: The constant configuration
+  - **exception**: The wrapped exception
+  - **model**: The server returned data model
+  - **service**: The internal implementation for each **client**.
+  - **utils**:The utility classes, including signature, json parser, logging etc.
+- **performance**: This is for internal performance testing
+- **tests**: This is for internal functional testing
+- **example**: The main package is defined here, it provides the examples how to use **client** package and **response** package to access API and read response.
+
+### Run examples
+
+This SDK provides examples that under **/example** folder, if you want to run the examples to access private data, you need below additional steps:
+
+1. Create an **API Key** first from Huobi official website
+2. Create **privateconfig.py** into your **huobi** folder. The purpose of this file is to prevent submitting SecretKey into repository by accident, so this file is already added in the *.gitignore* file. 
+3. Assign your API access key and secret key to as below:
 ```python
-request_client = RequestClient()
-# Get the best bid and ask for btcusdt, print the best ask price and amount on console.
-best_quote = request_client.get_best_quote("btcusdt")
-print(best_quote.ask_price)
-print(best_quote.ask_amount)
+p_api_key = "hrf5gdfghe-e74bebd8-2f4a33bc-e7963"
+p_secret_key = "fecbaab2-35befe7e-2ea695e8-67e56"
 ```
 
+If you don't need to access private data, you can ignore the secret key.
 
+Regarding the difference between public data and private data you can find details in [Client](#Client) section below.
 
-### Subscription
+### Client
 
-To receive the subscribed data, you can create the ```SubscriptionClient```. When subscribing the event, you should define your callback function. See below example:
+In this SDK, the client is the struct to access the Huobi API. In order to isolate the private data with public data, and isolated different kind of data, the client category is designated to match the API category. 
 
-```python
-subscription_client = SubscriptionClient()
+All the client is listed in below table. Each client is very small and simple, it is only responsible to operate its related data, you can pick up multiple clients to create your own application based on your business.
 
-# Subscribe the trade update for btcusdt.
-def callback(trade_event: 'TradeEvent'):
-    print(trade_event.symbol)
-    for trade in trade_event.trade_list:
-        print(trade.price)
+| Data Category | Client        | Privacy | API Protocol       |
+| ------------- | ------------- | ------- | ------------------ |
+| Generic       | GenericClient | Public  | Rest               |
+| Market        | MarketClient  | Public  | Rest, WebSocket    |
+| Account       | AccountClient | Private | Rest, WebSocket v2 |
+| Wallet        | WalletClient  | Private | Rest               |
+| Order         | OrderClient   | Private | Rest, WebSocket v2 |
+| Margin        | MarginClient  | Private | Rest               |
+| ETF           | ETFClient     | Private | Rest               |
 
-subscription_client.subscribe_trade_event("btcusdt", callback)
-```
+#### Public vs. Private
 
-The subscription method supports multi-symbol string. Each symbol should be separated by a comma.
+There are two types of privacy that is correspondent with privacy of API:
 
-```python
-subscription_client.subscribe_trade_event("btcusdt,ethusdt", callback)
-```
-
-
-
-### Error handling
-
-#### For request
-
-In error case, such as you set the invalid symbol to ```get_best_quote()```. The ```HuobiApiException``` will be thrown. See below example:
+**Public client**: It invokes public API to get public data (Generic data and Market data), therefore you can create a new instance without applying an API Key.
 
 ```python
-try:
-    best_quote = request_client.get_best_quote("abcdefg")
-    print(best_quote.ask_price)
-    print(best_quote.ask_amount)
-except HuobiApiException as e:
-    print(e.error_code)
-    print(e.error_message)
+// Create a GenericClient instance
+generic_client = GenericClient()
 
+// Create a MarketClient instance
+market_client = MarketClient()
 ```
 
-#### For Subscription
-
-If you want to check the error, you should implement your ```error_handler```. See below example:
+**Private client**: It invokes private API to access private data, you need to follow the API document to apply an API Key first, and pass the API Key to the init function
 
 ```python
-def callback(trade_event: 'TradeEvent'):
-    print(trade_event.symbol)
-    for trade in trade_event.trade_list:
-        print(trade.price)
+// Create an AccountClient instance with APIKey
+account_client = AccountClient(api_key=g_api_key, secret_key=g_secret_key)
 
-def error_handler(e: 'HuobiApiException'):
-    print(e.error_code)
-    print(e.error_message)
-
-subscription_client.subscribe_trade_event("abcdefg", callback, error_handler)
+// Create a TradeClient instance with API Key
+trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key)
 ```
 
-Any error made during subscription will be output to a log file, If you do not define your ```error_handler```, the error will be output to log only.
+The API key is used for authentication. If the authentication cannot pass, the invoking of private interface will fail.
 
-#### Error log
+#### Rest vs. WebSocket
 
-The SDK is using the common logging module, to show it to console, you can follow below steps before create the client:
+There are two protocols of API, Rest and WebSocket
 
-```python
-logger = logging.getLogger("huobi-client")
-logger.setLevel(level=logging.INFO)
-handler = logging.StreamHandler()
-handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-logger.addHandler(handler)
-```
+**Rest**: It invokes Rest API and get once-off response, it has two basic types of method: GET and POST
 
+**WebSocket**: It establishes WebSocket connection with server and data will be pushed from server actively. There are two types of method for WebSocket client:
 
+- Request method: The method name starts with "Request-", it will receive the once-off data after sending the request.
+- Subscription: The method name starts with "Subscribe-", it will receive update after sending the subscription.
+
+In this python SDK, some clients support both Rest and WebSocket protocols, the method name are prefixed and can be easily identified, take TradeClient as an example, the method prefix and their examples are:
+
+- **get**: get_order, get_matchresult
+- **post**: post_create_order, post_batch_cancel_open_order
+- **req**: req_order_list
+- **sub**: sub_order_update
 
 ## Request example
 
@@ -285,213 +169,193 @@ logger.addHandler(handler)
 #### Exchange timestamp
 
 ```python
-//Synchronous
-timestamp = request_client.get_exchange_timestamp()
-print(timestamp)
+generic_client = GenericClient()
+list_obj = generic_client.get_exchange_symbols()
 ```
 
 #### Symbol and currencies
 
 ```python
-exchange_info = request_client.get_exchange_info()
-for currency in exchange_info.currencies:
-    print(currency)
+generic_client = GenericClient()
+list_symbol = generic_client.get_exchange_symbols()
+list_currency = generic_client.get_reference_currencies()
 ```
 
 ### Market data
 
-#### Candlestick/KLine
+#### Candlestick
 
 ```python
-candlestick_list = request_client.get_latest_candlestick("btcusdt", CandlestickInterval.DAY1, 20)
-for candlestick in candlestick_list:
-    print(candlestick.high)
+market_client = MarketClient()
+list_obj = market_client.get_candlestick("btcusdt", CandlestickInterval.MIN5, 10)
 ```
 
 #### Depth
 
 ```python
-price_depth = request_client.get_price_depth("btcusdt", 5)
-for depth in price_depth.bids:
-    print(depth.price)
+market_client = MarketClient()
+depth = market_client.get_pricedepth("btcusdt", DepthStep.STEP0, depth_size)
 ```
 
 #### Latest trade
 
 ```python
-trade = request_client.get_last_trade("btcusdt")
-print(trade.price)
-```
-
-#### Best bid/ask
-
-```python
-best_quote = request_client.get_best_quote("btcusdt")
-print(best_quote.ask_price)
-print(best_quote.ask_amount)
+market_client = MarketClient()
+list_obj = market_client.get_market_trade(symbol="btcusdt")
 ```
 
 #### Historical
 
 ```python
-trade_list = request_client.get_historical_trade("btcusdt", 5)
-print(trade_list[0].price)
-```
-
-#### 24H statistics
-
-```python
-trade_statistics = request_client.get_24h_trade_statistics("btcusdt")
-print(trade_statistics.open)
+market_client = MarketClient()
+list_obj = market_client.get_history_trade("btcusdt", 6)
 ```
 
 ### Account
 
 *Authentication is required.*
 
+#### Get account balance
+
 ```python
-balance = request_client.get_account_balance_by_account_type(AccountType.SPOT)
-print(balance.get(0).get(0).balance)
+account_client = AccountClient(api_key=g_api_key, secret_key=g_secret_key)
+account_balance_list = account_client.get_account_balance()
 ```
 
 ### Wallet
 
-#### Withdraw
-
 *Authentication is required.*
 
+#### Withdraw
+
 ```python
-id = request_client.withdraw("xxxxxxx", 0.1, "btc")
-print(id)
+wallet_client = WalletClient(api_key=g_api_key, secret_key=g_secret_key)
+withdraw_id = wallet_client.post_create_withdraw(address="xxxxxx",
+                                                     amount=40, currency="trx", fee=1,
+                                                     chain=None, address_tag=None)
 ```
 
 #### Cancel withdraw
 
-*Authentication is required.*
-
 ```python
-request_client.cancel_withdraw("btc", id)
+wallet_client = WalletClient(api_key=g_api_key, secret_key=g_secret_key)
+withdraw_id_ret = wallet_client.post_cancel_withdraw(withdraw_id=withdraw_id)
 ```
 
 #### Withdraw and deposit history
 
-*Authentication is required.*
-
 ```python
-withdraw_list = request_client.get_withdraw_history("btc", id, 10)
-print(withdraw_list[0].amount)
-deposit_list = request_client.get_deposit_history("btc", id, 10)
-print(deposit_list[0].amount)
+wallet_client = WalletClient(api_key=g_api_key, secret_key=g_secret_key)
+list_deposit_history = wallet_client.get_deposit_withdraw(op_type=DepositWithdraw.DEPOSIT, currency=None, from_id=1, size=10, direct=QueryDirection.PREV)
+list_withdraw_history = wallet_client.get_deposit_withdraw(op_type=DepositWithdraw.WITHDRAW, currency=None, from_id=1, size=10, direct=QueryDirection.NEXT)
 ```
 
 ### Trading
 
-#### Create order
-
 *Authentication is required.*
 
+#### Create order
+
 ```python
-order_id = request_client.create_order("btcusdt", AccountType.SPOT, OrderType.BUY_LIMIT, 1.0, 1.0)
-print(id)
+trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key)
+order_id = trade_client.create_order(symbol=symbol_test, account_id=account_id, order_type=OrderType.BUY_LIMIT, source=OrderSource.API, amount=4.0, price=1.292)
 ```
 
 #### Cancel order
 
-*Authentication is required.*
-
 ```python
-request_client.cancel_order("btcusdt", order_id)
+trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key)
+canceled_order_id  = trade_client.cancel_order(symbol_test, order_id)
 ```
 
 #### Cancel open orders
 
-*Authentication is required.*
-
 ```python
-result = request_client.cancel_open_orders("btcusdt", AccountType.SPOT, OrderSide.SELL, 10)
-print(result.success_count)
+trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key)
+result  = trade_client.cancel_open_orders(account_id=g_account_id)
 ```
 
 #### Get order info
 
-*Authentication is required.*
-
 ```python
-order = request_client.get_order("symbol", id)
-print(order.price)
+trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key)
+orderObj = trade_client.get_order(order_id=order_id)
 ```
 
 #### Historical orders
 
-*Authentication is required.*
-
 ```python
-order_list = request_client.get_historical_orders("symbol", OrderState.SUBMITTED)
-print(order_list[0].price)
+trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key)
+list_obj = trade_client.get_history_orders(symbol="btcusdt", start_time=None, end_time=None, size=20, direct=None)
 ```
 
 ### Margin Loan
 
-####Apply loan
-
 *Authentication is required.*
 
+These are examples for cross margin
+
+####Apply loan
+
 ```python
-id = request_client.apply_loan("btcusdt", "btc", 10.0)
-print(id)
+margin_client = MarginClient(api_key=g_api_key, secret_key=g_secret_key)
+loan_id = margin_client.post_create_margin_order(symbol="eosusdt", currency="usdt", amount=loan_amount)
 ```
 
 #### Repay loan
 
-*Authentication is required.*
-
 ```python
-id = request_client.repay_loan(id, 10.0)
-print(id)
+margin_client = MarginClient(api_key=g_api_key, secret_key=g_secret_key)
+transfer_id = margin_client.post_repay_margin_order(loan_id=7440184, amount=100.004083)
 ```
 
 ####Loan history
 
-*Authentication is required.*
-
 ```python
-loan_list = request_client.get_loan_history("btcusdt")
-print(loan_list[0].loan_amount)
+margin_client = MarginClient(api_key=g_api_key, secret_key=g_secret_key)
+list_obj = margin_client.get_margin_loan_orders(symbol="eosusdt")
 ```
-
-
 
 ## Subscription example
 
 ### Subscribe trade update
 
 ```python
-def callback(trade_event: 'TradeEvent'):
-    print(trade_event.symbol)
-    for trade in trade_event.trade_list:
-        print(trade.price)
+def callback(trade_event: 'TradeDetailEvent'):
+    print("---- trade_event:  ----")
+    trade_event.print_object()
+    print()
 
-subscription_client.subscribe_trade_event("btcusdt", callback)
+market_client = MarketClient()
+market_client.sub_trade_detail("btcusdt,eosusdt", callback)
 ```
 
-###Subscribe candlestick/KLine update
+###Subscribe candlestick update
 
 ```python
 def callback(candlestick_event: 'CandlestickEvent'):
-    print(candlestick_event.data.high)
+    candlestick_event.print_object()
+    print("\n")
 
-subscription_client.subscribe_candlestick_event("btcusdt", CandlestickInterval.MIN15, callback)
+def error(e: 'HuobiApiException'):
+    print(e.error_code + e.error_message)
+
+market_client = MarketClient()
+market_client.sub_candlestick("btcusdt,ethusdt", CandlestickInterval.MIN1, callback, error)
 ```
 
-### Subscribe orders update
+### Subscribe order update
 
 *Authentication is required.*
 
 ```python
-def callback(orders_update_event: 'OrdersUpdateEvent'):
-    orders_update_event.print_object()
+def callback(upd_event: 'OrderUpdateEvent'):
+    print("---- order update : ----")
+    upd_event.print_object()
+    print()
 
-subscription_client.subscribe_orders_update_event("btcusdt", callback)
+trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key, init_log=True)
+trade_client.sub_order_update("eosusdt", callback)
 ```
 
 ### Subscribe account change
@@ -499,18 +363,13 @@ subscription_client.subscribe_orders_update_event("btcusdt", callback)
 *Authentication is required.*
 
 ```python
-def callback(account_event: 'AccountsUpdateEvent'):
-    account_event.print_object()
+def callback(account_change_event: 'AccountChangeEvent'):
+    account_change_event.print_object()
+    print()
 
-subscription_client.subscribe_accounts_update_event(AccountBalanceMode.TOTAL, callback)
+account_client = AccountClient(api_key=g_api_key,
+                              secret_key=g_secret_key,
+                              init_log=True)
+account_client.sub_account_update(AccountBalanceMode.TOTAL, callback)
 ```
-
-### Unsubscribe
-
-You can cancel all subscription by calling ```unsubscribe_all()```.
-
-```python
-subscription_client.unsubscribe_all()
-```
-
 
