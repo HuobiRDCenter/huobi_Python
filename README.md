@@ -118,7 +118,7 @@ All the client is listed in below table. Each client is very small and simple, i
 | Margin        | MarginClient  | Private | Rest               |
 | ETF           | ETFClient     | Private | Rest               |
 
-#### Public vs. Private
+#### Public and Private
 
 There are two types of privacy that is correspondent with privacy of API:
 
@@ -144,7 +144,7 @@ trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key)
 
 The API key is used for authentication. If the authentication cannot pass, the invoking of private interface will fail.
 
-#### Rest vs. WebSocket
+#### Rest and WebSocket
 
 There are two protocols of API, Rest and WebSocket
 
@@ -295,7 +295,7 @@ list_obj = trade_client.get_history_orders(symbol="btcusdt", start_time=None, en
 
 These are examples for cross margin
 
-####Apply loan
+#### Apply loan
 
 ```python
 margin_client = MarginClient(api_key=g_api_key, secret_key=g_secret_key)
@@ -309,7 +309,7 @@ margin_client = MarginClient(api_key=g_api_key, secret_key=g_secret_key)
 transfer_id = margin_client.post_repay_margin_order(loan_id=7440184, amount=100.004083)
 ```
 
-####Loan history
+#### Loan history
 
 ```python
 margin_client = MarginClient(api_key=g_api_key, secret_key=g_secret_key)
@@ -330,7 +330,7 @@ market_client = MarketClient()
 market_client.sub_trade_detail("btcusdt,eosusdt", callback)
 ```
 
-###Subscribe candlestick update
+### Subscribe candlestick update
 
 ```python
 def callback(candlestick_event: 'CandlestickEvent'):
