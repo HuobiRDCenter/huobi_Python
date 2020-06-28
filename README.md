@@ -1,48 +1,49 @@
 # Huobi Python SDK v2
 
-This is Huobi Python SDK, you can import to your python project and use this SDK to query all market data, trading and manage your account.
+This is Huobi Python SDK v2, you can import to your python project and use this SDK to query all market data, trading and manage your account. The SDK supports RESTful API invoking, and concurrently subscribing the market, account and order update from the Websocket connection.
 
-The SDK supports RESTful API invoking, and concurrently subscribing the market, account and order update from the Websocket connection.
+If you already use SDK v1, it is strongly suggested migrate to v2 as we refactor the implementation to make it simpler and easy to maintain. We will stop the maintenance of v1 in the near future. Please refer to the instruction on how to migrate v1 to v2 in section [Migrate from v1](#Migrate-from-v1)
 
 
 ## Table of Contents
 
 - [Quick Start](#Quick-Start)
 - [Usage](#Usage)
-- [Folder structure](#Folder-structure)
-  - [Run Examples](#Run-examples)
-  - [Client](#client)
-    - [Public and Private](#Public-and-Private)
-    - [Rest and WebSocket](#Rest-and-WebSocket)
+    - [Folder structure](#Folder-structure)
+    - [Run Examples](#Run-examples)
+    - [Client](#client)
+      - [Public and Private](#Public-and-Private)
+      - [Rest and WebSocket](#Rest-and-WebSocket)
+    - [Migrate from v1](#Migrate-from-v1)
 - [Request example](#Request-example)
-- [Reference data](#Reference-data)
-    - [Exchange timestamp](#Exchange-timestamp)
-    - [Symbol and currencies](#symbol-and-currencies)
-  - [Market data](#Market-data)
-    - [Candlestick](#Candlestick)
-    - [Depth](#Depth)
-    - [Latest trade](#latest-trade)
-    - [Historical](#historical)
-  - [Account](#account)
-    - [Get account balance](#get-account-balance)
-  - [Wallet](#wallet)
-    - [Withdraw](#Withdraw)
-    - [Cancel withdraw](#cancel-withdraw)
-    - [Withdraw and deposit history](#withdraw-and-deposit-history)
-  - [Trading](#trading)
-    - [Create order](#create-order)
-    - [Cancel order](#cancel-order)
-    - [Cancel open orders](#cancel-open-orders)
-    - [Get order info](#get-order-info)
-  - [Margin Loan](#margin-loan)
-    - [Apply loan](#apply-loan)
-    - [Repay loan](#repay-loan)
-    - [Loan history](#loan-history)
-- [Subscription example](#Subscription-example)
-  - [Subscribe trade update](#Subscribe-trade-update)
-  - [Subscribe candlestick update](#subscribe-candlestick-update)
-  - [Subscribe order update](#Subscribe-order-update)
-  - [Subscribe account change](#subscribe-account-change)
+    - [Reference data](#Reference-data)
+        - [Exchange timestamp](#Exchange-timestamp)
+        - [Symbol and currencies](#symbol-and-currencies)
+      - [Market data](#Market-data)
+        - [Candlestick](#Candlestick)
+        - [Depth](#Depth)
+        - [Latest trade](#latest-trade)
+        - [Historical](#historical)
+      - [Account](#account)
+        - [Get account balance](#get-account-balance)
+      - [Wallet](#wallet)
+        - [Withdraw](#Withdraw)
+        - [Cancel withdraw](#cancel-withdraw)
+        - [Withdraw and deposit history](#withdraw-and-deposit-history)
+      - [Trading](#trading)
+        - [Create order](#create-order)
+        - [Cancel order](#cancel-order)
+        - [Cancel open orders](#cancel-open-orders)
+        - [Get order info](#get-order-info)
+      - [Margin Loan](#margin-loan)
+        - [Apply loan](#apply-loan)
+        - [Repay loan](#repay-loan)
+        - [Loan history](#loan-history)
+    - [Subscription example](#Subscription-example)
+      - [Subscribe trade update](#Subscribe-trade-update)
+      - [Subscribe candlestick update](#subscribe-candlestick-update)
+      - [Subscribe order update](#Subscribe-order-update)
+      - [Subscribe account change](#subscribe-account-change)
 
 
 ## Quick Start
@@ -161,6 +162,20 @@ In this python SDK, some clients support both Rest and WebSocket protocols, the 
 - **post**: post_create_order, post_batch_cancel_open_order
 - **req**: req_order_list
 - **sub**: sub_order_update
+
+### Migrate from v1
+
+#### Why v2
+
+The major difference between v1 and v2 is that the client category.
+
+In SDK v1, the client is categorized as two protocol, request client and subscription client. For example, for Rest API, you can operate everything in request client. It is simple to choose which client you use, however, when you have a client instance, you will have dozens of method, and it is not easy to choose the proper method.
+
+The thing is different in SDK v2, the client class is categorized as seven data categories, so that the responsibility for each client is clear. For example, if you only need to access market data, you can use MarketClient without applying API Key, and all the market data can be retrieved from MarketClient. If you want to operate your order, then you know you should use TradeClient and all the order related methods are there. Since the category is exactly same as the API document, so it is easy to find the relationship between API and SDK. In SDK v2, each client is smaller and simpler, which means it is easier to maintain and less bugs.
+
+#### How to migrate
+
+You don't need to change your business logic, what you need is to find the v1 request client and subscription client, and replace with the proper v2 client. The additional cost is that you need to have additional initialization for each v2 client.
 
 ## Request example
 
