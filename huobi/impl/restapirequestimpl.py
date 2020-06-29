@@ -64,7 +64,7 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
-    def get_candlestick(self, symbol, interval, size, start_time=None, end_time=None):
+    def get_candlestick(self, symbol, interval, size):
         check_symbol(symbol)
         check_range(size, 1, 2000, "size")
 
@@ -72,8 +72,6 @@ class RestApiRequestImpl(object):
         builder.put_url("symbol", symbol)
         builder.put_url("period", interval)
         builder.put_url("size", size)
-        builder.put_url("start_time", start_time)
-        builder.put_url("end_time", end_time)
 
         request = self.__create_request_by_get("/market/history/kline", builder)
 
@@ -752,7 +750,6 @@ class RestApiRequestImpl(object):
         return order_list
 
     def get_order(self, symbol, order_id):
-        check_symbol(symbol)
         check_should_not_none(order_id, "order_id")
         path = "/v1/order/orders/{}"
         path = path.format(order_id)
@@ -977,33 +974,6 @@ class RestApiRequestImpl(object):
         request.json_parser = parse
         return request
 
-    def get_etf_candlestick(self, symbol, interval, size=None):
-        check_symbol(symbol)
-        check_range(size, 1, 2000, "size")
-        check_should_not_none(interval, "interval")
-        builder = UrlParamsBuilder()
-        builder.put_url("symbol", symbol)
-        builder.put_url("period", interval)
-        builder.put_url("limit", size)
-        request = self.__create_request_by_get("/quotation/market/history/kline", builder)
-
-        def parse(json_wrapper):
-            candlestick_list = list()
-            data_array = json_wrapper.get_array("data")
-            for item in data_array.get_items():
-                candlestick = Candlestick()
-                candlestick.open = item.get_float("open")
-                candlestick.close = item.get_float("close")
-                candlestick.low = item.get_float("low")
-                candlestick.high = item.get_float("high")
-                candlestick.amount = item.get_float("amount")
-                candlestick.count = 0
-                candlestick.volume = item.get_float("vol")
-                candlestick_list.append(candlestick)
-            return candlestick_list
-
-        request.json_parser = parse
-        return request
 
     def get_etf_swap_config(self, etf_symbol):
         check_symbol(etf_symbol)
@@ -1206,8 +1176,8 @@ class RestApiRequestImpl(object):
         return request
 
     def transfer_between_futures_and_pro(self, currency, amount, transfer_type):
-        check_currency(currency)
         check_should_not_none(currency, "currency")
+        check_currency(currency)
         check_should_not_none(amount, "amount")
         check_should_not_none(transfer_type, "transfer_type")
         builder = UrlParamsBuilder()
@@ -1360,6 +1330,8 @@ class RestApiRequestImpl(object):
 
     def get_sub_user_deposit_address(self, sub_uid, currency):
         builder = UrlParamsBuilder()
+        check_should_not_none(sub_uid, "subUid")
+        check_should_not_none(currency, "currency")
         builder.put_url("subUid", sub_uid)
         builder.put_url("currency", currency)
         request = self.__create_request_by_get_with_signature("/v2/sub-user/deposit-address", builder)
@@ -1582,6 +1554,7 @@ class RestApiRequestImpl(object):
                                 transact_types, start_time, end_time,
                                 sort, size):
         path = "/v1/account/history"
+        check_should_not_none(account_id, "account-id")
 
         builder = UrlParamsBuilder()
         builder.put_url("account-id", account_id)
@@ -1645,6 +1618,7 @@ class RestApiRequestImpl(object):
 
     def get_account_ledger(self, account_id, currency, transact_types, start_time, end_time, sort, limit, from_id):
         builder = UrlParamsBuilder()
+        check_should_not_none(account_id, "accountId")
         builder.put_url("accountId", account_id)
         builder.put_url("currency", currency)
         builder.put_url("transactTypes", transact_types)

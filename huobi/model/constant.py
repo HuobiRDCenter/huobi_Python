@@ -278,3 +278,20 @@ class OrderUpdateEventType:
     TRADE = "trade"
     CANCELLATION = "cancellation"
     INVALID = None
+class AccountTransactType:
+    TRADE = "trade"
+    ETF = "etf"
+    TRANSACT_FEE = "transact-fee"
+    DEDUCTION = "deduction"
+    TRANSFER = "transfer"
+    CREDIT = "credit"
+    LIQUIDATION = "liquidation"
+    INTEREST = "interest"
+    DEPOSIT = "deposit"
+    WITHDRAW = "withdraw"
+    WITHDRAW_FEE = "withdraw-fee"
+    EXCHANGE = "exchange"
+    OTHER = "other-types"
+class SortDesc:
+    ASC = "asc"
+    DESC = "desc"

@@ -47,19 +47,16 @@ class RequestClient(object):
         """
         return call_sync(self.request_impl.get_candlestick(symbol, interval, size, None, None))
 
-    def get_candlestick(self, symbol: 'str', interval: 'CandlestickInterval', size: 'int' = 150,
-                        start_time: 'int' = 0, end_time: 'int' = 0) -> list:
+    def get_candlestick(self, symbol: 'str', interval: 'CandlestickInterval', size: 'int' = 150) -> list:
         """
         Get the candlestick/kline for the specified symbol. The data number is 150 as default.
 
         :param symbol: The symbol, like "btcusdt". To query hb10, put "hb10" at here. (mandatory)
         :param interval: The candlestick/kline interval, MIN1, MIN5, DAY1 etc. (mandatory)
         :param size: The start time of of requested candlestick/kline data. (optional)
-        :param start_time: The start time of of requested candlestick/kline data. (optional)
-        :param end_time: The end time of of requested candlestick/kline data. (optional)
         :return: The list of candlestick/kline data.
         """
-        return call_sync(self.request_impl.get_candlestick(symbol, interval, size, start_time, end_time))
+        return call_sync(self.request_impl.get_candlestick(symbol, interval, size))
 
     def get_exchange_timestamp(self) -> int:
         """
@@ -584,17 +581,6 @@ class RequestClient(object):
         """
         return call_sync(self.request_impl.get_etf_swap_history(etf_symbol, offset, size))
 
-    def get_etf_candlestick(self, etf_symbol: 'str', interval: 'CandlestickInterval', size: 'int'=None) -> list:
-        """
-        Get the latest candlestick/kline for the etf.
-
-        :param etf_symbol: The symbol, currently only support hb10. (mandatory)
-        :param interval: The candlestick/kline interval, MIN1, MIN5, DAY1 etc. (mandatory)
-        :param size: The maximum number of candlestick/kline requested. Range [1 - 2000] (optional)
-        :return: The list of candlestick/kline data.
-        """
-        return call_sync(self.request_impl.get_etf_candlestick(etf_symbol, interval, size))
-
     def get_margin_balance_detail(self, symbol: 'str' = None, sub_uid: 'int' = None) -> list:
         """
         Get the Balance of the Margin Loan Account.
@@ -646,7 +632,6 @@ class RequestClient(object):
         """
         Transfer Asset between Futures and Contract.
 
-        :param sub_uid: The target sub account uid to transfer to or from. (mandatory)
         :param currency: The crypto currency to transfer. (mandatory)
         :param amount: The amount of asset to transfer. (mandatory)
         :param transfer_type: The type of transfer, need be "futures-to-pro" or "pro-to-futures" (mandatory)
@@ -779,7 +764,7 @@ class RequestClient(object):
         """
         repay cross margin loan orders
 
-        :param currency: currency name (mandatory)
+        :param order_id: order_id for loan (mandatory)
         :param amount: transfer amount (mandatory)
         :return: return order id.
         """
@@ -808,6 +793,12 @@ class RequestClient(object):
                             sort:'str'=None, size:'int'=None):
         """
         get account change record
+        :param account_id: account id (mandatory)
+        :param currency: currency as "btc,eth" (optional)
+        :param transact_types: see AccountTransactType, the value can be "trade" (交易),"etf"（ETF申购）, "transact-fee"（交易手续费）, "deduction"（手续费抵扣）, "transfer"（划转）, "credit"（借币）, "liquidation"（清仓）, "interest"（币息）, "deposit"（充币），"withdraw"（提币）, "withdraw-fee"（提币手续费）, "exchange"（兑换）, "other-types"（其他） (optional)
+        :param start_time&end_time: for time range to search (optional)
+        :param sort: see SortDesc, "asc" or "desc" (optional)
+        :param size: page size (optional)
 
         :return: account change record list.
         """
@@ -818,9 +809,9 @@ class RequestClient(object):
 
     def sub_uid_management(self, sub_uid:'int', action:'str'):
         """
-        get account change record
+        use to lock or unlock the sub uid
 
-        :return: account change record list.
+        :return: user and status.
         """
         return call_sync(self.request_impl.sub_user_management(sub_uid, action))
 
@@ -837,7 +828,12 @@ class RequestClient(object):
                            from_id:'int'=None) -> list:
         """
         get account ledger
-
+        :param account_id: account id (mandatory)
+        :param currency: currency as "btc,eth" (optional)
+        :param transact_types: see AccountTransactType, the value can be "trade" (交易),"etf"（ETF申购）, "transact-fee"（交易手续费）, "deduction"（手续费抵扣）, "transfer"（划转）, "credit"（借币）, "liquidation"（清仓）, "interest"（币息）, "deposit"（充币），"withdraw"（提币）, "withdraw-fee"（提币手续费）, "exchange"（兑换）, "other-types"（其他） (optional)
+        :param start_time&end_time: for time range to search (optional)
+        :param sort: see SortDesc, "asc" or "desc" (optional)
+        :param size: page size (optional)
         :return: account ledger list.
         """
         return call_sync(self.request_impl.get_account_ledger(account_id, currency, transact_types, start_time, end_time, sort, limit, from_id))

@@ -8,7 +8,6 @@ The SDK supports both synchronous RESTful API invoking, and subscribe the market
 
 Go to [Releases](https://github.com/HuobiRDCenter/huobi_Python/releases) page to view and download each release.
 
-
 ## Table of Contents
 
 - [Beginning](#Beginning)

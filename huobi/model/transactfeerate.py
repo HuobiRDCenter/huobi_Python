@@ -7,7 +7,10 @@ class TransactFeeRate:
 
     :member
         symbol: symbol like "btcusdt"
-        currencies: transact fee rate
+        makerFeeRate: maker fee rate
+        takerFeeRate: taker fee rate
+        actualMakerRate: actual maker fee rate
+        actualTakerRate: actual taker fee rate
     """
 
     def __init__(self):

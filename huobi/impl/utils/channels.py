@@ -1,6 +1,6 @@
 import json
 from huobi.impl.utils.timeservice import get_current_timestamp
-from huobi.model import DepthStep, MbpLevel
+from huobi.model.constant import DepthStep, MbpLevel
 
 
 def kline_channel(symbol, interval):

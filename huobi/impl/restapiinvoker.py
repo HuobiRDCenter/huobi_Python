@@ -24,7 +24,7 @@ def check_response(json_wrapper):
             if err_code == "":
                 raise HuobiApiException(HuobiApiException.EXEC_ERROR, "[Executing] " + err_msg)
             else:
-                raise HuobiApiException(HuobiApiException.EXEC_ERROR, "[Executing] " + err_code + ": " + err_msg)
+                raise HuobiApiException(HuobiApiException.EXEC_ERROR, "[Executing] " + str(err_code) + ": " + err_msg)
     elif json_wrapper.contain_key("code"):
         code = json_wrapper.get_int("code")
         if code != 200:
