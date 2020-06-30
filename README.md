@@ -12,38 +12,19 @@ If you already use SDK v1, it is strongly suggested migrate to v2 as we refactor
     - [Folder structure](#Folder-structure)
     - [Run Examples](#Run-examples)
     - [Client](#client)
-      - [Public and Private](#Public-and-Private)
-      - [Rest and WebSocket](#Rest-and-WebSocket)
     - [Migrate from v1](#Migrate-from-v1)
 - [Request example](#Request-example)
     - [Reference data](#Reference-data)
-        - [Exchange timestamp](#Exchange-timestamp)
-        - [Symbol and currencies](#symbol-and-currencies)
-      - [Market data](#Market-data)
-        - [Candlestick](#Candlestick)
-        - [Depth](#Depth)
-        - [Latest trade](#latest-trade)
-        - [Historical](#historical)
-      - [Account](#account)
-        - [Get account balance](#get-account-balance)
-      - [Wallet](#wallet)
-        - [Withdraw](#Withdraw)
-        - [Cancel withdraw](#cancel-withdraw)
-        - [Withdraw and deposit history](#withdraw-and-deposit-history)
-      - [Trading](#trading)
-        - [Create order](#create-order)
-        - [Cancel order](#cancel-order)
-        - [Cancel open orders](#cancel-open-orders)
-        - [Get order info](#get-order-info)
-      - [Margin Loan](#margin-loan)
-        - [Apply loan](#apply-loan)
-        - [Repay loan](#repay-loan)
-        - [Loan history](#loan-history)
-    - [Subscription example](#Subscription-example)
-      - [Subscribe trade update](#Subscribe-trade-update)
-      - [Subscribe candlestick update](#subscribe-candlestick-update)
-      - [Subscribe order update](#Subscribe-order-update)
-      - [Subscribe account change](#subscribe-account-change)
+    - [Market data](#Market-data)
+    - [Account](#account)
+    - [Wallet](#wallet)
+    - [Trading](#trading)
+    - [Margin Loan](#margin-loan)
+- [Subscription example](#Subscription-example)
+  - [Subscribe trade update](#Subscribe-trade-update)
+  - [Subscribe candlestick update](#subscribe-candlestick-update)
+  - [Subscribe order update](#Subscribe-order-update)
+  - [Subscribe account change](#subscribe-account-change)
 
 
 ## Quick Start
@@ -85,7 +66,7 @@ This is the folder and package structure of SDK source code and the description
   - **utils**:The utility classes, including signature, json parser, logging etc.
 - **performance**: This is for internal performance testing
 - **tests**: This is for internal functional testing
-- **example**: The main package is defined here, it provides the examples how to use **client** package and **response** package to access API and read response.
+- **example**: The main package is defined here, it provides the examples how to use **client** instance to access API and read response.
 
 ### Run examples
 
@@ -99,7 +80,7 @@ p_api_key = "hrf5gdfghe-e74bebd8-2f4a33bc-e7963"
 p_secret_key = "fecbaab2-35befe7e-2ea695e8-67e56"
 ```
 
-If you don't need to access private data, you can ignore the secret key.
+If you don't need to access private data, you can ignore the API key.
 
 Regarding the difference between public data and private data you can find details in [Client](#Client) section below.
 
@@ -115,7 +96,7 @@ All the client is listed in below table. Each client is very small and simple, i
 | Market        | MarketClient  | Public  | Rest, WebSocket    |
 | Account       | AccountClient | Private | Rest, WebSocket v2 |
 | Wallet        | WalletClient  | Private | Rest               |
-| Order         | OrderClient   | Private | Rest, WebSocket v2 |
+| Trade         | TradeClient   | Private | Rest, WebSocket v2 |
 | Margin        | MarginClient  | Private | Rest               |
 | ETF           | ETFClient     | Private | Rest               |
 
