@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="huobi-client",
-    version="2.0.1",
+    version="2.0.0",
     packages=['huobi',
               'huobi.exception', 'huobi.constant',
               'huobi.utils',
