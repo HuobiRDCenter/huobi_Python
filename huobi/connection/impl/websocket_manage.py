@@ -91,11 +91,11 @@ class WebsocketManage:
             self.original_connection = None
             self.state = ConnectionState.WAIT_RECONNECT
             self.reconnect_at =  + delay_in_ms
-        self.logger.warning("[Sub][", self.id , "] Reconnecting at ", self.reconnect_at)
+        self.logger.warning("[Sub][%d] Will reconnect after %d ms" % (self.id, self.reconnect_at))
 
     def re_connect(self):
         if get_current_timestamp() > self.reconnect_at:
-            self.logger.info("[Sub][", self.id, "] Reconnecting ... ")
+            self.logger.info("[Sub][%d] Reconnecting ... " % self.id)
             self.connect()
 
     def connect(self):

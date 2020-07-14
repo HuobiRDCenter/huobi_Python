@@ -24,7 +24,7 @@ def watch_dog_job(*args):
             pass
         elif websocket_manage.state == ConnectionState.CLOSED_ON_ERROR:
             if watch_dog_obj.is_auto_connect:
-                websocket_manage.re_connect_in_delay(watch_dog_obj.reconnect_after_ms)
+                websocket_manage.close_and_wait_reconnect(watch_dog_obj.reconnect_after_ms)
                 pass
 
 
