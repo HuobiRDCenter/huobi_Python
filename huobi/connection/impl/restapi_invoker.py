@@ -54,7 +54,7 @@ def call_sync(request, is_checked=False):
         if is_checked is True:
             return response.text
         dict_data = json.loads(response.text, encoding="utf-8")
-        print("call_sync  === recv data : ", dict_data)
+        # print("call_sync  === recv data : ", dict_data)
         check_response(dict_data)
         return request.json_parser(dict_data)
 
