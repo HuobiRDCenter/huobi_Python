@@ -33,7 +33,7 @@ class MarketClient(object):
 
         params = {
             "symbol": symbol,
-            "interval": interval,
+            "period": interval,
             "size": size
         }
         from huobi.service.market.get_candlestick import GetCandleStickService
