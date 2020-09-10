@@ -222,7 +222,7 @@ class RestfulTestCaseSeq:
         #case get_candlestick
         tc = TimeCost(function_name=market_client.get_candlestick.__name__)
         result, tc.server_req_cost, tc.server_api_cost = market_client.get_candlestick(symbol=common_market_symbol,
-                                                                                       interval=CandlestickInterval.MIN1,
+                                                                                       period=CandlestickInterval.MIN1,
                                                                                        size=150)
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()

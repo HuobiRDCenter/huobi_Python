@@ -18,22 +18,22 @@ class MarketClient(object):
         """
         self.__kwargs = kwargs
 
-    def get_candlestick(self, symbol, interval, size):
+    def get_candlestick(self, symbol, period, size=200):
         """
         Get the candlestick/kline for the specified symbol. The data number is 150 as default.
 
         :param symbol: The symbol, like "btcusdt". To query hb10, put "hb10" at here. (mandatory)
-        :param interval: The candlestick/kline interval, MIN1, MIN5, DAY1 etc. (mandatory)
+        :param period: The candlestick/kline interval, MIN1, MIN5, DAY1 etc. (mandatory)
         :param size: The start time of of requested candlestick/kline data. (optional)
         :return: The list of candlestick/kline data.
         """
         check_symbol(symbol)
-        check_should_not_none(interval, "interval")
+        check_should_not_none(period, "period")
         check_range(size, 1, 2000, "size")
 
         params = {
             "symbol": symbol,
-            "interval": interval,
+            "period": period,
             "size": size
         }
         from huobi.service.market.get_candlestick import GetCandleStickService
