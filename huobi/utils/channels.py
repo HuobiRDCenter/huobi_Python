@@ -3,9 +3,6 @@ from huobi.utils.time_service import get_current_timestamp
 from huobi.constant import DepthStep
 
 
-
-
-
 def kline_channel(symbol, interval):
     channel = dict()
     channel["sub"] = "market." + symbol + ".kline." + interval
@@ -20,11 +17,12 @@ def trade_detail_channel(symbol):
     return json.dumps(channel)
 
 
-def price_depth_channel(symbol, step_type = DepthStep.STEP0):
+def price_depth_channel(symbol, step_type=DepthStep.STEP0):
     channel = dict()
     channel["sub"] = "market." + symbol + ".depth." + step_type
     channel["id"] = str(get_current_timestamp())
     return json.dumps(channel)
+
 
 def price_depth_bbo_channel(symbol):
     channel = dict()
@@ -70,11 +68,13 @@ def mbp_full_channel(symbol, levels):
     channel["id"] = str(get_current_timestamp())
     return json.dumps(channel)
 
+
 def request_mbp_channel(symbol, levels):
     channel = dict()
     channel["req"] = "market.{symbol}.mbp.{levels}".format(symbol=symbol, levels=levels)
     channel["id"] = str(get_current_timestamp())
     return json.dumps(channel)
+
 
 def trade_clearing_channel(symbol="*"):
     channel = dict()

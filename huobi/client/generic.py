@@ -3,7 +3,6 @@ from huobi.constant import *
 from huobi.model.generic import *
 
 
-
 class GenericClient(object):
 
     def __init__(self, **kwargs):
@@ -70,7 +69,7 @@ class GenericClient(object):
         ret.currencies = self.get_exchange_currencies()
         return ret
 
-    def get_reference_currencies(self, currency:'str'=None, is_authorized_user:'bool' =None) ->list:
+    def get_reference_currencies(self, currency: 'str' = None, is_authorized_user: 'bool' = None) -> list:
         """
         Get all the trading assets and currencies supported in huobi.
         The information of trading instrument, including base currency, quote precision, etc.
@@ -81,13 +80,12 @@ class GenericClient(object):
         """
 
         params = {
-            "currency" : currency,
-            "authorizedUser" : is_authorized_user
+            "currency": currency,
+            "authorizedUser": is_authorized_user
         }
 
         from huobi.service.generic.get_reference_currencies import GetReferenceCurrenciesService
         return GetReferenceCurrenciesService(params).request(**self.__kwargs)
-
 
     def get_system_status(self) -> str:
         """
@@ -98,3 +96,7 @@ class GenericClient(object):
 
         from huobi.service.generic.get_system_status import GetSystemStatusService
         return GetSystemStatusService({}).request(**self.__kwargs)
+
+    def get_market_status(self):
+        from huobi.service.generic.get_market_status import GetMarketStatusService
+        return GetMarketStatusService({}).request(**self.__kwargs)

@@ -62,6 +62,7 @@ class WebsocketManage:
         self.__thread = None
         self.__market_url = HUOBI_WEBSOCKET_URI_PRO + "/ws"
         self.__trading_url = HUOBI_WEBSOCKET_URI_PRO + "/ws/" + request.api_version
+        self.__mbp_feed_url = HUOBI_WEBSOCKET_URI_PRO + "/feed"
         self.__api_key = api_key
         self.__secret_key = secret_key
         self.request = request
@@ -76,12 +77,17 @@ class WebsocketManage:
         host = urllib.parse.urlparse(uri).hostname
         if host.find("api") == 0:
             self.__market_url = "wss://" + host + "/ws"
+            self.__mbp_feed_url = "wss://" + host + "/feed"
             self.__trading_url = "wss://" + host + "/ws/" + request.api_version
         else:
             self.__market_url = "wss://" + host + "/api/ws"
+            self.__mbp_feed_url = "wss://" + host + "/feed"
             self.__trading_url = "wss://" + host + "/ws/" + request.api_version
+
         if request.is_trading:
             self.url = self.__trading_url
+        elif request.is_mbp_feed:
+            self.url = self.__mbp_feed_url
         else:
             self.url = self.__market_url
 

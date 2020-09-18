@@ -42,6 +42,17 @@ class OrderType:
     INVALID = None
 
 
+class AlgoOrderType:
+    LIMIT = "limit"
+    MARKET = "market"
+
+
+class AlgoOrderStatus:
+    CANCELED = "canceled"
+    REJECTED = "rejected"
+    TRIGGERED = "triggered"
+
+
 class AccountType:
     SPOT = "spot"
     MARGIN = "margin"
@@ -82,6 +93,8 @@ class WithdrawState:
     CONFIRMED = "confirmed"
     CONFIRMERROR = "confirm-error"
     REPEALED = "repealed"
+    VERIFYING = "verifying"
+    FAILED = "failed"
     INVALID = None
 
 
@@ -128,7 +141,7 @@ class OrderSource:
 
 
 class OrderState:
-    CREATED = "created"   #for stop loss order
+    CREATED = "created"  # for stop loss order
     PRE_SUBMITTED = "pre-submitted"
     SUBMITTING = "submitting"
     SUBMITTED = "submitted"
@@ -140,6 +153,13 @@ class OrderState:
     FAILED = "failed"
     PLACE_TIMEOUT = "place_timeout"
     INVALID = None
+
+
+class TimeInForceType:
+    IOC = "ioc"
+    FOK = "fok"
+    BOC = "boc"
+    GTC = "gtc"
 
 
 class TransferMasterType:
@@ -196,18 +216,22 @@ class OperateMode:
     PONG = "pong"
     INVALID = None
 
+
 class QueryDirection:
     PREV = "prev"
     NEXT = "next"
     INVALID = None
 
+
 class TransferFuturesPro:
     TO_PRO = "futures-to-pro"
     TO_FUTURES = "pro-to-futures"
 
+
 class MatchRole:
     MAKER = "maker"
     TAKER = "taker"
+
 
 class DepthStep:
     STEP0 = "step0"
@@ -217,26 +241,31 @@ class DepthStep:
     STEP4 = "step4"
     STEP5 = "step5"
 
+
 class DepthSize:
     SIZE5 = 5
     SIZE10 = 10
     SIZE20 = 20
+
 
 class MbpLevel:
     MBP5 = 5
     MBP10 = 10
     MBP20 = 20
     MBP150 = 150
-	
+
+
 class ChainDepositStatus:
     ALLOWED = "allowed"
     PROHIBITED = "prohibited"
     INVALID = None
 
+
 class ChainWithdrawStatus:
     ALLOWED = "allowed"
     PROHIBITED = "prohibited"
     INVALID = None
+
 
 class InstrumentStatus:
     NORMAL = "normal"
@@ -263,10 +292,12 @@ class FeeDeductType:
     DEDUCT_BY_POINT = "point"
     INVALID = None
 
+
 class SubUidAction:
     UNLOCK = "unlock"
     LOCK = "lock"
     INVALID = None
+
 
 class SubUidState:
     NORMAL = "normal"
@@ -296,6 +327,28 @@ class AccountTransactType:
     EXCHANGE = "exchange"
     OTHER = "other-types"
 
+
 class SortDesc:
     ASC = "asc"
     DESC = "desc"
+
+
+class SubuserTradePrivilegeType:
+    MARGIN = "isolated-margin"
+    SUPER_MARGIN = "cross-margin"
+
+
+class SubUserTradeStatus:
+    ACTIVATED = "activated"
+    DEACTIVATED = "deactivated"
+
+
+class MarketStatus:
+    NORMAL: 1
+    HALTED: 2
+    CANCEL_ONLY: 3
+
+
+class HaltReason:
+    EMERGENCY_MAINTENANCE: 2
+    SCHEDULED_MAINTENANCE: 3

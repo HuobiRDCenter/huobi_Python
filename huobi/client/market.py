@@ -1,4 +1,3 @@
-
 from huobi.constant import *
 from huobi.model.market import *
 from huobi.utils import *
@@ -61,15 +60,15 @@ class MarketClient(object):
         check_should_not_none(callback, "callback")
 
         params = {
-            "symbol_list" : symbol_list,
-            "interval" : interval,
+            "symbol_list": symbol_list,
+            "interval": interval,
         }
 
         from huobi.service.market.sub_candlestick import SubCandleStickService
         SubCandleStickService(params).subscribe(callback, error_handler, **self.__kwargs)
 
     def req_candlestick(self, symbols: 'str', interval: 'CandlestickInterval', callback,
-                                    from_ts_second = None, end_ts_second = None, error_handler=None):
+                        from_ts_second=None, end_ts_second=None, error_handler=None):
         """
         Subscribe candlestick/kline event. If the candlestick/kline is updated, server will send the data to client and onReceive in callback will be called.
 
@@ -92,10 +91,10 @@ class MarketClient(object):
         check_should_not_none(callback, "callback")
 
         params = {
-            "symbol_list" : symbol_list,
-            "interval" : interval,
-            "from_ts_second" : from_ts_second,
-            "end_ts_second" : end_ts_second
+            "symbol_list": symbol_list,
+            "interval": interval,
+            "from_ts_second": from_ts_second,
+            "end_ts_second": end_ts_second
         }
 
         from huobi.service.market.req_candlestick import ReqCandleStickService
@@ -113,7 +112,8 @@ class MarketClient(object):
         """
 
         check_symbol(symbol)
-        check_in_list(depth_type, [DepthStep.STEP0, DepthStep.STEP1, DepthStep.STEP2, DepthStep.STEP3, DepthStep.STEP4, DepthStep.STEP5], "depth_type")
+        check_in_list(depth_type, [DepthStep.STEP0, DepthStep.STEP1, DepthStep.STEP2, DepthStep.STEP3, DepthStep.STEP4,
+                                   DepthStep.STEP5], "depth_type")
         params = {
             "symbol": symbol,
             "type": depth_type,
@@ -170,8 +170,8 @@ class MarketClient(object):
         check_should_not_none(callback, "callback")
 
         params = {
-            "symbol_list" : symbol_list,
-            "step" : new_step,
+            "symbol_list": symbol_list,
+            "step": new_step,
         }
 
         from huobi.service.market.sub_pricedepth import SubPriceDepthService
@@ -196,7 +196,7 @@ class MarketClient(object):
         check_should_not_none(callback, "callback")
 
         params = {
-            "symbol_list" : symbol_list,
+            "symbol_list": symbol_list,
         }
 
         from huobi.service.market.sub_pricedepth_bbo import SubPriceDepthBboService
@@ -265,7 +265,7 @@ class MarketClient(object):
         check_should_not_none(callback, "callback")
 
         params = {
-            "symbol_list" : symbol_list,
+            "symbol_list": symbol_list,
         }
 
         from huobi.service.market.sub_market_detail import SubMarketDetailService
@@ -326,7 +326,7 @@ class MarketClient(object):
 
         params = {
             "symbol": symbol,
-            "size" : size
+            "size": size
         }
 
         from huobi.service.market.get_history_trade import GetHistoryTradeService
@@ -349,9 +349,8 @@ class MarketClient(object):
         check_symbol_list(symbol_list)
         check_should_not_none(callback, "callback")
 
-
         params = {
-            "symbol_list" : symbol_list,
+            "symbol_list": symbol_list,
         }
 
         from huobi.service.market.sub_trade_detail import SubTradeDetailService
@@ -375,7 +374,7 @@ class MarketClient(object):
         check_should_not_none(callback, "callback")
 
         params = {
-            "symbol_list" : symbol_list,
+            "symbol_list": symbol_list,
         }
 
         from huobi.service.market.req_trade_detail import ReqTradeDetailService
@@ -401,10 +400,10 @@ class MarketClient(object):
         from huobi.service.market.get_market_tickers import GetMarketTickersService
         return GetMarketTickersService(params).request(**self.__kwargs)
 
-
     """
     increase mbp(market by price)
     """
+
     def sub_mbp_increase(self, symbols: 'str', levels: 'int', callback, error_handler=None):
         """
         Subscribe mbp event. If the mbp is updated, server will send the data to client and onReceive in callback will be called.
@@ -427,17 +426,17 @@ class MarketClient(object):
         check_should_not_none(callback, "callback")
 
         params = {
-            "symbol_list" : symbol_list,
-            "levels" : levels
+            "symbol_list": symbol_list,
+            "levels": levels
         }
 
         from huobi.service.market.sub_mbp_increase import SubMbpIncreaseService
         SubMbpIncreaseService(params).subscribe(callback, error_handler, **self.__kwargs)
 
-
     """
     subscribe full mbp(market by price)
     """
+
     def sub_mbp_full(self, symbols: 'str', levels: 'int', callback, error_handler=None):
         """
         Subscribe full mbp event. If the mbp is updated, server will send the data to client and onReceive in callback will be called.
@@ -457,6 +456,7 @@ class MarketClient(object):
         symbol_list = symbols.split(",")
         check_symbol_list(symbol_list)
         check_should_not_none(levels, "levels")
+        check_in_list(levels, [MbpLevel.MBP5, MbpLevel.MBP10, MbpLevel.MBP20], "levels")
         check_should_not_none(callback, "callback")
 
         params = {
@@ -467,7 +467,7 @@ class MarketClient(object):
         from huobi.service.market.sub_mbp_full import SubMbpFullService
         SubMbpFullService(params).subscribe(callback, error_handler, **self.__kwargs)
 
-    def req_mbp(self, symbols: 'str', levels: 'int', callback, auto_close = True, error_handler=None):
+    def req_mbp(self, symbols: 'str', levels: 'int', callback, auto_close=True, error_handler=None):
         """
         Subscribe mbp event. If the mbp is updated, server will send the data to client and onReceive in callback will be called.
 

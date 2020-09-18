@@ -9,5 +9,6 @@ from huobi.model.account.margin_balance_detail import MarginBalanceDetail
 from huobi.model.account.account_history import AccountHistory
 from huobi.model.account.sub_uid_management import SubUidManagement
 from huobi.model.account.account_ledger import AccountLedger
+from huobi.model.account.account_transfer_result import AccountTransferResult
 
 

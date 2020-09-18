@@ -33,18 +33,22 @@ class WebSocketReqClient(object):
         manager = WebsocketManage(self.__api_key, self.__secret_key, self.__uri, request)
         manager.connect()
 
-    def create_request(self, subscription_handler, parse, callback, error_handler, is_trade = False):
+    def create_request(self, subscription_handler, parse, callback, error_handler, is_trade=False, is_mbp_feed=False):
         request = WebsocketRequest()
         request.subscription_handler = subscription_handler
         request.is_trading = is_trade
-        request.auto_close = True   # for websocket request, auto close the connection after request.
+        request.is_mbp_feed = is_mbp_feed
+        request.auto_close = True  # for websocket request, auto close the connection after request.
         request.json_parser = parse
         request.update_callback = callback
         request.error_handler = error_handler
         return request
 
-    def execute_subscribe_v1(self, subscription_handler, parse, callback, error_handler, is_trade = False):
+    def execute_subscribe_v1(self, subscription_handler, parse, callback, error_handler, is_trade=False):
         request = self.create_request(subscription_handler, parse, callback, error_handler, is_trade)
         self.__create_websocket_manage(request)
 
-
+    def execute_subscribe_mbp(self, subscription_handler, parse, callback, error_handler, is_trade=False,
+                              is_mbp_feed=True):
+        request = self.create_request(subscription_handler, parse, callback, error_handler, is_trade, is_mbp_feed)
+        self.__create_websocket_manage(request)

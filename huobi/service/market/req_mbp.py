@@ -21,10 +21,7 @@ class ReqMbpService:
         def parse(dict_data):
             return MbpReq.json_parse(dict_data)
 
-        WebSocketReqClient(**kwargs).execute_subscribe_v1(subscription,
-                                            parse,
-                                            callback,
-                                            error_handler)
-
-
-
+        WebSocketReqClient(**kwargs).execute_subscribe_mbp(subscription,
+                                                           parse,
+                                                           callback,
+                                                           error_handler)

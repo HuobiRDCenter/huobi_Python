@@ -32,7 +32,6 @@ class Deposit:
         self.updated_at = 0
         self.state = DepositState.INVALID
 
-
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.id, format_data + "ID")

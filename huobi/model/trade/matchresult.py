@@ -19,6 +19,7 @@ class MatchResult:
             buy-ioc, sell-ioc, buy-limit-maker, sell-limit-maker, buy-limit-fok, sell-limit-fok, buy-stop-limit-fok, sell-stop-limit-fok.
         filled_points: deduct points
         fee_deduct_currency: deduct type, it means deduct from HT/ HT points / or other currency
+        fee_currency:
     """
 
     def __init__(self):
@@ -35,6 +36,7 @@ class MatchResult:
         self.role = ""
         self.filled_points = ""
         self.fee_deduct_currency = ""
+        self.fee_currency = ""
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
@@ -51,3 +53,4 @@ class MatchResult:
         PrintBasic.print_basic(self.type, format_data + "Order Type")
         PrintBasic.print_basic(self.role, format_data + "Role")
         PrintBasic.print_basic(self.fee_deduct_currency, format_data + "Fee Deduct Currency")
+        PrintBasic.print_basic(self.fee_currency, format_data + "Fee Currency")
