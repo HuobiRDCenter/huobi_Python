@@ -1,5 +1,6 @@
 from huobi.model.trade import TradeClearing
 
+
 class TradeClearingEvent:
     """
     subscribe trading clearing information
@@ -9,6 +10,7 @@ class TradeClearingEvent:
         ch: subscribe topic.
         data: data detail in TradeClearing.
     """
+
     def __init__(self):
         self.action = ""
         self.ch = ""
@@ -24,9 +26,7 @@ class TradeClearingEvent:
         event_obj.data = TradeClearing.json_parse(data_json.get("data", {}))
         return event_obj
 
-
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.ch, format_data + "Channel")
         self.data.print_object()
-

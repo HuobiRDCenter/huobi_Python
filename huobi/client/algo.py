@@ -91,7 +91,6 @@ class AlgoClient(object):
         from huobi.service.algo.get_order_by_cid import GetOrderByClientOrderIdService
         return GetOrderByClientOrderIdService(params).request(**self.__kwargs)
 
-
     def create_order_param_check(self, symbol, account_id, order_side, order_type, stop_price, order_price,
                                  order_size, order_value, time_in_force, trailing_rate, client_order_id):
         check_symbol(symbol)

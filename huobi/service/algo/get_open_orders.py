@@ -28,6 +28,7 @@ class GetOpenOrdersService:
         #             "source": "api",
         #             "stopPrice": "0.085",
         #             "symbol": "adausdt",
+        #             "trailingRate": 0.001,
         #             "timeInForce": "gtc"
         #         }
         #     ]

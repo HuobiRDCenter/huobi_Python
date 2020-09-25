@@ -1,8 +1,6 @@
 from huobi.connection.restapi_sync_client import RestApiSyncClient
 from huobi.constant.system import HttpMethod
 from huobi.model.account import *
-from huobi.utils import *
-
 
 
 class GetAccountBalanceBySubUidService:
@@ -22,9 +20,3 @@ class GetAccountBalanceBySubUidService:
             return AccountBalance.json_parse_list(data_list)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, get_channel(), self.params, parse)
-
-
-
-
-
-

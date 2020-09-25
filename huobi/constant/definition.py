@@ -71,6 +71,16 @@ class AccountState:
     INVALID = None
 
 
+class AccountPointState:
+    WORKING = "working"
+    LOCK = "lock"
+    INVALID = None
+    FL_SYS = "fl-sys"
+    FL_MGT = "fl-mgt"
+    FL_END = "fl-end"
+    FL_NEGATIVE = "fl-negative"
+
+
 class AccountBalanceUpdateType:
     TRADE = "trade"
     FROZEN = "frozen"
@@ -284,6 +294,8 @@ class AccountChangeType:
     MARGIN_INTEREST = "margin-interest"
     MARGIN_REPAY = "margin-repay"
     OTHER = "other"
+    DEPOSIT = "deposit"
+    WITHDRAW = "withdraw"
     INVALID = None
 
 

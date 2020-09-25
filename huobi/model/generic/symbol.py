@@ -15,6 +15,13 @@ class Symbol:
         max_order_amt : Maximum volume
         min_order_value : Minimum order amount
         leverage_ratio : Leverage ratio for symbol
+        limit_order_min_order_amt: Minimum order amount of limit order in base currency (NEW)
+        limit_order_max_order_amt: Max order amount of limit order in base currency (NEW)
+        sell_market_min_order_amt: Minimum order amount of sell-market order in base currency (NEW)
+        sell_market_max_order_amt: Max order amount of sell-market order in base currency (NEW)
+        buy_market_max_order_amt: Max order value of buy-market order in quote currency (NEW)
+        max_order_value: Max order value of limit order and buy-market order in usdt (NEW)
+
     """
 
     def __init__(self):
@@ -30,7 +37,12 @@ class Symbol:
         self.max_order_amt = ""
         self.min_order_value = ""
         self.leverage_ratio = 0
-
+        self.limit_order_min_order_amt = 0
+        self.limit_order_max_order_amt = 0
+        self.sell_market_min_order_amt = 0
+        self.sell_market_max_order_amt = 0
+        self.buy_market_max_order_value = 0
+        self.max_order_value = 0
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
@@ -46,3 +58,9 @@ class Symbol:
         PrintBasic.print_basic(self.max_order_amt, format_data + "Max Order Amount")
         PrintBasic.print_basic(self.min_order_value, format_data + "Min Order Value")
         PrintBasic.print_basic(self.leverage_ratio, format_data + "Leverage Ratio")
+        PrintBasic.print_basic(self.limit_order_min_order_amt, format_data + "Minimum order amount (Limit Order)")
+        PrintBasic.print_basic(self.limit_order_max_order_amt, format_data + "Max order amount (Limit Order)")
+        PrintBasic.print_basic(self.sell_market_min_order_amt, format_data + "Min order amount (Sell Market Order)")
+        PrintBasic.print_basic(self.sell_market_max_order_amt, format_data + "Max order amount (Sell Market Order)")
+        PrintBasic.print_basic(self.buy_market_max_order_value, format_data + "Max order value (Buy Market Order)")
+        PrintBasic.print_basic(self.max_order_value, format_data + "Max order value (In USDT)")

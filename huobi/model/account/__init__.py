@@ -10,5 +10,5 @@ from huobi.model.account.account_history import AccountHistory
 from huobi.model.account.sub_uid_management import SubUidManagement
 from huobi.model.account.account_ledger import AccountLedger
 from huobi.model.account.account_transfer_result import AccountTransferResult
-
-
+from huobi.model.account.account_point_result import AccountPointResult
+from huobi.model.account.account_point_transfer_result import AccountPointTransferResult

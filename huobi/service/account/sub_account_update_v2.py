@@ -1,9 +1,7 @@
-
 from huobi.utils import *
 
 from huobi.connection.subscribe_client import SubscribeClient
 from huobi.model.account import *
-
 
 
 class SubAccountUpdateV2Service:
@@ -26,10 +24,7 @@ class SubAccountUpdateV2Service:
             return account_change_event
 
         SubscribeClient(**kwargs).execute_subscribe_v2(subscription,
-                                            parse,
-                                            callback,
-                                            error_handler,
-                                            is_trade=True)
-
-
-
+                                                       parse,
+                                                       callback,
+                                                       error_handler,
+                                                       is_trade=True)

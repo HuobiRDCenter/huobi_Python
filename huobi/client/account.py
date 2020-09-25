@@ -341,3 +341,34 @@ class AccountClient(object):
         }
         from huobi.service.account.post_account_transfer import PostAccountTransferService
         return PostAccountTransferService(params).request(**self.__kwargs)
+
+    def get_account_asset_valuation(self, account_type, valuation_currency: 'str' = None, sub_uid: 'str' = None):
+        check_should_not_none(account_type, "account-type")
+
+        params = {
+            "accountType": account_type,
+            "valuationCurrency": valuation_currency.upper(),
+            "subUid": sub_uid
+        }
+        from huobi.service.account.get_account_asset_valuation import GetAccountAssetValuationService
+        return GetAccountAssetValuationService(params).request(**self.__kwargs)
+
+    def get_account_point(self, sub_uid: 'str' = None):
+        params = {
+            "subUid": sub_uid
+        }
+
+        from huobi.service.account.get_account_point import GetAccountPointService
+        return GetAccountPointService(params).request(**self.__kwargs)
+
+    def post_point_transfer(self, from_uid: 'str', to_uid: 'str', group_id: 'str', amount: 'str'):
+
+        params = {
+            "fromUid": from_uid,
+            "toUid": to_uid,
+            "groupId": group_id,
+            "amount": amount
+        }
+
+        from huobi.service.account.post_point_transfer import PostPointTransferService
+        return PostPointTransferService(params).request(**self.__kwargs)

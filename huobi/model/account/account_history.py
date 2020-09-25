@@ -1,15 +1,16 @@
-from huobi.constant import *
-
-
 class AccountHistory:
     """
     The account information for spot account, margin account etc.
 
     :member
-        id: The unique account id.
-        account_type: The type of this account, possible value: spot, margin, otc, point.
-        account_state: The account state, possible value: working, lock.
-        balances: The balance list of the specified currency. The content is Balance class
+        account_id: Account Id.
+        currency: Currency name
+        transact_amt: Amount change (positive value if income, negative value if outcome)
+        transact-type: Amount change type
+        avail_balance: Available balance
+        acct_balance: Account balance
+        transact_time: Transaction time (database time)
+        record_id: Unique record ID in the database
 
     """
 
@@ -21,7 +22,7 @@ class AccountHistory:
         self.avail_balance = ""
         self.acct_balance = ""
         self.transact_time = 0
-        self.record_id  = ""
+        self.record_id = 0
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic

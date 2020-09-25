@@ -4,7 +4,6 @@ from huobi.model.account import *
 from huobi.utils import *
 
 
-
 class GetBalanceService:
 
     def __init__(self, params):
@@ -12,6 +11,7 @@ class GetBalanceService:
 
     def request(self, **kwargs):
         account_id = self.params["account-id"]
+
         def get_channel():
             path = "/v1/account/accounts/{}/balance"
             return path.format(account_id)
@@ -25,6 +25,7 @@ class GetBalanceService:
 
     def get_request(self, **kwargs):
         account_id = self.params["account-id"]
+
         def get_channel():
             path = "/v1/account/accounts/{}/balance"
             return path.format(account_id)
@@ -35,9 +36,3 @@ class GetBalanceService:
             return default_parse_list_dict(balance_list, Balance, [])
 
         return RestApiSyncClient(**kwargs).create_request(HttpMethod.GET_SIGN, get_channel(), self.params, parse)
-
-
-
-
-
-

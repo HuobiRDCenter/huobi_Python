@@ -1,6 +1,3 @@
-from huobi.constant import *
-
-
 class AccountTransferResult:
     """
     The account information for spot account, margin account etc.
