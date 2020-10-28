@@ -356,11 +356,11 @@ class SubUserTradeStatus:
 
 
 class MarketStatus:
-    NORMAL: 1
-    HALTED: 2
-    CANCEL_ONLY: 3
+    NORMAL = 1
+    HALTED = 2
+    CANCEL_ONLY = 3
 
 
 class HaltReason:
-    EMERGENCY_MAINTENANCE: 2
-    SCHEDULED_MAINTENANCE: 3
+    EMERGENCY_MAINTENANCE = 2
+    SCHEDULED_MAINTENANCE = 3
