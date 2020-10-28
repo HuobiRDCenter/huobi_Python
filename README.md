@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/HuobiRDCenter/huobi_Python.svg?branch=master)](https://travis-ci.com/HuobiRDCenter/huobi_Python)
+
 # Huobi Python SDK v2
 
 This is Huobi Python SDK v2, you can import to your python project and use this SDK to query all market data, trading and manage your account. The SDK supports RESTful API invoking, and concurrently subscribing the market, account and order update from the Websocket connection.
