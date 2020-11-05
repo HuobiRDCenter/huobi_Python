@@ -192,7 +192,7 @@ class TradeClient(object):
         The request of get open orders.
 
         :param symbol: The symbol, like "btcusdt". (mandatory)
-        :param account_id: The order side, buy or sell. If no side defined, will return all open orders of the account. (mandatory)
+        :param account_id: account id (mandatory)
         :param side: The order side, buy or sell. If no side defined, will return all open orders of the account. (optional)
         :param size: The number of orders to return. Range is [1, 500]. (optional)
         :param direct: 1:prev  order by ID asc from from_id, 2:next order by ID desc from from_id
