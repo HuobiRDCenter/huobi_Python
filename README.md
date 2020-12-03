@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.com/HuobiRDCenter/huobi_Python.svg?branch=master)](https://travis-ci.com/HuobiRDCenter/huobi_Python)
-
 # Huobi Python SDK v2
 
 This is Huobi Python SDK v2, you can import to your python project and use this SDK to query all market data, trading and manage your account. The SDK supports RESTful API invoking, and concurrently subscribing the market, account and order update from the Websocket connection.
@@ -102,6 +100,9 @@ All the client is listed in below table. Each client is very small and simple, i
 | Margin        | MarginClient  | Private | Rest               |
 | ETF           | ETFClient     | Private | Rest               |
 
+#### Customized Host
+The client class support customized host so that you can define your own host, refer to example in later section.
+
 #### Public and Private
 
 There are two types of privacy that is correspondent with privacy of API:
@@ -112,8 +113,8 @@ There are two types of privacy that is correspondent with privacy of API:
 // Create a GenericClient instance
 generic_client = GenericClient()
 
-// Create a MarketClient instance
-market_client = MarketClient()
+// Create a MarketClient instance with customized host
+market_client = MarketClient(url="https://api-aws.huobi.pro")
 ```
 
 **Private client**: It invokes private API to access private data, you need to follow the API document to apply an API Key first, and pass the API Key to the init function
@@ -122,8 +123,8 @@ market_client = MarketClient()
 // Create an AccountClient instance with APIKey
 account_client = AccountClient(api_key=g_api_key, secret_key=g_secret_key)
 
-// Create a TradeClient instance with API Key
-trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key)
+// Create a TradeClient instance with API Key and customized host
+trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key, url="https://api-aws.huobi.pro")
 ```
 
 The API key is used for authentication. If the authentication cannot pass, the invoking of private interface will fail.
