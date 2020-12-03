@@ -78,7 +78,7 @@ class TimeCost:
         sdk_func_name = "sdk_func_name{format_str}".format(format_str=format_str)
         run_status = "run_status{format_str}".format(format_str=format_str)
 
-        if only_brief == True:
+        if only_brief:
             print(delay_server_api_cost,
                   delay_server_req_cost,
                   sdk_api_cost)
@@ -132,7 +132,7 @@ class TimeCost:
             run_status_desc = ""
 
 
-        if only_brief == True:
+        if only_brief:
             print(
                 sdk_api_delay_desc,
                 sdk_req_delay_desc,
@@ -153,7 +153,7 @@ class TimeCost:
     def output_sort_cost(by_key_name, is_sorted=False):
         global time_cost_detail_list
 
-        if is_sorted == True:
+        if is_sorted:
             output_list = sorted(time_cost_detail_list, key=lambda e: e.__getitem__(by_key_name), reverse=True)
         else:
             output_list = time_cost_detail_list

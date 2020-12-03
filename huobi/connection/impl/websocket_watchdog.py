@@ -10,7 +10,7 @@ def watch_dog_job(*args):
     watch_dog_obj = args[0]
 
     for idx, websocket_manage in enumerate(watch_dog_obj.websocket_manage_list):
-        if websocket_manage.request.auto_close == True:  # setting auto close no need reconnect
+        if websocket_manage.request.auto_close:  # setting auto close no need reconnect
             pass
         elif websocket_manage.state == ConnectionState.CONNECTED:
             if watch_dog_obj.is_auto_connect:

@@ -26,7 +26,7 @@ class RestApiSyncClient(object):
         self.__server_url = kwargs.get("url", get_default_server_url(None))
         self.__init_log = kwargs.get("init_log", None)
         self.__performance_test = kwargs.get("performance_test", None)
-        if self.__init_log and self.__init_log == True:
+        if self.__init_log and self.__init_log:
             logger = logging.getLogger("huobi-client")
             logger.setLevel(level=logging.INFO)
             handler = logging.StreamHandler()
@@ -110,7 +110,7 @@ class RestApiSyncClient(object):
         return request
 
     def request_process(self, method, url, params, parse):
-        if self.__performance_test is not None and self.__performance_test == True:
+        if self.__performance_test is not None and self.__performance_test is True:
             return self.request_process_performance(method, url, params, parse)
         else:
             return self.request_process_product(method, url, params, parse)
@@ -133,7 +133,7 @@ class RestApiSyncClient(object):
     for post batch operation, such as batch create orders[ /v1/order/batch-orders ]
     """
     def request_process_post_batch(self, method, url, params, parse):
-        if self.__performance_test is not None and self.__performance_test == True:
+        if self.__performance_test is not None and self.__performance_test is True:
             return self.request_process_post_batch_performance(method, url, params, parse)
         else:
             return self.request_process_post_batch_product(method, url, params, parse)
