@@ -37,6 +37,7 @@ class MatchResult:
         self.filled_points = ""
         self.fee_deduct_currency = ""
         self.fee_currency = ""
+        self.fee_deduct_state = ""
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
@@ -54,3 +55,4 @@ class MatchResult:
         PrintBasic.print_basic(self.role, format_data + "Role")
         PrintBasic.print_basic(self.fee_deduct_currency, format_data + "Fee Deduct Currency")
         PrintBasic.print_basic(self.fee_currency, format_data + "Fee Currency")
+        PrintBasic.print_basic(self.fee_deduct_state, format_data + "Fee Deduct State")
