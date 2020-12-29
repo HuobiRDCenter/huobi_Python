@@ -107,3 +107,9 @@ class SubuserClient(object):
         }
         from huobi.service.subuser.post_subuser_apikey_deletion import PostSubuserApikeyDeletionService
         return PostSubuserApikeyDeletionService(params).request(**self.__kwargs)
+
+    def get_uid(self):
+        params = {
+        }
+        from huobi.service.subuser.get_uid import GetUidService
+        return GetUidService(params).request(**self.__kwargs)
