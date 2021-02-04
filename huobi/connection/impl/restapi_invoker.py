@@ -1,3 +1,4 @@
+import sys
 import requests
 from huobi.exception.huobi_api_exception import HuobiApiException
 from huobi.utils.etf_result import etf_result_check
@@ -7,6 +8,17 @@ import time
 from huobi.utils.print_mix_object import TypeCheck
 
 session = requests.Session()
+
+is_below_py39 = False
+if sys.version_info.major < 3 and sys.version_info.minor < 9:
+    is_below_py39 = True
+
+
+def json_loads(text, encoding=None):
+    if is_below_py39 and encoding:
+        return json.loads(text, encoding=encoding)
+    return json.loads(text)
+
 
 def check_response(dict_data):
     status = dict_data.get("status", None)
@@ -53,30 +65,31 @@ def call_sync(request, is_checked=False):
         response = session.get(request.host + request.url, headers=request.header)
         if is_checked is True:
             return response.text
-        dict_data = json.loads(response.text, encoding="utf-8")
+        dict_data = json_loads(response.text, encoding="utf-8")
         # print("call_sync  === recv data : ", dict_data)
         check_response(dict_data)
         return request.json_parser(dict_data)
 
     elif request.method == "POST":
         response = session.post(request.host + request.url, data=json.dumps(request.post_body), headers=request.header)
-        dict_data = json.loads(response.text, encoding="utf-8")
+        dict_data = json_loads(response.text, encoding="utf-8")
         # print("call_sync  === recv data : ", dict_data)
         check_response(dict_data)
         return request.json_parser(dict_data)
+
 
 def call_sync_perforence_test(request, is_checked=False):
     if request.method == "GET":
         inner_start_time = time.time()
         # print("call_sync_perforence_test url : ", request.host + request.url)
         response = session.get(request.host + request.url, headers=request.header)
-        #print("call_sync_perforence_test data :", response.text)
+        # print("call_sync_perforence_test data :", response.text)
         inner_end_time = time.time()
         cost_manual = round(inner_end_time - inner_start_time, 6)
         req_cost = response.elapsed.total_seconds()
         if is_checked is True:
             return response.text
-        dict_data = json.loads(response.text, encoding="utf-8")
+        dict_data = json_loads(response.text, encoding="utf-8")
         # print("call_sync  === recv data : ", dict_data)
         check_response(dict_data)
         return request.json_parser(dict_data), req_cost, cost_manual
@@ -87,7 +100,7 @@ def call_sync_perforence_test(request, is_checked=False):
         inner_end_time = time.time()
         cost_manual = round(inner_end_time - inner_start_time, 6)
         req_cost = response.elapsed.total_seconds()
-        dict_data = json.loads(response.text, encoding="utf-8")
+        dict_data = json_loads(response.text, encoding="utf-8")
         # print("call_sync  === recv data : ", dict_data)
         check_response(dict_data)
         return request.json_parser(dict_data), req_cost, cost_manual
