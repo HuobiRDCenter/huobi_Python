@@ -7,8 +7,6 @@ from huobi.utils import *
 
 from huobi.exception.huobi_api_exception import HuobiApiException
 
-
-
 class RestApiSyncClient(object):
 
     def __init__(self, **kwargs):
