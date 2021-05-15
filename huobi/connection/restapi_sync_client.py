@@ -1,4 +1,5 @@
 import logging
+from fake_useragent import FakeUserAgent
 
 from huobi.connection.impl.restapi_invoker import call_sync, call_sync_perforence_test
 from huobi.connection.impl.restapi_request import RestApiRequest
@@ -37,7 +38,8 @@ class RestApiSyncClient(object):
         request = RestApiRequest()
         request.method = "GET"
         request.host = self.__server_url
-        request.header.update({'Content-Type': 'application/json'})
+        #request.header.update({'Content-Type': 'application/json'})
+        request.header.update({'User-Agent': FakeUserAgent().random})
         request.url = url + builder.build_url()
         return request
 
@@ -46,7 +48,8 @@ class RestApiSyncClient(object):
         request.method = "POST"
         request.host = self.__server_url
         create_signature(self.__api_key, self.__secret_key, request.method, request.host + url, builder)
-        request.header.update({'Content-Type': 'application/json'})
+        #request.header.update({'Content-Type': 'application/json'})
+        request.header.update({'User-Agent': FakeUserAgent().random})
         if (len(builder.post_list)):  # specify for case : /v1/order/batch-orders
             request.post_body = builder.post_list
         else:
@@ -59,7 +62,8 @@ class RestApiSyncClient(object):
         request.method = "GET"
         request.host = self.__server_url
         create_signature(self.__api_key, self.__secret_key, request.method, request.host + url, builder)
-        request.header.update({"Content-Type": "application/x-www-form-urlencoded"})
+        #request.header.update({"Content-Type": "application/x-www-form-urlencoded"})
+        request.header.update({'User-Agent': FakeUserAgent().random})
         request.url = url + builder.build_url()
         return request
 

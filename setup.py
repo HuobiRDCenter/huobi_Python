@@ -15,5 +15,5 @@ setup(
               'huobi.model.wallet', 'huobi.model.generic', 'huobi.model.etf', 'huobi.model.subuser', 'huobi.model.algo',
               'huobi.connection', 'huobi.connection.impl', "performance", "tests"
               ],
-    install_requires=['requests', 'apscheduler', 'websocket-client', 'urllib3']
+    install_requires=['requests', 'apscheduler', 'websocket-client', 'urllib3', 'fake-useragent']
 )
