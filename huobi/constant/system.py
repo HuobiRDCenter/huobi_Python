@@ -5,15 +5,16 @@ HUOBI_URL_VN = "https://api.huobi.vn"
 HUOBI_URL_SO = "https://api.huobi.so"
 
 
+HUOBI_WEBSOCKET_URL_ASIA = "wss://api.huobiasia.vip"
 HUOBI_WEBSOCKET_URI_PRO = "wss://api.huobi.pro"
 HUOBI_WEBSOCKET_URI_VN = "wss://api.huobi.vn"
 HUOBI_WEBSOCKET_URI_SO = "wss://api.huobi.so"
 
 class WebSocketDefine:
-    Uri = HUOBI_WEBSOCKET_URI_PRO
+    Uri = HUOBI_WEBSOCKET_URL_ASIA
 
 class RestApiDefine:
-    Url = HUOBI_URL_PRO
+    Url = HUOBI_URL_ASIA
 
 class HttpMethod:
     GET = "GET"
