@@ -386,24 +386,34 @@ class TradeClient(object):
         from huobi.service.trade.post_cancel_order import PostCancelOrderService
         return PostCancelOrderService(params).request(**self.__kwargs)
 
-    def cancel_orders(self, symbol, order_id_list)->BatchCancelResult:
+    def cancel_orders(self, symbol, order_id_list=[], client_order_id_list=[])->BatchCancelResult:
         """
         Submit cancel request for cancelling multiple orders.
+        Either order_id_list or client_order_id_list must be filled.
 
         :param symbol: The symbol, like "btcusdt". (mandatory)
-        :param order_id_list: The list of order id. the max size is 50. (mandatory)
+        :param order_id_list: The list of order id. the max size is 50. (optional)
+        :param client_order_id_list: The list of client order id. the max size is 50. (optional)
         :return: No return
         """
         check_symbol(symbol)
         check_should_not_none(order_id_list, "order_id_list")
-        check_list(order_id_list, 1, 50, "order_id_list")
+        check_should_not_none(client_order_id_list, "client_order_id_list")
+        # check_list(order_id_list, 0, 50, "order_id_list")
+        # check_list(client_order_id_list, 0, 50, "client_order_id_list")
+        check_list(order_id_list + client_order_id_list, 1, 50, "order_id_list together with client_order_id_list")
 
         string_list = list()
         for order_id in order_id_list:
             string_list.append(str(order_id))
 
+        client_string_list = list()
+        for order_id in client_order_id_list:
+            client_string_list.append(str(order_id))
+
         params = {
-            "order-ids" : string_list
+            "order-ids" : string_list,
+            "client-order-ids" : client_order_id_list,
         }
 
         from huobi.service.trade.post_batch_cancel_order import PostBatchCancelOrderService
