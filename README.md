@@ -40,7 +40,7 @@ You can download and open the source code directly in your python project, and t
 # Create generic client instance and get the timestamp
 generic_client = GenericClient()
 ts = generic_client.get_exchange_timestamp()
-print(timestamp)
+print(ts)
 
 # Create the market client instance and get the latest btcusdt‘s candlestick
 market_client = MarketClient()
