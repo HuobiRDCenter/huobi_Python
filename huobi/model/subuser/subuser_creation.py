@@ -9,11 +9,11 @@ class SubuserCreation:
     """
 
     def __init__(self):
-        self.user_name = ""
+        self.userName = ""
         self.note = ""
         self.uid = 0
-        self.err_code = 0
-        self.err_message = ""
+        self.errCode = 0
+        self.errMessage = ""
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic

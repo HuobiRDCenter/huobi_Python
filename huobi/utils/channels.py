@@ -76,8 +76,15 @@ def request_mbp_channel(symbol, levels):
     return json.dumps(channel)
 
 
-def trade_clearing_channel(symbol="*"):
+def trade_clearing_channel(symbol="*", mode="0"):
     channel = dict()
     channel["action"] = "sub"
-    channel["ch"] = "trade.clearing#" + symbol
+    channel["ch"] = "trade.clearing#" + symbol + "#" + mode
+    return json.dumps(channel)
+
+
+def ticker_channel(symbol):
+    channel = dict()
+    channel["sub"] = "market." + symbol + ".ticker"
+    channel["id"] = str(get_current_timestamp())
     return json.dumps(channel)

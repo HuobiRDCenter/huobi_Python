@@ -187,7 +187,7 @@ class TradeClient(object):
         return GetOrdersService(params).request(**self.__kwargs)
 
     def get_open_orders(self, symbol: 'str', account_id: 'int', side: 'OrderSide' = None,
-                        size: 'int' = None, from_id=None, direct=None) -> list:
+                        size: 'int' = None, from_id=None, direct=None, types: 'str' = None) -> list:
         """
         The request of get open orders.
 
@@ -208,7 +208,8 @@ class TradeClient(object):
             "side" : side,
             "size" : size,
             "from" : from_id,
-            "direct" : direct
+            "direct" : direct,
+            "types" : types
         }
 
         from huobi.service.trade.get_open_orders import GetOpenOrdersService
@@ -295,12 +296,11 @@ class TradeClient(object):
         return default_source
 
     def create_order_param_check(self, symbol: 'str', account_id: 'int', order_type: 'OrderType', amount: 'float',
-                     price: 'float', source:'str', client_order_id=None, stop_price=None, operator=None):
+                     price: 'float', source:'str', self_match_prevent: 'int'=None, client_order_id=None, stop_price=None, operator=None):
         check_symbol(symbol)
         check_should_not_none(account_id, "account_id")
         check_should_not_none(order_type, "order_type")
         check_should_not_none(amount, "amount")
-        check_should_not_none(source, "source")
 
         if order_type == OrderType.SELL_LIMIT \
                 or order_type == OrderType.BUY_LIMIT \
@@ -319,13 +319,14 @@ class TradeClient(object):
             "source": source,
             "client-order-id": client_order_id,
             "stop-price": stop_price,
-            "operator": operator
+            "operator": operator,
+            "self-match-prevent": self_match_prevent
         }
 
         return params
 
     def create_order(self, symbol: 'str', account_id: 'int', order_type: 'OrderType', amount: 'float',
-                     price: 'float', source:'str', client_order_id=None, stop_price=None, operator=None) -> int:
+                     price: 'float', source:'str', self_match_prevent: 'int'=None, client_order_id=None, stop_price=None, operator=None) -> int:
         """
         Make an order in huobi.
 
@@ -345,7 +346,7 @@ class TradeClient(object):
         """
 
         params = self.create_order_param_check(symbol, account_id, order_type, amount,
-                     price, source, client_order_id, stop_price, operator)
+                     price, source, self_match_prevent, client_order_id,stop_price, operator)
         from huobi.service.trade.post_create_order import PostCreateOrderService
         return PostCreateOrderService(params).request(**self.__kwargs)
 
@@ -380,28 +381,37 @@ class TradeClient(object):
         check_should_not_none(order_id, "order_id")
 
         params = {
-            "order_id" : order_id
+            "order_id": order_id,
+            "symbol": symbol
         }
 
         from huobi.service.trade.post_cancel_order import PostCancelOrderService
         return PostCancelOrderService(params).request(**self.__kwargs)
 
-    def cancel_orders(self, symbol, order_id_list)->BatchCancelResult:
+    def cancel_orders(self, order_id_list, client_order_ids)->BatchCancelResult:
         """
         Submit cancel request for cancelling multiple orders.
 
-        :param symbol: The symbol, like "btcusdt". (mandatory)
         :param order_id_list: The list of order id. the max size is 50. (mandatory)
         :return: No return
         """
-        check_symbol(symbol)
-        check_should_not_none(order_id_list, "order_id_list")
-        check_list(order_id_list, 1, 50, "order_id_list")
-
+        if (order_id_list is None or len(order_id_list) == 0) and (
+                client_order_ids is None or len(client_order_ids) == 0):
+            raise HuobiApiException(HuobiApiException.INPUT_ERROR, "[Input] " + str(order_id_list) + "or" + str(client_order_ids) + " should not be null")
+        if (order_id_list is not None and len(order_id_list) > 0) and (
+                client_order_ids is not None and len(client_order_ids) > 0):
+            raise HuobiApiException(HuobiApiException.INPUT_ERROR, "[Input] " + str(order_id_list) + "and" + str(client_order_ids) + " should not be both not null")
+        if order_id_list is not None and len(order_id_list) > 0:
+            check_list(order_id_list, 1, 50, "order_id_list")
+        if client_order_ids is not None and len(client_order_ids) > 0:
+            check_list(client_order_ids, 1, 50, "client_order_ids")
         string_list = list()
-        for order_id in order_id_list:
-            string_list.append(str(order_id))
-
+        if order_id_list is not None and len(order_id_list) > 0:
+            for order_id in order_id_list:
+                string_list.append(str(order_id))
+        if client_order_ids is not None and len(client_order_ids) > 0:
+            for order_id in client_order_ids:
+                string_list.append(str(order_id))
         params = {
             "order-ids" : string_list
         }
@@ -409,7 +419,7 @@ class TradeClient(object):
         from huobi.service.trade.post_batch_cancel_order import PostBatchCancelOrderService
         return PostBatchCancelOrderService(params).request(**self.__kwargs)
 
-    def cancel_open_orders(self, account_id, symbols: 'str'=None , side=None, size=None)->BatchCancelCount:
+    def cancel_open_orders(self, account_id, symbols: 'str'=None ,types: 'str'=None, side=None, size=None)->BatchCancelCount:
         """
         Request to cancel open orders.
 
@@ -425,7 +435,8 @@ class TradeClient(object):
             "account-id": account_id,
             "symbol" : symbols,
             "side" : side,
-            "size" : size
+            "size" : size,
+            "types": types
         }
 
         from huobi.service.trade.post_batch_cancel_open_order import PostBatchCancelOpenOrderService
@@ -499,6 +510,7 @@ class TradeClient(object):
                 item.get("amount", None),
                 item.get("price", None),
                 item.get("source", None),
+                item.get("self-match-prevent", None),
                 item.get("client_order_id", None),
                 item.get("stop-price", None),
                 item.get("operator", None))
@@ -508,7 +520,7 @@ class TradeClient(object):
         from huobi.service.trade.post_batch_create_order import PostBatchCreateOrderService
         return PostBatchCreateOrderService(new_config_list).request(**self.__kwargs)
 
-    def sub_trade_clearing(self, symbols: 'str', callback, error_handler=None):
+    def sub_trade_clearing(self, symbols: 'str',callback, modes: 'str' = None, error_handler=None):
         """
         Subscribe trade clearing by symbol
 
@@ -525,16 +537,45 @@ class TradeClient(object):
         """
         check_should_not_none(symbols, "symbols")
         symbol_list = symbols.split(",")
+        if (modes != None):
+            mode_list = modes.split(",")
         if ("*" in symbol_list):
             symbol_list = ["*"]
         else:
             check_symbol_list(symbol_list)
-
+        if (len(symbol_list) != len(mode_list)):
+            raise HuobiApiException(HuobiApiException.INPUT_ERROR, "The count of symbols and modes should be equal")
         check_should_not_none(callback, "callback")
 
         params = {
             "symbol_list": symbol_list,
+            "mode_list": mode_list
         }
 
         from huobi.service.trade.sub_trade_clearing_v2 import SubTradeClearingV2Service
         SubTradeClearingV2Service(params).subscribe(callback, error_handler, **self.__kwargs)
+
+    def post_order_auto_place(self, symbol: 'str', account_id: 'str',
+                                        amount: 'str', source: 'str' , type: 'str', trade_purpose: 'str', market_amount: 'str' = None, borrow_amount: 'str' = None, price: 'str' = None, stop_price: 'str' = None, operator: 'str' = None)-> int:
+        check_should_not_none(symbol, "symbol")
+        check_should_not_none(account_id, "account-id")
+        check_should_not_none(amount, "amount")
+        check_should_not_none(type, "type")
+        check_should_not_none(trade_purpose, "trade-purpose")
+        check_should_not_none(source, "source")
+        params = {
+            "symbol" : symbol,
+            "account-id" : account_id,
+            "amount" : amount,
+            "market-amount" : market_amount,
+            "borrow-amount" : borrow_amount,
+            "type" : type,
+            "trade-purpose" : trade_purpose,
+            "stop-price" : stop_price,
+            "operator" : operator,
+            "source" : source
+
+        }
+
+        from huobi.service.trade.post_order_auto_place import PostOrderAutoPlaceService
+        return PostOrderAutoPlaceService(params).request(**self.__kwargs)

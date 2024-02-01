@@ -9,10 +9,10 @@ class PostRepayMarginOrderService:
         self.params = params
 
     def request(self, **kwargs):
-        loan_id = self.params["loan_id"]
+        order_id = self.params["order-id"]
         def get_channel():
             path = "/v1/margin/orders/{}/repay"
-            return path.format(loan_id)
+            return path.format(order_id)
 
         def parse(dict_data):
             return default_parse_data_as_long(dict_data, None)

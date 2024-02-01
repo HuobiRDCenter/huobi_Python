@@ -77,3 +77,9 @@ def request_order_detail_channel(order_id, client_req_id = None):
     channel["cid"] = str(client_req_id) if client_req_id else str(get_current_timestamp())
     return json.dumps(channel)
 
+
+def request_ticker_channel(symbol):
+    channel = dict()
+    channel["req"] = "market." + symbol + ".ticker"
+    channel["id"] = str(get_current_timestamp())
+    return json.dumps(channel)

@@ -24,7 +24,7 @@ class DepositHistoryItem:
         self.amount = 0.0
         self.address = ""
         self.addressTag = ""
-        self.deposit_state = WithdrawState.INVALID
+        self.state = WithdrawState.INVALID
         self.created_timestamp = 0
         self.updated_timestamp = 0
 

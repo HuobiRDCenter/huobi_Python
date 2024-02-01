@@ -29,6 +29,7 @@ class MatchResult:
         self.id = 0
         self.match_id = 0
         self.order_id = 0
+        self.trade_id = 0
         self.price = 0.0
         self.source = OrderSource.INVALID
         self.symbol = ""

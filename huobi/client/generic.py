@@ -100,3 +100,55 @@ class GenericClient(object):
     def get_market_status(self):
         from huobi.service.generic.get_market_status import GetMarketStatusService
         return GetMarketStatusService({}).request(**self.__kwargs)
+
+    def get_common_symbols(self, ts: 'int' = None) -> list:
+        params = {
+            "ts": ts
+        }
+
+        from huobi.service.generic.get_common_symbols import GetCommonSymbolsService
+        return GetCommonSymbolsService(params).request(**self.__kwargs)
+
+    def get_common_currencies(self, ts: 'int' = None) -> list:
+        params = {
+            "ts": ts
+        }
+
+        from huobi.service.generic.get_common_currencies import GetCommonCurrenciesService
+        return GetCommonCurrenciesService(params).request(**self.__kwargs)
+
+    def get_common_currencys(self, ts: 'int' = None) -> list:
+        params = {
+            "ts": ts
+        }
+
+        from huobi.service.generic.get_common_currencys import GetCommonCurrencysService
+        return GetCommonCurrencysService(params).request(**self.__kwargs)
+
+    def get_common_symbols_v1(self, ts: 'int' = None) -> list:
+        params = {
+            "ts": ts
+        }
+
+        from huobi.service.generic.get_common_symbols_v1 import GetCommonSymbolsV1Service
+        return GetCommonSymbolsV1Service(params).request(**self.__kwargs)
+
+    def get_market_symbols(self, symbols: 'str' = None, ts: 'int' = None) -> list:
+        params = {
+            "symbols": symbols,
+            "ts": ts
+        }
+
+        from huobi.service.generic.get_market_symbols import GetMarketSymbolsService
+        return GetMarketSymbolsService(params).request(**self.__kwargs)
+
+    def get_common_chains(self, show_desc: 'str' = None, currency: 'str' = None, ts: 'int' = None) -> list:
+        params = {
+            "show-desc": show_desc,
+            "currency": currency,
+            "ts": ts
+        }
+
+        from huobi.service.generic.get_common_chains import GetCommonChainsService
+        return GetCommonChainsService(params).request(**self.__kwargs)
+

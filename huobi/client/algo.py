@@ -125,3 +125,11 @@ class AlgoClient(object):
         }
 
         return params
+
+    def post_cancel_all_after(self, timeout: 'int'):
+        check_should_not_none(timeout, "timeout")
+        params = {
+            "timeout": timeout
+        }
+        from huobi.service.algo.post_cancel_all_after import PostCancelAllAfterService
+        return PostCancelAllAfterService(params).request(**self.__kwargs)

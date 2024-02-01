@@ -129,7 +129,7 @@ class AccountClient(object):
         return GetAggregateSubUserBalanceService(params).request(**self.__kwargs)
 
     def transfer_between_parent_and_subuser(self, sub_uid: 'int', currency: 'str', amount: 'float',
-                                            transfer_type: 'TransferMasterType'):
+                                            transfer_type: 'TransferMasterType', client_order_id: 'str'):
         """
         Transfer Asset between Parent and Sub Account.
 
@@ -148,7 +148,8 @@ class AccountClient(object):
             "sub-uid": sub_uid,
             "currency": currency,
             "amount": amount,
-            "type": transfer_type
+            "type": transfer_type,
+            "client-order-id": client_order_id
         }
         from huobi.service.account.post_subaccount_transfer import PostSubaccountTransferService
         return PostSubaccountTransferService(params).request(**self.__kwargs)
@@ -245,7 +246,7 @@ class AccountClient(object):
 
     def get_account_history(self, account_id: 'int', currency: 'str' = None,
                             transact_types: 'str' = None, start_time: 'int' = None, end_time: 'int' = None,
-                            sort: 'str' = None, size: 'int' = None):
+                            sort: 'str' = None, size: 'int' = None, from_id: 'int' = None):
         """
         get account change record
         :param account_id: account id (mandatory)
@@ -254,7 +255,7 @@ class AccountClient(object):
         :param start_time&end_time: for time range to search (optional)
         :param sort: see SortDesc, "asc" or "desc" (optional)
         :param size: page size (optional)
-
+        :param from_id: First record ID in this query (only valid for next page querying, see Note 2)(optional)
         :return: account change record list.
         """
         check_should_not_none(account_id, "account-id")
@@ -265,7 +266,8 @@ class AccountClient(object):
             "start-time": start_time,
             "end-time": end_time,
             "sort": sort,
-            "size": size
+            "size": size,
+            "from-id": from_id
         }
         from huobi.service.account.get_account_history import GetAccountHistoryService
         return GetAccountHistoryService(params).request(**self.__kwargs)
@@ -342,7 +344,7 @@ class AccountClient(object):
         from huobi.service.account.post_account_transfer import PostAccountTransferService
         return PostAccountTransferService(params).request(**self.__kwargs)
 
-    def get_account_asset_valuation(self, account_type, valuation_currency: 'str' = None, sub_uid: 'str' = None):
+    def get_account_asset_valuation(self, account_type, valuation_currency: 'str' = None, sub_uid: 'int' = None):
         check_should_not_none(account_type, "account-type")
 
         params = {
@@ -372,3 +374,28 @@ class AccountClient(object):
 
         from huobi.service.account.post_point_transfer import PostPointTransferService
         return PostPointTransferService(params).request(**self.__kwargs)
+
+    def get_account_valuation(self, account_type: 'str' = None, valuation_currency: 'str' = None):
+
+        params = {
+            "accountType": account_type,
+            "valuationCurrency": valuation_currency
+        }
+
+        from huobi.service.account.get_account_valuation import GetAccountValuationService
+        return GetAccountValuationService(params).request(**self.__kwargs)
+
+    def get_account_transfer(self, from_: 'str', to: 'str', currency: 'str', amount: 'float', margin_account: 'str'):
+
+        params = {
+            "from": from_,
+            "to": to,
+            "currency": currency,
+            "amount": amount,
+            "margin-account": margin_account
+        }
+
+        from huobi.service.account.get_account_transfer import GetAccountTransferService
+        return GetAccountTransferService(params).request(**self.__kwargs)
+
+

@@ -113,3 +113,40 @@ class SubuserClient(object):
         }
         from huobi.service.subuser.get_uid import GetUidService
         return GetUidService(params).request(**self.__kwargs)
+
+    def post_subuser_deduct_mode(self, sub_uids: 'str', deduct_mode: 'str'):
+        check_should_not_none(sub_uids, 'subUids')
+        check_should_not_none(deduct_mode, 'deductMode')
+
+        params = {
+            "subUids": sub_uids,
+            "deductMode": deduct_mode
+        }
+        from huobi.service.subuser.post_subuser_deduct_mode import PostSubuserDeductModeService
+        return PostSubuserDeductModeService(params).request(**self.__kwargs)
+
+    def get_subuser_user_list(self, from_id: 'int' = None):
+
+        params = {
+            "fromId": from_id
+        }
+        from huobi.service.subuser.get_subuser_user_list import GetSubuserUserListService
+        return GetSubuserUserListService(params).request(**self.__kwargs)
+
+    def get_subuser_user_state(self, sub_uid: 'int'):
+        check_should_not_none(sub_uid, 'subUid')
+        params = {
+            "subUid": sub_uid
+        }
+        from huobi.service.subuser.get_subuser_user_state import GetSubuserUserStateService
+        return GetSubuserUserStateService(params).request(**self.__kwargs)
+
+    def get_subuser_account_list(self, sub_uid: 'int'):
+        check_should_not_none(sub_uid, 'subUid')
+        params = {
+            "subUid": sub_uid
+        }
+        from huobi.service.subuser.get_subuser_account_list import GetSubuserAccountListService
+        return GetSubuserAccountListService(params).request(**self.__kwargs)
+
+

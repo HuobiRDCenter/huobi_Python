@@ -41,7 +41,7 @@ class WalletClient(object):
         return GetDepositWithdrawService(params).request(**self.__kwargs)
 
     def post_create_withdraw(self, address: 'str', amount: 'float', currency: 'str', fee: 'float',
-                             chain: 'str' = None, address_tag: 'str' = None) -> int:
+                             chain: 'str' = None, address_tag: 'str' = None, client_order_id: 'str' = None) -> int:
         """
         Submit a request to withdraw some asset from an account.
 
@@ -64,7 +64,8 @@ class WalletClient(object):
             "amount": amount,
             "fee": fee,
             "chain": chain,
-            "addr-tag": address_tag
+            "addr-tag": address_tag,
+            "client-order-id": client_order_id
         }
 
         from huobi.service.wallet.post_create_withdraw import PostCreateWithdrawService
@@ -176,4 +177,14 @@ class WalletClient(object):
         }
         from huobi.service.wallet.get_account_withdraw_address import GetAccountWithdrawAddressService
         return GetAccountWithdrawAddressService(params).request(**self.__kwargs)
+
+    def get_account_withdraw_client_order_id(self, client_order_id: 'str'):
+        check_should_not_none(client_order_id, "clientOrderId")
+        params = {
+            "clientOrderId": client_order_id
+        }
+        from huobi.service.wallet.get_account_withdraw_client_order_id import GetAccountWithdrawClientOrderIdService
+        return GetAccountWithdrawClientOrderIdService(params).request(**self.__kwargs)
+
+
 

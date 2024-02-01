@@ -33,6 +33,12 @@ class OrderHistoryItem:
         self.orderSize = ""
         self.stopPrice = ""
         self.orderStatus = ""
+        self.orderId = ""
+        self.orderValue = ""
+        self.trailingRate = ""
+        self.orderCreateTime = ""
+        self.errCode = ""
+        self.errMessage = ""
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
@@ -49,3 +55,9 @@ class OrderHistoryItem:
         PrintBasic.print_basic(self.orderSize, format_data + "")
         PrintBasic.print_basic(self.stopPrice, format_data + "")
         PrintBasic.print_basic(self.orderStatus, format_data + "")
+        PrintBasic.print_basic(self.orderId, format_data + "")
+        PrintBasic.print_basic(self.orderValue, format_data + "")
+        PrintBasic.print_basic(self.trailingRate, format_data + "")
+        PrintBasic.print_basic(self.orderCreateTime, format_data + "")
+        PrintBasic.print_basic(self.errCode, format_data + "")
+        PrintBasic.print_basic(self.errMessage, format_data + "")

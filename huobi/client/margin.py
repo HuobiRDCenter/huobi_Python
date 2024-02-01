@@ -58,7 +58,7 @@ class MarginClient(object):
         from huobi.service.margin.post_transfer_out_margin import PostTransferOutMarginService
         return PostTransferOutMarginService(params).request(**self.__kwargs)
 
-    def get_margin_account_balance(self, symbol: 'str') -> list:
+    def get_margin_account_balance(self, symbol: 'str', sub_uid: 'int' = None) -> list:
         """
         Get the Balance of the Margin Loan Account.
 
@@ -68,7 +68,8 @@ class MarginClient(object):
         check_symbol(symbol)
 
         params = {
-            "symbol": symbol
+            "symbol": symbol,
+            "sub_uid": sub_uid
         }
 
         from huobi.service.margin.get_margin_account_balance import GetMarginAccountBalanceService
@@ -96,7 +97,7 @@ class MarginClient(object):
         from huobi.service.margin.post_create_margin_order import PostCreateMarginOrderService
         return PostCreateMarginOrderService(params).request(**self.__kwargs)
 
-    def post_repay_margin_order(self, loan_id: 'int', amount: 'float') -> int:
+    def post_repay_margin_order(self, order_id: 'int', amount: 'float') -> int:
         """
         Get the margin loan records.
 
@@ -104,11 +105,11 @@ class MarginClient(object):
         :param amount: The amount of currency to repay. (mandatory)
         :return: The margin order id.
         """
-        check_should_not_none(loan_id, "loan_id")
+        check_should_not_none(order_id, "loan_id")
         check_should_not_none(amount, "amount")
 
         params = {
-            "loan_id": loan_id,
+            "order-id": order_id,
             "amount": amount
         }
 
@@ -117,7 +118,7 @@ class MarginClient(object):
 
     def get_margin_loan_orders(self, symbol: 'str', start_date: 'str' = None, end_date: 'str' = None,
                                states: 'LoanOrderState' = None, from_id: 'int' = None,
-                               size: 'int' = None, direction: 'QueryDirection' = None) -> list:
+                               size: 'int' = None, direction: 'QueryDirection' = None, sub_uid: 'int' = None) -> list:
         """
         Get the margin loan records.
 
@@ -142,7 +143,8 @@ class MarginClient(object):
             "states": states,
             "from": from_id,
             "size": size,
-            "direct": direction
+            "direct": direction,
+            "sub-uid": sub_uid
         }
 
         from huobi.service.margin.get_margin_loan_orders import GetMarginLoanOrdersService
@@ -360,4 +362,25 @@ class MarginClient(object):
         from huobi.service.margin.get_general_repayment_loan_records import GetGeneralRepaymentLoanRecordsService
         return GetGeneralRepaymentLoanRecordsService(params).request(**self.__kwargs)
 
-        return
+    def post_margin_limit(self, currency: 'str') -> list:
+        check_should_not_none(currency, "currency")
+
+        params = {
+            "currency": currency
+        }
+
+        from huobi.service.margin.post_margin_limit import PostMarginLimitService
+        return PostMarginLimitService(params).request(**self.__kwargs)
+
+    def post_cross_margin_repay(self, order_id: 'str', amount: 'str'):
+        check_should_not_none(order_id, "order-id")
+        check_should_not_none(amount, "amount")
+
+        params = {
+            "order-id": order_id,
+            "amount": amount
+        }
+
+        from huobi.service.margin.post_cross_margin_repay import PostCrossMarginRepayService
+        return PostCrossMarginRepayService(params).request(**self.__kwargs)
+
