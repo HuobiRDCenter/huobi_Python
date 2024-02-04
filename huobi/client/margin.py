@@ -362,7 +362,7 @@ class MarginClient(object):
         from huobi.service.margin.get_general_repayment_loan_records import GetGeneralRepaymentLoanRecordsService
         return GetGeneralRepaymentLoanRecordsService(params).request(**self.__kwargs)
 
-    def post_margin_limit(self, currency: 'str') -> list:
+    def post_margin_limit(self, currency: 'str'):
         check_should_not_none(currency, "currency")
 
         params = {

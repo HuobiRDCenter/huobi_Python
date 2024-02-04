@@ -556,7 +556,7 @@ class TradeClient(object):
         SubTradeClearingV2Service(params).subscribe(callback, error_handler, **self.__kwargs)
 
     def post_order_auto_place(self, symbol: 'str', account_id: 'str',
-                                        amount: 'str', source: 'str' , type: 'str', trade_purpose: 'str', market_amount: 'str' = None, borrow_amount: 'str' = None, price: 'str' = None, stop_price: 'str' = None, operator: 'str' = None)-> int:
+                                        amount: 'str', source: 'str' , type: 'str', trade_purpose: 'str', market_amount: 'str' = None, borrow_amount: 'str' = None, price: 'str' = None, stop_price: 'str' = None, operator: 'str' = None):
         check_should_not_none(symbol, "symbol")
         check_should_not_none(account_id, "account-id")
         check_should_not_none(amount, "amount")
