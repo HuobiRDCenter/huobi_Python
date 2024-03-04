@@ -5,7 +5,7 @@ class MarginLimit:
 
     def __init__(self):
         self.currency = ""
-        self.maxHoldings = ""
+        self.max_holdings = ""
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic

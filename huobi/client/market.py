@@ -17,6 +17,7 @@ class MarketClient(object):
         """
         self.__kwargs = kwargs
 
+    # K线数据（蜡烛图）
     def get_candlestick(self, symbol, period, size=200):
         """
         Get the candlestick/kline for the specified symbol. The data number is 150 as default.
@@ -230,6 +231,7 @@ class MarketClient(object):
         from huobi.service.market.req_pricedepth import ReqPriceDepthService
         ReqPriceDepthService(params).subscribe(callback, error_handler, **self.__kwargs)
 
+    # 最近24小时行情数据
     def get_market_detail(self, symbol: 'str') -> MarketDetail:
         """
         Get trade statistics in 24 hours.
@@ -295,6 +297,7 @@ class MarketClient(object):
         from huobi.service.market.req_market_detail import ReqMarketDetailService
         ReqMarketDetailService(params).subscribe(callback, error_handler, **self.__kwargs)
 
+    # 最近市场成交记录
     def get_market_trade(self, symbol: 'str') -> list:
         """
         Get the most recent trades with their price, volume and direction.
@@ -312,6 +315,7 @@ class MarketClient(object):
         from huobi.service.market.get_market_trade import GetMarketTradeService
         return GetMarketTradeService(params).request(**self.__kwargs)
 
+    # 获得近期交易记录
     def get_history_trade(self, symbol: 'str', size: 'int' = None) -> list:
         """
         Get the most recent trades with their price, volume and direction.
@@ -380,6 +384,7 @@ class MarketClient(object):
         from huobi.service.market.req_trade_detail import ReqTradeDetailService
         ReqTradeDetailService(params).subscribe(callback, error_handler, **self.__kwargs)
 
+    # 聚合行情（Ticker）
     def get_market_detail_merged(self, symbol):
         check_symbol(symbol)
         params = {
@@ -389,6 +394,7 @@ class MarketClient(object):
         from huobi.service.market.get_market_detail_merged import GetMarketDetailMergedService
         return GetMarketDetailMergedService(params).request(**self.__kwargs)
 
+    # 所有交易对的最新Tickers
     def get_market_tickers(self) -> list:
         """
         get market tickers

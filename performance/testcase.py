@@ -14,6 +14,7 @@ class RunStatus:
     SUCCESS = "OK"
     FAILED = "Fail"
 
+
 ROUND_SIZE = 3
 TRANSFER_TRX_MIN_AMOUNT = 100
 
@@ -29,11 +30,10 @@ loan_symbol = "eosusdt"
 trade_symbol = "eosusdt"
 
 
-
 class TimeCost:
     sdk_api_start_time = 0.0  # SDK call start time
-    server_req_cost = 0.0 # time cost from response.elapsed.total_seconds(), cost is from sending request to receive response
-    server_api_cost = 0.0   # manually statistics time before/after requests.get  (server_api_cost >= server_req_cost)
+    server_req_cost = 0.0  # time cost from response.elapsed.total_seconds(), cost is from sending request to receive response
+    server_api_cost = 0.0  # manually statistics time before/after requests.get  (server_api_cost >= server_req_cost)
     function_name = ""
     run_status = ""
 
@@ -48,14 +48,14 @@ class TimeCost:
         sdk_cost_manual = sdk_api_cost - self.server_api_cost
 
         row_dict = {
-            "sdk_api_cost" : round(sdk_api_cost, ROUND_SIZE),
-            "server_api_cost" : round(self.server_api_cost, ROUND_SIZE + 1),
-            "server_req_cost" : round(self.server_req_cost, ROUND_SIZE + 1),
-            "sdk_api_delay" : round(sdk_cost_manual, ROUND_SIZE),
-            "sdk_req_delay" : round(sdk_cost_req, ROUND_SIZE),
-            "sdk_func_name" : self.function_name,
-            "run_status" : self.run_status,
-            "sdk_test_start_time" : self.sdk_api_start_time
+            "sdk_api_cost": round(sdk_api_cost, ROUND_SIZE),
+            "server_api_cost": round(self.server_api_cost, ROUND_SIZE + 1),
+            "server_req_cost": round(self.server_req_cost, ROUND_SIZE + 1),
+            "sdk_api_delay": round(sdk_cost_manual, ROUND_SIZE),
+            "sdk_req_delay": round(sdk_cost_req, ROUND_SIZE),
+            "sdk_func_name": self.function_name,
+            "run_status": self.run_status,
+            "sdk_test_start_time": self.sdk_api_start_time
         }
         global time_cost_detail_list
         time_cost_detail_list.append(row_dict)
@@ -84,36 +84,36 @@ class TimeCost:
                   sdk_api_cost)
         else:
             print(
-                  delay_server_api_cost,
-                  delay_server_req_cost,
-                  sdk_api_cost,
-                  sdk_test_start_time,
-                  sdk_func_name,
-                  run_status)
+                delay_server_api_cost,
+                delay_server_req_cost,
+                sdk_api_cost,
+                sdk_test_start_time,
+                sdk_func_name,
+                run_status)
 
     @staticmethod
     def output_sdk_cost(dict_data, format_str, only_brief):
         sdk_test_start_time = dict_data.get("sdk_test_start_time", "")
         if sdk_test_start_time:
             sdk_test_start_time_desc = "{sdk_test_start_time}{format_str}".format(
-                                sdk_test_start_time=dict_data["sdk_test_start_time"],
-                                format_str=format_str)
+                sdk_test_start_time=dict_data["sdk_test_start_time"],
+                format_str=format_str)
         else:
             sdk_test_start_time_desc = ""
 
-        sdk_api_delay_desc ="{sdk_api_delay}({server_api_cost}){format_str}".format(
-                        sdk_api_delay=dict_data["sdk_api_delay"],
-                        server_api_cost=dict_data["server_api_cost"],
-                        format_str=format_str)
+        sdk_api_delay_desc = "{sdk_api_delay}({server_api_cost}){format_str}".format(
+            sdk_api_delay=dict_data["sdk_api_delay"],
+            server_api_cost=dict_data["server_api_cost"],
+            format_str=format_str)
 
         sdk_req_delay_desc = "{sdk_req_delay}({server_req_cost}){format_str}".format(
-                        sdk_req_delay=dict_data["sdk_req_delay"],
-                        server_req_cost=dict_data["server_req_cost"],
-                        format_str=format_str)
+            sdk_req_delay=dict_data["sdk_req_delay"],
+            server_req_cost=dict_data["server_req_cost"],
+            format_str=format_str)
 
         sdk_api_cost_desc = "{sdk_api_cost}{format_str}".format(
-                        sdk_api_cost=dict_data["sdk_api_cost"],
-                        format_str=format_str)
+            sdk_api_cost=dict_data["sdk_api_cost"],
+            format_str=format_str)
 
         sdk_func_name = dict_data.get("sdk_func_name", None)
         if sdk_func_name:
@@ -131,7 +131,6 @@ class TimeCost:
         else:
             run_status_desc = ""
 
-
         if only_brief:
             print(
                 sdk_api_delay_desc,
@@ -147,7 +146,6 @@ class TimeCost:
                 sdk_func_name_desc,
                 run_status_desc
             )
-
 
     @staticmethod
     def output_sort_cost(by_key_name, is_sorted=False):
@@ -166,6 +164,7 @@ class TimeCost:
         global count_offset
         sum_final = {}
         average_final = {}
+        average_count = 0
         sum_key_list = ["sdk_api_cost", "server_api_cost", "server_req_cost", "sdk_api_delay", "sdk_req_delay"]
         if len(time_cost_detail_list):
             average_count = len(time_cost_detail_list) + count_offset
@@ -174,7 +173,7 @@ class TimeCost:
                 average_final[key_name] = round(sum_final[key_name] / average_count, ROUND_SIZE)
 
         print("api counts :", average_count, count_offset)
-        #TimeCost.output_sdk_cost_list(data_list=[sum_final], only_brief=True)
+        # TimeCost.output_sdk_cost_list(data_list=[sum_final], only_brief=True)
         TimeCost.output_sdk_cost_list(data_list=[average_final], only_brief=True)
 
 
@@ -212,14 +211,15 @@ class RestfulTestCaseSeq:
         # case get_system_status
         tc = TimeCost(function_name=generic_client.get_system_status.__name__)
         result, tc.server_req_cost, tc.server_api_cost = generic_client.get_system_status()
-        tc.run_status = RunStatus.SUCCESS if result and result.get("page") and result.get("components") else RunStatus.FAILED
+        tc.run_status = RunStatus.SUCCESS if result and result.get("page") and result.get(
+            "components") else RunStatus.FAILED
         tc.add_record()
 
     def test_market(self):
         market_client = MarketClientPerformance(api_key=g_api_key, secret_key=g_secret_key)
         common_market_symbol = "btcusdt"
 
-        #case get_candlestick
+        # case get_candlestick
         tc = TimeCost(function_name=market_client.get_candlestick.__name__)
         result, tc.server_req_cost, tc.server_api_cost = market_client.get_candlestick(symbol=common_market_symbol,
                                                                                        period=CandlestickInterval.MIN1,
@@ -229,7 +229,9 @@ class RestfulTestCaseSeq:
 
         # case get_pricedepth
         tc = TimeCost(function_name=market_client.get_pricedepth.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = market_client.get_pricedepth(symbol=common_market_symbol, depth_type=DepthStep.STEP0, depth_size=20)
+        result, tc.server_req_cost, tc.server_api_cost = market_client.get_pricedepth(symbol=common_market_symbol,
+                                                                                      depth_type=DepthStep.STEP0,
+                                                                                      depth_size=20)
         tc.run_status = RunStatus.SUCCESS if result and len(result.bids) else RunStatus.FAILED
         tc.add_record()
 
@@ -240,11 +242,10 @@ class RestfulTestCaseSeq:
         tc.add_record()
 
         # case get_market_trade
-        tc = TimeCost(function_name = market_client.get_market_trade.__name__)
+        tc = TimeCost(function_name=market_client.get_market_trade.__name__)
         result, tc.server_req_cost, tc.server_api_cost = market_client.get_market_trade(symbol=common_market_symbol)
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
-
 
         # case get_history_trade
         tc = TimeCost(function_name=market_client.get_history_trade.__name__)
@@ -254,7 +255,8 @@ class RestfulTestCaseSeq:
 
         # case get_market_detail_merged
         tc = TimeCost(function_name=market_client.get_market_detail_merged.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = market_client.get_market_detail_merged(symbol=common_market_symbol)
+        result, tc.server_req_cost, tc.server_api_cost = market_client.get_market_detail_merged(
+            symbol=common_market_symbol)
         tc.run_status = RunStatus.SUCCESS if result and len(result.bid) and len(result.ask) else RunStatus.FAILED
         tc.add_record()
 
@@ -279,30 +281,20 @@ class RestfulTestCaseSeq:
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
 
-
-        # case get_sub_user_deposit_address
-        tc = TimeCost(function_name=wallet_client.get_sub_user_deposit_address.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = wallet_client.get_sub_user_deposit_address(sub_uid=g_sub_uid, currency="btc")
-        tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
-        tc.add_record()
-
-        # case get_sub_user_deposit_history
-        tc = TimeCost(function_name=wallet_client.get_sub_user_deposit_history.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = wallet_client.get_sub_user_deposit_history(sub_uid=g_sub_uid)
-        tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
-        tc.add_record()
-
         # case get_deposit_withdraw
         tc = TimeCost(function_name=wallet_client.get_deposit_withdraw.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = wallet_client.get_deposit_withdraw(op_type=DepositWithdraw.DEPOSIT, currency=None, from_id=1, size=10, direct=QueryDirection.PREV)
+        result, tc.server_req_cost, tc.server_api_cost = wallet_client.get_deposit_withdraw(
+            op_type=DepositWithdraw.DEPOSIT, currency=None, from_id=1, size=10, direct=QueryDirection.PREV)
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
 
         # case post_create_withdraw
         tc = TimeCost(function_name=wallet_client.post_create_withdraw.__name__)
         record_id, tc.server_req_cost, tc.server_api_cost = wallet_client.post_create_withdraw(address=withdraw_address,
-                                                     amount=2, currency="usdt", fee=0,
-                                                     chain="trc20usdt", address_tag=None)
+                                                                                               amount=2,
+                                                                                               currency="usdt", fee=0,
+                                                                                               chain="trc20usdt",
+                                                                                               address_tag=None)
         tc.run_status = RunStatus.SUCCESS if record_id and record_id > 0 else RunStatus.FAILED
         tc.add_record()
 
@@ -317,7 +309,8 @@ class RestfulTestCaseSeq:
 
         # case post_cross_margin_transfer_in
         tc = TimeCost(function_name=margin_client.post_cross_margin_transfer_in.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = margin_client.post_cross_margin_transfer_in(currency=loan_currency, amount=loan_amount)
+        result, tc.server_req_cost, tc.server_api_cost = margin_client.post_cross_margin_transfer_in(
+            currency=loan_currency, amount=loan_amount)
         tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
         tc.add_record()
 
@@ -333,17 +326,18 @@ class RestfulTestCaseSeq:
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
 
-
         # case post_cross_margin_create_loan_orders
         tc = TimeCost(function_name=margin_client.post_cross_margin_create_loan_orders.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = margin_client.post_cross_margin_create_loan_orders(currency=loan_currency, amount=loan_amount)
+        result, tc.server_req_cost, tc.server_api_cost = margin_client.post_cross_margin_create_loan_orders(
+            currency=loan_currency, amount=loan_amount)
         tc.run_status = RunStatus.SUCCESS if result and int(result) > 0 else RunStatus.FAILED
         tc.add_record()
 
-        time.sleep(3) # wait for interest amount
+        time.sleep(3)  # wait for interest amount
         # case get_cross_margin_loan_orders
         tc = TimeCost(function_name=margin_client.get_cross_margin_loan_orders.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = margin_client.get_cross_margin_loan_orders(currency=loan_currency, state=LoanOrderState.ACCRUAL)
+        result, tc.server_req_cost, tc.server_api_cost = margin_client.get_cross_margin_loan_orders(
+            currency=loan_currency, state=LoanOrderState.ACCRUAL)
         cross_loan_accrual_order_list = result
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
@@ -355,14 +349,16 @@ class RestfulTestCaseSeq:
                 tc = TimeCost(function_name=margin_client.post_cross_margin_loan_order_repay.__name__)
                 repay_amount = float(loan_order.loan_balance) + float(loan_order.interest_balance)
                 interest_amount = interest_amount + float(loan_order.interest_balance)
-                result, tc.server_req_cost, tc.server_api_cost = margin_client.post_cross_margin_loan_order_repay(order_id=loan_order.id, amount=repay_amount)
+                result, tc.server_req_cost, tc.server_api_cost = margin_client.post_cross_margin_loan_order_repay(
+                    order_id=loan_order.id, amount=repay_amount)
                 tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
                 tc.add_record()
 
         time.sleep(2)  # wait for repay result
         # case post_cross_margin_transfer_out
         tc = TimeCost(function_name=margin_client.post_cross_margin_transfer_out.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = margin_client.post_cross_margin_transfer_out(currency=loan_currency, amount=loan_amount-interest_amount)
+        result, tc.server_req_cost, tc.server_api_cost = margin_client.post_cross_margin_transfer_out(
+            currency=loan_currency, amount=loan_amount - interest_amount)
         tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
         tc.add_record()
 
@@ -371,13 +367,16 @@ class RestfulTestCaseSeq:
 
         # case post_transfer_in_margin
         tc = TimeCost(function_name=margin_client.post_transfer_in_margin.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = margin_client.post_transfer_in_margin(symbol=loan_symbol, currency=loan_currency, amount=loan_amount)
+        result, tc.server_req_cost, tc.server_api_cost = margin_client.post_transfer_in_margin(symbol=loan_symbol,
+                                                                                               currency=loan_currency,
+                                                                                               amount=loan_amount)
         tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
         tc.add_record()
 
         # case get_margin_loan_info
         tc = TimeCost(function_name=margin_client.get_margin_loan_info.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = margin_client.get_margin_loan_info(symbols="btcusdt,ethusdt,eosusdt,"+loan_symbol)
+        result, tc.server_req_cost, tc.server_api_cost = margin_client.get_margin_loan_info(
+            symbols="btcusdt,ethusdt,eosusdt," + loan_symbol)
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
 
@@ -411,7 +410,7 @@ class RestfulTestCaseSeq:
                 repay_amount = float(loan_order.loan_balance) + float(loan_order.interest_balance)
                 interest_amount = interest_amount + float(loan_order.interest_balance)
                 result, tc.server_req_cost, tc.server_api_cost = margin_client.post_repay_margin_order(
-                    loan_id=loan_order.id, amount=repay_amount)
+                    order_id=12345, amount=repay_amount)
                 tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
                 tc.add_record()
 
@@ -420,8 +419,8 @@ class RestfulTestCaseSeq:
         # case post_transfer_out_margin
         tc = TimeCost(function_name=margin_client.post_transfer_out_margin.__name__)
         result, tc.server_req_cost, tc.server_api_cost = margin_client.post_transfer_out_margin(symbol=loan_symbol,
-                                                                                               currency=loan_currency,
-                                                                                               amount=loan_amount - interest_amount)
+                                                                                                currency=loan_currency,
+                                                                                                amount=loan_amount - interest_amount)
         tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
         tc.add_record()
 
@@ -430,69 +429,77 @@ class RestfulTestCaseSeq:
 
         # case get_feerate
         tc = TimeCost(function_name=trade_client.get_feerate.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = trade_client.get_feerate(symbols="htusdt,btcusdt,eosusdt,"+trade_symbol)
+        result, tc.server_req_cost, tc.server_api_cost = trade_client.get_feerate(
+            symbols="htusdt,btcusdt,eosusdt," + trade_symbol)
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
 
         # case get_transact_feerate
         tc = TimeCost(function_name=trade_client.get_transact_feerate.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = trade_client.get_transact_feerate(symbols="htusdt,btcusdt,eosusdt,"+trade_symbol)
+        result, tc.server_req_cost, tc.server_api_cost = trade_client.get_transact_feerate(
+            symbols="htusdt,btcusdt,eosusdt," + trade_symbol)
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
 
     def test_trade_order(self):
         trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key, performance_test=True)
 
-        client_order_id = "test_"+str(round(time.time()))+"_id"
+        client_order_id = "test_" + str(round(time.time())) + "_id"
         print("client order id : ", client_order_id)
         # case create_order
         tc = TimeCost(function_name=trade_client.create_order.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = trade_client.order_id = trade_client.create_order(symbol=trade_symbol,
-                                     account_id=g_account_id,
-                                     order_type=OrderType.BUY_LIMIT,
-                                     source=OrderSource.API,
-                                     amount=55,
-                                     price=0.1,
-                                     client_order_id=client_order_id,
-                                     stop_price=0.08,
-                                     operator="gte")
+        result, tc.server_req_cost, tc.server_api_cost = trade_client.order_id = trade_client.create_order(
+            symbol=trade_symbol,
+            account_id=g_account_id,
+            order_type=OrderType.BUY_LIMIT,
+            source=OrderSource.API,
+            amount=55,
+            price=0.1,
+            client_order_id=client_order_id,
+            stop_price=0.08,
+            operator="gte")
         order_id_tmp = result
         tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
         tc.add_record()
 
         # case get_order
         tc = TimeCost(function_name=trade_client.get_order.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = trade_client.order_id = trade_client.get_order(order_id=order_id_tmp)
+        result, tc.server_req_cost, tc.server_api_cost = trade_client.order_id = trade_client.get_order(
+            order_id=order_id_tmp)
         tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
         tc.add_record()
 
         # case get_order_by_client_order_id
         tc = TimeCost(function_name=trade_client.get_order_by_client_order_id.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = trade_client.order_id = trade_client.get_order_by_client_order_id(client_order_id=client_order_id)
+        result, tc.server_req_cost, tc.server_api_cost = trade_client.order_id = trade_client.get_order_by_client_order_id(
+            client_order_id=client_order_id)
         tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
         tc.add_record()
 
         # case get_open_orders
         tc = TimeCost(function_name=trade_client.get_open_orders.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = trade_client.order_id = trade_client.get_open_orders(symbol=trade_symbol, account_id=g_account_id)
+        result, tc.server_req_cost, tc.server_api_cost = trade_client.order_id = trade_client.get_open_orders(
+            symbol=trade_symbol, account_id=g_account_id)
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
 
         # case get_orders
         tc = TimeCost(function_name=trade_client.get_orders.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = trade_client.order_id = trade_client.get_orders(symbol=trade_symbol, order_type=OrderType.BUY_LIMIT, order_state=OrderState.SUBMITTED)
+        result, tc.server_req_cost, tc.server_api_cost = trade_client.order_id = trade_client.get_orders(
+            symbol=trade_symbol, order_type=OrderType.BUY_LIMIT, order_state=OrderState.SUBMITTED)
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
 
         # case cancel_order
         tc = TimeCost(function_name=trade_client.cancel_order.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = trade_client.order_id = trade_client.cancel_order(symbol=trade_symbol, order_id=order_id_tmp)
+        result, tc.server_req_cost, tc.server_api_cost = trade_client.order_id = trade_client.cancel_order(
+            symbol=trade_symbol, order_id=order_id_tmp)
         tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
         tc.add_record()
 
     def test_trade_create_cancel_orders(self):
         trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key, performance_test=True)
-        client_order_id_header = "test_"+str(round(time.time()))+"_id"
+        client_order_id_header = "test_" + str(round(time.time())) + "_id"
         client_order_id_eos_01 = client_order_id_header + "01"
         client_order_id_eos_02 = client_order_id_header + "02"
         client_order_id_eos_03 = client_order_id_header + "03"
@@ -535,7 +542,8 @@ class RestfulTestCaseSeq:
 
         # case batch_create_order
         tc = TimeCost(function_name=trade_client.batch_create_order.__name__)
-        create_result, tc.server_req_cost, tc.server_api_cost = trade_client.batch_create_order(order_config_list=order_config_list)
+        create_result, tc.server_req_cost, tc.server_api_cost = trade_client.batch_create_order(
+            order_config_list=order_config_list)
         tc.run_status = RunStatus.SUCCESS if create_result else RunStatus.FAILED
         tc.add_record()
 
@@ -548,7 +556,7 @@ class RestfulTestCaseSeq:
 
             # case batch_create_order
             tc = TimeCost(function_name=trade_client.batch_create_order.__name__)
-            result, tc.server_req_cost, tc.server_api_cost = trade_client.cancel_orders(symbol=trade_symbol, order_id_list=order_id_list)
+            result, tc.server_req_cost, tc.server_api_cost = trade_client.cancel_orders(order_id_list=order_id_list)
             tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
             tc.add_record()
 
@@ -562,17 +570,17 @@ class RestfulTestCaseSeq:
                 "order_type": OrderType.BUY_LIMIT,
                 "source": OrderSource.API,
                 "amount": 50,
-                "price": 0.12 + round(i/100, 3),
+                "price": 0.12 + round(i / 100, 3),
             }
             order_config_list.append(buy_limit_item)
 
         # case batch_create_order
         tc = TimeCost(function_name=trade_client.batch_create_order.__name__)
-        create_result, tc.server_req_cost, tc.server_api_cost = trade_client.batch_create_order(order_config_list=order_config_list)
+        create_result, tc.server_req_cost, tc.server_api_cost = trade_client.batch_create_order(
+            order_config_list=order_config_list)
         print(type(create_result), type(tc.server_req_cost), type(tc.server_api_cost))
         tc.run_status = RunStatus.SUCCESS if create_result else RunStatus.FAILED
         tc.add_record()
-
 
         # case cancel_open_orders
         tc = TimeCost(function_name=trade_client.cancel_open_orders.__name__)
@@ -580,13 +588,13 @@ class RestfulTestCaseSeq:
         tc.run_status = RunStatus.SUCCESS if result else RunStatus.FAILED
         tc.add_record()
 
-
     def test_trade_match_result(self):
         trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key, performance_test=True)
 
         tc = TimeCost(function_name=trade_client.create_order.__name__)
         created_order_id, tc.server_req_cost, tc.server_api_cost = trade_client.create_order(
-            symbol=trade_symbol, account_id=g_account_id, order_type=OrderType.BUY_MARKET, source=OrderSource.API, amount=5.0, price=None)
+            symbol=trade_symbol, account_id=g_account_id, order_type=OrderType.BUY_MARKET, source=OrderSource.API,
+            amount=5.0, price=None)
         print("create order id for match result: ", created_order_id)
         tc.run_status = RunStatus.SUCCESS if created_order_id else RunStatus.FAILED
         tc.add_record()
@@ -594,7 +602,8 @@ class RestfulTestCaseSeq:
 
         # case get_match_results_by_order_id
         tc = TimeCost(function_name=trade_client.get_match_results_by_order_id.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = trade_client.get_match_results_by_order_id(order_id=created_order_id)
+        result, tc.server_req_cost, tc.server_api_cost = trade_client.get_match_results_by_order_id(
+            order_id=created_order_id)
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
 
@@ -619,19 +628,13 @@ class RestfulTestCaseSeq:
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
 
-        # case get_account_balance_by_subuid
-        tc = TimeCost(function_name=account_client.get_account_balance_by_subuid.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = account_client.get_account_balance_by_subuid(sub_uid=g_sub_uid)
-        tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
-        tc.add_record()
-
         # case get_account_by_type_and_symbol
         tc = TimeCost(function_name=account_client.get_account_by_type_and_symbol.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = account_client.get_account_by_type_and_symbol(account_type=AccountType.SPOT, symbol=None)
+        result, tc.server_req_cost, tc.server_api_cost = account_client.get_account_by_type_and_symbol(
+            account_type=AccountType.SPOT, symbol=None)
         account_id_spot = result.id if result else None
         tc.run_status = RunStatus.SUCCESS if result and result.id and account_id_spot else RunStatus.FAILED
         tc.add_record()
-
 
         # case get_account_history
         tc = TimeCost(function_name=account_client.get_account_history.__name__)
@@ -645,45 +648,23 @@ class RestfulTestCaseSeq:
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
 
-        # case get_aggregated_subuser_balance
-        tc = TimeCost(function_name=account_client.get_aggregated_subuser_balance.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = account_client.get_aggregated_subuser_balance()
-        tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
-        tc.add_record()
-
         # case get_balance
         tc = TimeCost(function_name=account_client.get_balance.__name__)
         result, tc.server_req_cost, tc.server_api_cost = account_client.get_balance(account_id=account_id_spot)
         tc.run_status = RunStatus.SUCCESS if result and len(result) else RunStatus.FAILED
         tc.add_record()
 
-        # case post_sub_uid_management
-        tc = TimeCost(function_name=account_client.post_sub_uid_management.__name__ + "_lock")
-        result, tc.server_req_cost, tc.server_api_cost = account_client.post_sub_uid_management(sub_uid=g_sub_uid, action=SubUidAction.LOCK)
-        tc.run_status = RunStatus.SUCCESS if result and (result.userState == SubUidState.LOCK) else RunStatus.FAILED
-        tc.add_record()
-
-        # case post_sub_uid_management
-        tc = TimeCost(function_name=account_client.post_sub_uid_management.__name__ + "_unlock")
-        result, tc.server_req_cost, tc.server_api_cost = account_client.post_sub_uid_management(sub_uid=g_sub_uid, action=SubUidAction.UNLOCK)
-        tc.run_status = RunStatus.SUCCESS if result and (result.userState == SubUidState.NORMAL) else RunStatus.FAILED
-        tc.add_record()
-
         # case transfer_between_futures_and_pro
         tc = TimeCost(function_name=account_client.transfer_between_futures_and_pro.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = account_client.transfer_between_futures_and_pro(currency="trx", amount=200, transfer_type=TransferFuturesPro.TO_FUTURES)
+        result, tc.server_req_cost, tc.server_api_cost = account_client.transfer_between_futures_and_pro(currency="trx",
+                                                                                                         amount=200,
+                                                                                                         transfer_type=TransferFuturesPro.TO_FUTURES)
         time.sleep(2)
-        result, tc.server_req_cost, tc.server_api_cost = account_client.transfer_between_futures_and_pro(currency="trx", amount=200, transfer_type=TransferFuturesPro.TO_PRO)
+        result, tc.server_req_cost, tc.server_api_cost = account_client.transfer_between_futures_and_pro(currency="trx",
+                                                                                                         amount=200,
+                                                                                                         transfer_type=TransferFuturesPro.TO_PRO)
         tc.run_status = RunStatus.SUCCESS if result and result > 0 else RunStatus.FAILED
         tc.add_record()
-
-        # case transfer_between_parent_and_subuser
-        tc = TimeCost(function_name=account_client.transfer_between_parent_and_subuser.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = account_client.transfer_between_parent_and_subuser(sub_uid=g_sub_uid, currency="usdt", amount=10, transfer_type=TransferMasterType.OUT)
-        result, tc.server_req_cost, tc.server_api_cost = account_client.transfer_between_parent_and_subuser(sub_uid=g_sub_uid, currency="usdt", amount=10, transfer_type=TransferMasterType.IN)
-        tc.run_status = RunStatus.SUCCESS if result and result > 0 else RunStatus.FAILED
-        tc.add_record()
-
 
     def test_etf(self):
         etf_client = EtfClient(api_key=g_api_key, secret_key=g_secret_key, performance_test=True)
@@ -695,11 +676,10 @@ class RestfulTestCaseSeq:
 
         # case get_etf_swap_list
         tc = TimeCost(function_name=etf_client.get_etf_swap_list.__name__)
-        result, tc.server_req_cost, tc.server_api_cost = etf_client.get_etf_swap_list(etf_name="hb10", offset=0, size=10)
+        result, tc.server_req_cost, tc.server_api_cost = etf_client.get_etf_swap_list(etf_name="hb10", offset=0,
+                                                                                      size=10)
         tc.run_status = RunStatus.SUCCESS if len(result) >= 0 else RunStatus.FAILED
         tc.add_record()
-
-
 
 
 if __name__ == "__main__":
@@ -726,17 +706,3 @@ if __name__ == "__main__":
 
     print("\n\n======================average cost/delay time=====================")
     TimeCost.output_average_cost()
-
-
-
-
-
-
-
-
-
-
-
-
-
-

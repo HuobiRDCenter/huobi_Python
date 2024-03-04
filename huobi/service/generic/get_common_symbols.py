@@ -2,7 +2,7 @@ from huobi.connection.restapi_sync_client import RestApiSyncClient
 from huobi.constant.system import HttpMethod
 from huobi.model.generic.common_symbols import CommonSymbols
 from huobi.model.generic.p import P
-from huobi.utils import default_parse
+from huobi.utils import default_parse, default_parse_list_dict
 
 
 class GetCommonSymbolsService:
@@ -19,6 +19,8 @@ class GetCommonSymbolsService:
             if data_list and len(data_list):
                 for common_symbol in data_list:
                     common_symbol_obj = default_parse(common_symbol, CommonSymbols, P)
+                    p_data = common_symbol.get("p", [])
+                    common_symbol_obj.p = default_parse_list_dict(p_data, P, [])
                     ret_list.append(common_symbol_obj)
             return ret_list
 

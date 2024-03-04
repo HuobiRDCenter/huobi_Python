@@ -1,4 +1,3 @@
-from huobi.constant import *
 from huobi.model.etf import *
 from huobi.utils import *
 
@@ -21,8 +20,6 @@ class EtfClient(object):
         Get the basic information of ETF creation and redemption, as well as ETF constituents,
         including max amount of creation, min amount of creation, max amount of redemption, min amount
         of redemption, creation fee rate, redemption fee rate, eft create/redeem status.
-
-        :param etf_symbol: The symbol, currently only support hb10. (mandatory)
         :return: The etf configuration information.
         """
         check_symbol(etf_name)
@@ -36,8 +33,6 @@ class EtfClient(object):
     def get_etf_swap_list(self, etf_name: 'str', offset: 'int', size: 'int') -> list:
         """
         Get past creation and redemption.(up to 100 records)
-
-        :param etf_symbol: The symbol, currently only support hb10. (mandatory)
         :param offset: The offset of the records, set to 0 for the latest records. (mandatory)
         :param size: The number of records to return, the range is [1, 100]. (mandatory)
         :return: The swap history.

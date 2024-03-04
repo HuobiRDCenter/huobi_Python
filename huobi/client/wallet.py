@@ -1,5 +1,4 @@
 from huobi.utils.input_checker import *
-from huobi.model.wallet import *
 
 
 class WalletClient(object):
@@ -15,6 +14,7 @@ class WalletClient(object):
         """
         self.__kwargs = kwargs
 
+    # 充提记录
     def get_deposit_withdraw(self, op_type: 'str', currency: 'str' = None, from_id: 'int' = None, size: 'int' = None,
                              direct: 'str' = None) -> list:
         """
@@ -40,6 +40,7 @@ class WalletClient(object):
         from huobi.service.wallet.get_deposit_withdraw import GetDepositWithdrawService
         return GetDepositWithdrawService(params).request(**self.__kwargs)
 
+    # 虚拟币提币
     def post_create_withdraw(self, address: 'str', amount: 'float', currency: 'str', fee: 'float',
                              chain: 'str' = None, address_tag: 'str' = None, client_order_id: 'str' = None) -> int:
         """
@@ -71,6 +72,7 @@ class WalletClient(object):
         from huobi.service.wallet.post_create_withdraw import PostCreateWithdrawService
         return PostCreateWithdrawService(params).request(**self.__kwargs)
 
+    # 取消提币
     def post_cancel_withdraw(self, withdraw_id: 'int') -> int:
         """
         Cancel an withdraw request.
@@ -85,6 +87,7 @@ class WalletClient(object):
         from huobi.service.wallet.post_cancel_withdraw import PostCancelWithdrawService
         return PostCancelWithdrawService(params).request(**self.__kwargs)
 
+    # 充币地址查询
     def get_account_deposit_address(self, currency: 'str') -> list:
         """
         Get deposit address of corresponding chain, for a specific crypto currency (except IOTA)
@@ -101,6 +104,7 @@ class WalletClient(object):
         from huobi.service.wallet.get_account_deposit_address import GetAccountDepositAddressService
         return GetAccountDepositAddressService(params).request(**self.__kwargs)
 
+    # 提币额度查询
     def get_account_withdraw_quota(self, currency: 'str') -> list:
         """
         Get the withdraw quota for currencies
@@ -117,54 +121,7 @@ class WalletClient(object):
         from huobi.service.wallet.get_account_withdraw_quota import GetAccountWithdrawQuotaService
         return GetAccountWithdrawQuotaService(params).request(**self.__kwargs)
 
-    def get_sub_user_deposit_history(self, sub_uid: 'int', currency: 'str' = None,
-                                     start_time: 'int' = None, end_time: 'int' = None,
-                                     sort: 'str' = None, limit: 'int' = None, from_id: 'int' = None) -> DepositHistory:
-        """
-        Parent get sub user depoist history.
-
-        :param sub_uid: Sub user id. (mandatory)
-        :param currency: Cryptocurrency.
-        :param start_time: Farthest time
-        :param end_time: Nearest time
-        :param sort: Sorting order
-        :param limit: Maximum number of items in one page
-        :param from_id: First record Id in this query
-        """
-        check_should_not_none(sub_uid, "sub_uid")
-
-        params = {
-            "subUid": sub_uid,
-            "currency": currency,
-            "startTime": start_time,
-            "endTime": end_time,
-            "sort": sort,
-            "limit": limit,
-            "fromId": from_id
-        }
-
-        from huobi.service.wallet.get_sub_user_deposit_history import GetSubUserDepositHistoryService
-        return GetSubUserDepositHistoryService(params).request(**self.__kwargs)
-
-    def get_sub_user_deposit_address(self, sub_uid: 'int', currency: 'str') -> list:
-        """
-        Parent get sub user deposit address
-
-        :param sub_uid: Sub user id
-        :param currency: Cryptocurrency, like "btc". (mandatory)
-        :return:
-        """
-
-        check_should_not_none(sub_uid, "subUid")
-        check_should_not_none(currency, "currency")
-        params = {
-            "subUid": sub_uid,
-            "currency": currency
-        }
-
-        from huobi.service.wallet.get_sub_user_deposit_address import GetSubUserDepositAddressService
-        return GetSubUserDepositAddressService(params).request(**self.__kwargs)
-
+    # 提币地址查询
     def get_account_withdraw_address(self, currency: 'str', chain: 'str'=None, note: 'str'=None, limit: 'int' = 100,
                                      fromid: 'int' = None):
         check_should_not_none(currency, "currency")
@@ -178,6 +135,7 @@ class WalletClient(object):
         from huobi.service.wallet.get_account_withdraw_address import GetAccountWithdrawAddressService
         return GetAccountWithdrawAddressService(params).request(**self.__kwargs)
 
+    # 通过clientOrderId查询提币订单
     def get_account_withdraw_client_order_id(self, client_order_id: 'str'):
         check_should_not_none(client_order_id, "clientOrderId")
         params = {

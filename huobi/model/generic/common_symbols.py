@@ -1,3 +1,4 @@
+from huobi.model.generic.p import P
 
 
 class CommonSymbols:

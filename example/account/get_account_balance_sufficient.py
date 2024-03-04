@@ -1,22 +1,15 @@
 from huobi.client.account import AccountClient
 from huobi.constant import *
 
-
 # get accounts
 from huobi.utils import *
 
 account_client = AccountClient(api_key=g_api_key,
-                              secret_key=g_secret_key)
-# list_obj = account_client.get_accounts()
-# if list_obj and len(list_obj):
-#     for account_obj in list_obj:
-#         list_obj = account_client.get_balance(account_id=account_obj.id)
-#         LogInfo.output("===== {account_id} , {account_type} =====".format(account_id=account_obj.id, account_type=account_obj.type))
-#         if len(list_obj):
-#             for obj in list_obj:
-#                 if float(obj.balance) > 0.1:  # only show account with balance
-#                     obj.print_object()
-#                     print()
+                               secret_key=g_secret_key)
+# list_obj = account_client.get_accounts() if list_obj and len(list_obj): for account_obj in list_obj: list_obj =
+# account_client.get_balance(account_id=account_obj.id) LogInfo.output("===== {account_id} , {account_type}
+# =====".format(account_id=account_obj.id, account_type=account_obj.type)) if len(list_obj): for obj in list_obj: if
+# float(obj.balance) > 0.1:  # only show account with balance obj.print_object() print()
 
 LogInfo.output("====== (SDK encapsulated api) not recommend for low performance and frequence limitation ======")
 account_balance_list = account_client.get_account_balance()

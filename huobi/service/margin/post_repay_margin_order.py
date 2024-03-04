@@ -10,6 +10,7 @@ class PostRepayMarginOrderService:
 
     def request(self, **kwargs):
         order_id = self.params["order-id"]
+
         def get_channel():
             path = "/v1/margin/orders/{}/repay"
             return path.format(order_id)
@@ -18,9 +19,3 @@ class PostRepayMarginOrderService:
             return default_parse_data_as_long(dict_data, None)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, get_channel(), self.params, parse)
-
-
-
-
-
-

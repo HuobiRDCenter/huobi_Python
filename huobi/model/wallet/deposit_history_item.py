@@ -25,8 +25,8 @@ class DepositHistoryItem:
         self.address = ""
         self.addressTag = ""
         self.state = WithdrawState.INVALID
-        self.created_timestamp = 0
-        self.updated_timestamp = 0
+        self.createTime = 0
+        self.updateTime = 0
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
