@@ -1,5 +1,6 @@
 from huobi.client.account import AccountClient
 from huobi.constant import *
+from huobi.model.account import AccountBalanceReq
 
 
 def callback(account_balance_req: 'AccountBalanceReq'):

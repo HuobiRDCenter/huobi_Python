@@ -12,8 +12,7 @@ class PostBatchCancelOrderService:
         channel = "/v1/order/orders/batchcancel"
 
         def parse(dict_data):
-            data = dict_data.get("data", {})
-            return default_parse_fill_directly(data, BatchCancelResult)
+            BatchCancelResult.json_parse(dict_data.get("data", {}))
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, channel, self.params, parse)
 

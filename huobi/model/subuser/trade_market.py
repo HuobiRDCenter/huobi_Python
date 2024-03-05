@@ -13,6 +13,8 @@ class TradeMarket:
         self.sub_uid = ""
         self.account_type = ""
         self.activation = ""
+        self.errCode = 0
+        self.errMessage = ""
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic

@@ -45,6 +45,8 @@ class Chain:
         self.minTransactFeeWithdraw = 0.0
         self.maxTransactFeeWithdraw = 0.0
         self.transactFeeRateWithdraw = 0.0
+        self.displayName = ""
+        self.isDynamic = None
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic

@@ -19,20 +19,13 @@ class AccountClient(object):
         """
         self.__kwargs = kwargs
 
+    # 账户信息
     def get_accounts(self):
-        """
-        Get the account list.
-        :return: The list of accounts data.
-        """
-
         from huobi.service.account.get_accounts import GetAccountsService
         return GetAccountsService({}).request(**self.__kwargs)
 
+    # 账户余额
     def get_balance(self, account_id: 'int'):
-        """
-        Get the account list.
-        :return: The list of accounts data.
-        """
         check_should_not_none(account_id, "account-id")
         params = {
             "account-id": account_id
@@ -50,7 +43,6 @@ class AccountClient(object):
                             return account_obj
                     else:
                         return account_obj
-
         return None
 
     async def async_get_account_balance(self, balance_full_url, account_id, ret_map):
@@ -104,55 +96,6 @@ class AccountClient(object):
         del tasks
         return account_balance_list
 
-    def get_account_balance_by_subuid(self, sub_uid):
-        """
-        Get account balance of a sub-account.
-
-        :param sub_uid: the specified sub account id to get balance for.
-        :return: the balance of a sub-account specified by sub-account uid.
-        """
-        check_should_not_none(sub_uid, "sub-uid")
-        params = {
-            "sub-uid": sub_uid
-        }
-        from huobi.service.account.get_account_balance_by_subuid import GetAccountBalanceBySubUidService
-        return GetAccountBalanceBySubUidService(params).request(**self.__kwargs)
-
-    def get_aggregated_subuser_balance(self):
-        """
-        Get the aggregated balance of all sub-accounts of the current user.
-
-        :return: The balance of all the sub-account aggregated.
-        """
-        params = {}
-        from huobi.service.account.get_aggregate_subuser_balance import GetAggregateSubUserBalanceService
-        return GetAggregateSubUserBalanceService(params).request(**self.__kwargs)
-
-    def transfer_between_parent_and_subuser(self, sub_uid: 'int', currency: 'str', amount: 'float',
-                                            transfer_type: 'TransferMasterType'):
-        """
-        Transfer Asset between Parent and Sub Account.
-
-        :param sub_uid: The target sub account uid to transfer to or from. (mandatory)
-        :param currency: The crypto currency to transfer. (mandatory)
-        :param amount: The amount of asset to transfer. (mandatory)
-        :param transfer_type: The type of transfer, see {@link TransferMasterType} (mandatory)
-        :return: The order id.
-        """
-        check_currency(currency)
-        check_should_not_none(sub_uid, "sub-uid")
-        check_should_not_none(amount, "amount")
-        check_should_not_none(transfer_type, "type")
-
-        params = {
-            "sub-uid": sub_uid,
-            "currency": currency,
-            "amount": amount,
-            "type": transfer_type
-        }
-        from huobi.service.account.post_subaccount_transfer import PostSubaccountTransferService
-        return PostSubaccountTransferService(params).request(**self.__kwargs)
-
     def sub_account_update(self, mode: 'AccountBalanceMode', callback, error_handler=None):
         """
         Subscribe accounts update
@@ -205,6 +148,7 @@ class AccountClient(object):
         from huobi.service.account.req_account_balance import ReqAccountBalanceService
         ReqAccountBalanceService(params).subscribe(callback, error_handler, **self.__kwargs)
 
+    # 币币现货账户与合约账户划转
     def transfer_between_futures_and_pro(self, currency: 'str', amount: 'float',
                                          transfer_type: 'TransferFuturesPro') -> int:
         """
@@ -229,23 +173,10 @@ class AccountClient(object):
         from huobi.service.account.post_futures_and_pro_transfer import PostTransferBetweenFuturesAndProService
         return PostTransferBetweenFuturesAndProService(params).request(**self.__kwargs)
 
-    def get_account_balance_by_subuid(self, sub_uid):
-        """
-        Get account balance of a sub-account.
-
-        :param sub_uid: the specified sub account id to get balance for.
-        :return: the balance of a sub-account specified by sub-account uid.
-        """
-        check_should_not_none(sub_uid, "sub-uid")
-        params = {
-            "sub-uid": sub_uid
-        }
-        from huobi.service.account.get_account_balance_by_subuid import GetAccountBalanceBySubUidService
-        return GetAccountBalanceBySubUidService(params).request(**self.__kwargs)
-
+    # 账户流水
     def get_account_history(self, account_id: 'int', currency: 'str' = None,
                             transact_types: 'str' = None, start_time: 'int' = None, end_time: 'int' = None,
-                            sort: 'str' = None, size: 'int' = None):
+                            sort: 'str' = None, size: 'int' = None, from_id: 'int' = None):
         """
         get account change record
         :param account_id: account id (mandatory)
@@ -254,7 +185,7 @@ class AccountClient(object):
         :param start_time&end_time: for time range to search (optional)
         :param sort: see SortDesc, "asc" or "desc" (optional)
         :param size: page size (optional)
-
+        :param from_id: First record ID in this query (only valid for next page querying, see Note 2)(optional)
         :return: account change record list.
         """
         check_should_not_none(account_id, "account-id")
@@ -265,28 +196,13 @@ class AccountClient(object):
             "start-time": start_time,
             "end-time": end_time,
             "sort": sort,
-            "size": size
+            "size": size,
+            "from-id": from_id
         }
         from huobi.service.account.get_account_history import GetAccountHistoryService
         return GetAccountHistoryService(params).request(**self.__kwargs)
 
-    def post_sub_uid_management(self, sub_uid: 'int', action: 'str'):
-        """
-        use to freeze or unfreeze the sub uid
-
-        :return: user and status.
-        """
-
-        check_should_not_none(sub_uid, "subUid")
-        check_should_not_none(action, "action")
-
-        params = {
-            "subUid": sub_uid,
-            "action": action
-        }
-        from huobi.service.account.post_sub_uid_management import PostSubUidManagementService
-        return PostSubUidManagementService(params).request(**self.__kwargs)
-
+    # 财务流水
     def get_account_ledger(self, account_id: 'int', currency: 'str' = None, transact_types: 'str' = None,
                            start_time: 'int' = None, end_time: 'int' = None, sort: 'str' = None, limit: 'int' = None,
                            from_id: 'int' = None) -> list:
@@ -297,7 +213,6 @@ class AccountClient(object):
         :param transact_types: see AccountTransactType, the value can be "trade" (交易),"etf"（ETF申购）, "transact-fee"（交易手续费）, "deduction"（手续费抵扣）, "transfer"（划转）, "credit"（借币）, "liquidation"（清仓）, "interest"（币息）, "deposit"（充币），"withdraw"（提币）, "withdraw-fee"（提币手续费）, "exchange"（兑换）, "other-types"（其他） (optional)
         :param start_time&end_time: for time range to search (optional)
         :param sort: see SortDesc, "asc" or "desc" (optional)
-        :param size: page size (optional)
         :return: account ledger list.
         """
 
@@ -316,6 +231,7 @@ class AccountClient(object):
         from huobi.service.account.get_account_ledger import GetAccountLedgerService
         return GetAccountLedgerService(params).request(**self.__kwargs)
 
+    # 资产划转
     def post_account_transfer(self, from_user: 'int', from_account_type: 'str', from_account: 'int', to_user: 'int',
                               to_account_type: 'str', to_account: 'int', currency: 'str', amount: 'str'):
         check_should_not_none(from_user, "from-user")
@@ -342,7 +258,8 @@ class AccountClient(object):
         from huobi.service.account.post_account_transfer import PostAccountTransferService
         return PostAccountTransferService(params).request(**self.__kwargs)
 
-    def get_account_asset_valuation(self, account_type, valuation_currency: 'str' = None, sub_uid: 'str' = None):
+    # 获取指定账户资产估值（现货、杠杆、OTC）
+    def get_account_asset_valuation(self, account_type, valuation_currency: 'str' = None, sub_uid: 'int' = None):
         check_should_not_none(account_type, "account-type")
 
         params = {
@@ -353,6 +270,7 @@ class AccountClient(object):
         from huobi.service.account.get_account_asset_valuation import GetAccountAssetValuationService
         return GetAccountAssetValuationService(params).request(**self.__kwargs)
 
+    # 点卡余额查询
     def get_account_point(self, sub_uid: 'str' = None):
         params = {
             "subUid": sub_uid
@@ -361,6 +279,7 @@ class AccountClient(object):
         from huobi.service.account.get_account_point import GetAccountPointService
         return GetAccountPointService(params).request(**self.__kwargs)
 
+    # 点卡划转
     def post_point_transfer(self, from_uid: 'str', to_uid: 'str', group_id: 'str', amount: 'str'):
 
         params = {
@@ -372,3 +291,28 @@ class AccountClient(object):
 
         from huobi.service.account.post_point_transfer import PostPointTransferService
         return PostPointTransferService(params).request(**self.__kwargs)
+
+    # 获取平台资产总估值
+    def get_account_valuation(self, account_type: 'str' = None, valuation_currency: 'str' = None):
+
+        params = {
+            "accountType": account_type,
+            "valuationCurrency": valuation_currency
+        }
+
+        from huobi.service.account.get_account_valuation import GetAccountValuationService
+        return GetAccountValuationService(params).request(**self.__kwargs)
+
+    # 【通用】现货-合约账户和OTC账户间进行资金的划转
+    def get_account_transfer(self, from_: 'str', to: 'str', currency: 'str', amount: 'float', margin_account: 'str'):
+
+        params = {
+            "from": from_,
+            "to": to,
+            "currency": currency,
+            "amount": amount,
+            "margin-account": margin_account
+        }
+
+        from huobi.service.account.get_account_transfer import GetAccountTransferService
+        return GetAccountTransferService(params).request(**self.__kwargs)

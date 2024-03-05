@@ -1,25 +1,25 @@
-# Huobi Python SDK v2
+# Huobi Python SDK For Spot v3
 
-This is Huobi Python SDK v2, you can import to your python project and use this SDK to query all market data, trading and manage your account. The SDK supports RESTful API invoking, and concurrently subscribing the market, account and order update from the Websocket connection.
+This is Huobi Python SDK v3, you can import to your python project and use this SDK to query all market data, trading and manage your account. The SDK supports RESTful API invoking, and concurrently subscribing the market, account and order update from the Websocket connection.
 
-If you already use SDK v1, it is strongly suggested migrate to v2 as we refactor the implementation to make it simpler and easy to maintain. We will stop the maintenance of v1 in the near future. Please refer to the instruction on how to migrate v1 to v2 in section [Migrate from v1](#Migrate-from-v1)
+If you already use SDK v1 or v2, it is strongly suggested migrate to v3 as we refactor the implementation to make it simpler and easy to maintain. The SDK v3 is completely consistent with the API documentation of the new HTX open platform. Compared to SDK versions v1 and v2, due to changes in parameters of many interfaces, in order to match the latest interface parameter situation, v3 version has made adjustments to parameters of more than 80 interfaces to ensure that requests can be correctly initiated and accurate response data can be obtained. Meanwhile, the v3 version has added over 130 new interfaces available for use, greatly expanding the number of available interfaces. We will stop the maintenance of v2 in the near future. Please refer to the instruction on how to migrate v1 or v2 to v3 in section [Migrate from v1 or v2](#Migrate-from-v1-or-v2)
 
 
 ## Table of Contents
 
 - [Quick Start](#Quick-Start)
 - [Usage](#Usage)
-    - [Folder structure](#Folder-structure)
-    - [Run Examples](#Run-examples)
-    - [Client](#client)
-    - [Migrate from v1](#Migrate-from-v1)
+  - [Folder structure](#Folder-structure)
+  - [Run Examples](#Run-examples)
+  - [Client](#client)
+  - [Migrate from v1 or v2](#Migrate-from-v1-or-v2)
 - [Request example](#Request-example)
-    - [Reference data](#Reference-data)
-    - [Market data](#Market-data)
-    - [Account](#account)
-    - [Wallet](#wallet)
-    - [Trading](#trading)
-    - [Margin Loan](#margin-loan)
+  - [Reference data](#Reference-data)
+  - [Market data](#Market-data)
+  - [Account](#account)
+  - [Wallet](#wallet)
+  - [Trading](#trading)
+  - [Margin Loan](#margin-loan)
 - [Subscription example](#Subscription-example)
   - [Subscribe trade update](#Subscribe-trade-update)
   - [Subscribe candlestick update](#subscribe-candlestick-update)
@@ -75,6 +75,7 @@ This SDK provides examples that under **/example** folder, if you want to run th
 1. Create an **API Key** first from Huobi official website
 2. Create **privateconfig.py** into your **huobi** folder. The purpose of this file is to prevent submitting SecretKey into repository by accident, so this file is already added in the *.gitignore* file. 
 3. Assign your API access key and secret key to as below:
+
 ```python
 p_api_key = "hrf5gdfghe-e74bebd8-2f4a33bc-e7963"
 p_secret_key = "fecbaab2-35befe7e-2ea695e8-67e56"
@@ -98,9 +99,12 @@ All the client is listed in below table. Each client is very small and simple, i
 | Wallet        | WalletClient  | Private | Rest               |
 | Trade         | TradeClient   | Private | Rest, WebSocket v2 |
 | Margin        | MarginClient  | Private | Rest               |
+| Sub User      | SubuserClient | Private | Rest               |
+| Algo          | AlgoClient    | Private | Rest               |
 | ETF           | ETFClient     | Private | Rest               |
 
 #### Customized Host
+
 The client class support customized host so that you can define your own host, refer to example in later section.
 
 #### Public and Private
@@ -147,9 +151,9 @@ In this python SDK, some clients support both Rest and WebSocket protocols, the 
 - **req**: req_order_list
 - **sub**: sub_order_update
 
-### Migrate from v1
+### Migrate from v1 or v2
 
-#### Why v2
+#### Why v3
 
 The major difference between v1 and v2 is that the client category.
 
@@ -157,9 +161,11 @@ In SDK v1, the client is categorized as two protocol, request client and subscri
 
 The thing is different in SDK v2, the client class is categorized as seven data categories, so that the responsibility for each client is clear. For example, if you only need to access market data, you can use MarketClient without applying API Key, and all the market data can be retrieved from MarketClient. If you want to operate your order, then you know you should use TradeClient and all the order related methods are there. Since the category is exactly same as the API document, so it is easy to find the relationship between API and SDK. In SDK v2, each client is smaller and simpler, which means it is easier to maintain and less bugs.
 
+Compared to SDK versions v1 and v2, due to changes and updates in the out and in parameters of many interfaces, in order to match the latest interface in and out parameter situation, v3 version has made adjustments and updates to the out and in parameters of more than 80 interfaces to ensure that requests can be correctly initiated and accurate response data can be obtained. Meanwhile, the v3 version has added over 130 new interfaces available for use, greatly expanding the number of available interfaces.
+
 #### How to migrate
 
-You don't need to change your business logic, what you need is to find the v1 request client and subscription client, and replace with the proper v2 client. The additional cost is that you need to have additional initialization for each v2 client.
+You don't need to change your business logic, what you need is to find the v1 or v2 request client and subscription client, and replace with the proper v3 client. The additional cost is that you need to have additional initialization for each v3 client.
 
 ## Request example
 
@@ -371,4 +377,3 @@ account_client = AccountClient(api_key=g_api_key,
                               init_log=True)
 account_client.sub_account_update(AccountBalanceMode.TOTAL, callback)
 ```
-

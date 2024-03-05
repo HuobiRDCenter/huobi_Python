@@ -1,6 +1,8 @@
 
 from huobi.client.market import MarketClient
 from huobi.constant import DepthStep
+from huobi.exception.huobi_api_exception import HuobiApiException
+from huobi.model.market import PriceDepthReq
 
 
 def callback(price_depth_req: 'PriceDepthReq'):

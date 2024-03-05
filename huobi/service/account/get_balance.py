@@ -18,8 +18,7 @@ class GetBalanceService:
 
         def parse(dict_data):
             data = dict_data.get("data", {})
-            balance_list = data.get("list", [])
-            return default_parse_list_dict(balance_list, Balance, [])
+            return default_parse(data, AccountBalance, {})
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, get_channel(), self.params, parse)
 
@@ -32,7 +31,6 @@ class GetBalanceService:
 
         def parse(dict_data):
             data = dict_data.get("data", {})
-            balance_list = data.get("list", [])
-            return default_parse_list_dict(balance_list, Balance, [])
+            return default_parse(data, AccountBalance, {})
 
         return RestApiSyncClient(**kwargs).create_request(HttpMethod.GET_SIGN, get_channel(), self.params, parse)

@@ -17,4 +17,5 @@ class MarketStatus:
         self.marketStatus = MarketStatus.NORMAL
         self.haltStartTime = -1
         self.haltEndTime = -1
+        self.haltReason = -1
         self.affectedSymbols = ""

@@ -34,6 +34,16 @@ class OrderUpdate:
         self.symbol = ""
         self.type = OrderType.INVALID
         self.accountId = 0
+        self.orderSide = ""
+        self.errCode = 0
+        self.errMessage = ""
+        self.lastActTime = 0
+        self.orderSource = ""
+        self.orderPrice = ""
+        self.orderSize = ""
+        self.orderValue = ""
+        self.execAmt = ""
+
 
 
     def print_object(self, format_data=""):
@@ -50,6 +60,15 @@ class OrderUpdate:
         PrintBasic.print_basic(self.symbol, format_data + "Symbol")
         PrintBasic.print_basic(self.type, format_data + "Order Type")
         PrintBasic.print_basic(self.accountId, format_data + "Account Id")
+        PrintBasic.print_basic(self.orderSide, format_data + "Order Side")
+        PrintBasic.print_basic(self.errCode, format_data + "Error Code")
+        PrintBasic.print_basic(self.errMessage, format_data + "Error Message")
+        PrintBasic.print_basic(self.lastActTime, format_data + "Last Actual Time")
+        PrintBasic.print_basic(self.orderSource, format_data + "Order Source")
+        PrintBasic.print_basic(self.orderPrice, format_data + "Order Price")
+        PrintBasic.print_basic(self.orderSize, format_data + "Order Size")
+        PrintBasic.print_basic(self.orderValue, format_data + "Order Value")
+        PrintBasic.print_basic(self.execAmt, format_data + "Exec Amount")
 
 
 

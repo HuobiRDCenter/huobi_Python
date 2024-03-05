@@ -12,6 +12,7 @@ class Trade:
     """
 
     def __init__(self):
+        self.id = 0
         self.price = 0.0
         self.amount = 0.0
         self.trade_id = 0

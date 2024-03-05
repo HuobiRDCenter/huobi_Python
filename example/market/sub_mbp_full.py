@@ -1,5 +1,7 @@
 from huobi.client.market import MarketClient
 from huobi.constant import *
+from huobi.exception.huobi_api_exception import HuobiApiException
+from huobi.model.market import MbpFullEvent
 
 
 def callback(mbp_event: 'MbpFullEvent'):

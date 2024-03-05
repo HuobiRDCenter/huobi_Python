@@ -1,5 +1,4 @@
 from huobi.client.market import MarketClient
-from huobi.constant import *
 from huobi.utils import *
 
 market_client = MarketClient(init_log=True)

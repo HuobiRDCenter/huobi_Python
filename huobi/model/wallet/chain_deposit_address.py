@@ -10,6 +10,7 @@ class ChainDepositAddress:
         chain: Block chain name.
     """
     def __init__(self):
+        self.userId = 0
         self.currency = ""
         self.address = ""
         self.addressTag = ""

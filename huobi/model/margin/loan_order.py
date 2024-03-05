@@ -2,23 +2,6 @@ from huobi.constant import *
 
 
 class LoanOrder:
-    """
-    The margin order information.
-
-    :member
-        id: The order id.
-        user_id: The user id.
-        account_type: The account type which created the loan order.
-        currency: The currency name.
-        loan_amount: The amount of the origin loan.
-        loan_balance: The amount of the loan left.
-        interest_rate: The loan interest rate.
-        interest_amount: The accumulated loan interest.
-        interest_balance: The amount of loan interest left.
-        state: The loan stats, possible values: created, accrual, cleared, invalid.
-        created_at: The UNIX formatted timestamp in UTC when the order was created.
-        accrued_at: The UNIX formatted timestamp in UTC when the last accrue happened.
-    """
 
     def __init__(self):
         self.currency = ""
@@ -39,6 +22,9 @@ class LoanOrder:
         self.interest_rate = 0.0
         self.id = 0
         self.state = LoanOrderState.INVALID
+        self.symbol = ""
+        self.hour_interest_rate = 0.0
+        self.day_interest_rate = 0.0
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
@@ -60,3 +46,6 @@ class LoanOrder:
         PrintBasic.print_basic(self.interest_rate, format_data + "Interest Rate")
         PrintBasic.print_basic(self.id, format_data + "ID")
         PrintBasic.print_basic(self.state, format_data + "Loan Order State")
+        PrintBasic.print_basic(self.symbol, format_data + "Symbol")
+        PrintBasic.print_basic(self.hour_interest_rate, format_data + "Hour Interest Rate")
+        PrintBasic.print_basic(self.day_interest_rate, format_data + "Day Interest Rate")
