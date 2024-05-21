@@ -24,4 +24,4 @@ class Balance:
         PrintBasic.print_basic(self.currency, format_data + "Currency")
         PrintBasic.print_basic(self.type, format_data + "Balance Type")
         PrintBasic.print_basic(self.balance, format_data + "Balance")
-        PrintBasic.print_basic(self.seqNum, format_data + "Sequence Number")
+        PrintBasic.print_basic(self.seq_num, format_data + "Sequence Number")
