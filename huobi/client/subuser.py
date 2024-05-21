@@ -301,4 +301,23 @@ class SubuserClient(object):
         from huobi.service.subuser.post_user_initiated_credit import PostSubuserApikeyGenerationService
         return PostSubuserApikeyGenerationService(params).request(**self.__kwargs)
 
+    # 用户主动授信
+    def post_active_credit(self, transaction_id: 'int', currency: 'str', amount: 'float', account_id: 'int', user_id: 'int'):
+
+        check_should_not_none(transaction_id, "transactionId")
+        check_should_not_none(currency, "currency")
+        check_should_not_none(amount, "amount")
+        check_should_not_none(account_id, "accountId")
+        check_should_not_none(user_id, "userId")
+
+        params = {
+            "transactionId": transaction_id,
+            "currency": currency,
+            "amount": amount,
+            "accountId": account_id,
+            "userId": user_id
+        }
+        from huobi.service.subuser.post_active_credit import PostActiveCreditService
+        return PostActiveCreditService(params).request(**self.__kwargs)
+
 

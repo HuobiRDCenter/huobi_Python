@@ -316,3 +316,26 @@ class AccountClient(object):
 
         from huobi.service.account.get_account_transfer import GetAccountTransferService
         return GetAccountTransferService(params).request(**self.__kwargs)
+
+    # 用户抵扣信息查询
+    def get_user_info(self):
+        params = {}
+        from huobi.service.account.get_user_info import GetAccountUserInfoService
+        return GetAccountUserInfoService(params).request(**self.__kwargs)
+
+    # 可抵扣币种查询信息
+    def get_overview_info(self):
+        params = {}
+        from huobi.service.account.get_overview_info import GetAccountOverviewInfoService
+        return GetAccountOverviewInfoService(params).request(**self.__kwargs)
+
+    # 点卡划转
+    def post_fee_switch(self, switch_type: 'int', deduction_currency: 'str'):
+        check_should_not_none(switch_type, "switchType")
+        params = {
+            "switchType": switch_type,
+            "deductionCurrency": deduction_currency
+        }
+
+        from huobi.service.account.post_fee_switch import PostFeeSwitchService
+        return PostFeeSwitchService(params).request(**self.__kwargs)
