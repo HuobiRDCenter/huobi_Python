@@ -2,6 +2,7 @@ import requests
 from huobi.exception.huobi_api_exception import HuobiApiException
 from huobi.utils.etf_result import etf_result_check
 from huobi.utils import *
+import sys
 import time
 
 from huobi.utils.print_mix_object import TypeCheck
@@ -53,7 +54,10 @@ def call_sync(request, is_checked=False):
         response = session.get(request.host + request.url, headers=request.header)
         if is_checked is True:
             return response.text
-        dict_data = json.loads(response.text, encoding="utf-8")
+        if sys.version_info.major >= 3 and sys.version_info.minor >= 9:
+            dict_data = json.loads(response.text)
+        else:
+            dict_data = json.loads(response.text, encoding="utf-8")
         # print("call_sync  === recv data : ", dict_data)
         check_response(dict_data)
         return request.json_parser(dict_data)
