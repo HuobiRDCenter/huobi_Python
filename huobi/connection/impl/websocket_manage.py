@@ -14,25 +14,29 @@ from huobi.connection.impl.private_def import ConnectionState
 websocket_connection_handler = dict()
 
 
-def on_message(original_connection, message):
+def on_message(original_connection, message, *args, **kwargs):
     websocket_connection = websocket_connection_handler[original_connection]
-    websocket_connection.on_message(message)
+    if websocket_connection and hasattr(websocket_connection, "on_message"):
+        websocket_connection.on_message(message)
     return
 
 
-def on_error(original_connection, error):
+def on_error(original_connection, error, *args, **kwargs):
     websocket_connection = websocket_connection_handler[original_connection]
-    websocket_connection.on_failure(error)
+    if websocket_connection and hasattr(websocket_connection, "on_failure"):
+        websocket_connection.on_failure(error)
 
 
-def on_close(original_connection):
+def on_close(original_connection, *args, **kwargs):
     websocket_connection = websocket_connection_handler[original_connection]
-    websocket_connection.on_close()
+    if websocket_connection and hasattr(websocket_connection, "on_close"):
+        websocket_connection.on_close()
 
 
-def on_open(original_connection):
+def on_open(original_connection, *args, **kwargs):
     websocket_connection = websocket_connection_handler[original_connection]
-    websocket_connection.on_open(original_connection)
+    if websocket_connection and hasattr(websocket_connection, "on_open"):
+        websocket_connection.on_open(original_connection)
 
 
 connection_id = 0
@@ -42,9 +46,9 @@ def websocket_func(*args):
     try:
         websocket_manage = args[0]
         websocket_manage.original_connection = websocket.WebSocketApp(websocket_manage.url,
-                                                        on_message=on_message,
-                                                        on_error=on_error,
-                                                        on_close=on_close)
+                                                                      on_message=on_message,
+                                                                      on_error=on_error,
+                                                                      on_close=on_close)
         global websocket_connection_handler
         websocket_connection_handler[websocket_manage.original_connection] = websocket_manage
         websocket_manage.logger.info("[Sub][" + str(websocket_manage.id) + "] Connecting...")
@@ -137,7 +141,7 @@ class WebsocketManage:
                 elif self.request.api_version == ApiVersion.VERSION_V2:
                     builder = UrlParamsBuilder()
                     create_signature_v2(self.__api_key, self.__secret_key,
-                                     "GET", self.url, builder)
+                                        "GET", self.url, builder)
                     self.send(builder.build_url_to_json())
                 else:
                     self.on_error("api version for create the signature fill failed")
@@ -249,7 +253,7 @@ class WebsocketManage:
                 self.request.update_callback(res)
         except Exception as e:
             self.on_error("Process error: " + str(e)
-                     + " You should capture the exception in your error handler")
+                          + " You should capture the exception in your error handler")
 
         # websocket request will close the connection after receive
         if self.request.auto_close:
