@@ -38,6 +38,7 @@ class Order:
         self.filled_cash_amount = 0.0
         self.filled_fees = 0.0
         self.source = OrderSource.INVALID
+        self.canceled_source = ""
         self.state = OrderState.INVALID
         self.client_order_id = ""
         self.stop_price = ""
@@ -78,6 +79,7 @@ class Order:
         PrintBasic.print_basic(self.filled_fees, format_data + "Filled Fees")
         #PrintBasic.print_basic(self.account_type, format_data + "Account Type")
         PrintBasic.print_basic(self.source, format_data + "Order Source")
+        PrintBasic.print_basic(self.canceled_source, format_data + "Canceled Source")
         PrintBasic.print_basic(self.state, format_data + "Order State")
         PrintBasic.print_basic(self.client_order_id, format_data + "Client Order Id")
         PrintBasic.print_basic(self.stop_price, format_data + "Stop Price")
