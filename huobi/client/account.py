@@ -46,7 +46,7 @@ class AccountClient(object):
         return None
 
     async def async_get_account_balance(self, balance_full_url, account_id, ret_map):
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False)) as session:
             async with session.get(balance_full_url) as resp:
                 json = await resp.json()
                 ret_map[account_id] = json
