@@ -15,6 +15,13 @@ class PostCreateOrderService:
             return default_parse_data_as_long(dict_data, None)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, channel, self.params, parse)
+    def request2(self, **kwargs):
+        channel = "/linear-swap-api/v1/swap_cross_order"
+
+        def parse(dict_data):
+            return default_parse_data_as_long(dict_data, None)
+
+        return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, channel, self.params, parse)
 
 
 

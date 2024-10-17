@@ -11,6 +11,8 @@ from huobi.exception.huobi_api_exception import HuobiApiException
 from huobi.connection.impl.private_def import ConnectionState
 
 # Key: original_connection, Value: connection
+from huobi.utils.api_signature_ED25519 import create_signatureED25519
+
 websocket_connection_handler = dict()
 
 
@@ -130,8 +132,13 @@ class WebsocketManage:
             try:
                 if self.request.api_version == ApiVersion.VERSION_V1:
                     builder = UrlParamsBuilder()
-                    create_signature(self.__api_key, self.__secret_key,
+                    if g_sign=="256":
+                        create_signature(self.__api_key, self.__secret_key,
                                      "GET", self.url, builder)
+                    else:
+                        create_signatureED25519(self.__api_key, self.__secret_key,
+                                         "GET", self.url, builder)
+
                     builder.put_url("op", "auth")
                     self.send(builder.build_url_to_json())
                 elif self.request.api_version == ApiVersion.VERSION_V2:

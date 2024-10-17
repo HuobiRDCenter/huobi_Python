@@ -17,3 +17,4 @@ class GetAccountsService:
             return default_parse_list_dict(data_list, Account, [])
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
+
