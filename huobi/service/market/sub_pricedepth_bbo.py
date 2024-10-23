@@ -21,9 +21,6 @@ class SubPriceDepthBboService:
             return default_parse(dict_data, PriceDepthBboEvent, PriceDepthBbo)
 
         SubscribeClient(**kwargs).execute_subscribe_v1(subscription,
-                                            parse,
-                                            callback,
-                                            error_handler)
-
-
-
+                                                       parse,
+                                                       callback,
+                                                       error_handler)

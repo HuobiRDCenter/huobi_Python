@@ -21,6 +21,3 @@ class GetSubUserDepositHistoryService:
             return deposit_history
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
-
-
-

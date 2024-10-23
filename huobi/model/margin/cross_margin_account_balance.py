@@ -4,7 +4,6 @@ from huobi.utils import *
 
 
 class CrossMarginAccountBalance:
-
     """
     The account information for spot account, margin account etc.
 
@@ -14,7 +13,6 @@ class CrossMarginAccountBalance:
         state: The account state, possible value: working, lock.
         list: The balance list of the specified currency. The content is Balance class
     """
-
 
     def __init__(self):
         self.id = 0

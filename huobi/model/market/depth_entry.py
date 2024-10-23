@@ -1,4 +1,3 @@
-
 class DepthEntry:
     """
     An depth entry consisting of price and amount.

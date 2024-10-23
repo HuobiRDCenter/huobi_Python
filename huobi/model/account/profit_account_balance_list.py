@@ -16,8 +16,3 @@ class ProfitAccountBalanceList:
         PrintBasic.print_basic(self.balance, format_data + "balance")
         PrintBasic.print_basic(self.success, format_data + "success")
         PrintBasic.print_basic(self.accountBalance, format_data + "accountBalance")
-
-
-
-
-

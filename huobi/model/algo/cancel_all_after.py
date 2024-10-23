@@ -8,4 +8,3 @@ class CancelAllAfter:
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.currentTime, format_data + "currentTime")
         PrintBasic.print_basic(self.triggerTime, format_data + "triggerTime")
-

@@ -1,4 +1,3 @@
-
 class PriceDepthBbo:
     """
     The price depth information.
@@ -14,6 +13,7 @@ class PriceDepthBbo:
 
 
     """
+
     def __init__(self):
         self.seqId = 0
         self.ask = 0.0

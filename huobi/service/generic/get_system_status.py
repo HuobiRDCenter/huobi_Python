@@ -15,9 +15,3 @@ class GetSystemStatusService:
             return dict_data
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET, channel, self.params, parse)
-
-
-
-
-
-

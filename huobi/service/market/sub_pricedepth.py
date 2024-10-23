@@ -26,9 +26,6 @@ class SubPriceDepthService:
             return price_depth_event_obj
 
         SubscribeClient(**kwargs).execute_subscribe_v1(subscription,
-                                            parse,
-                                            callback,
-                                            error_handler)
-
-
-
+                                                       parse,
+                                                       callback,
+                                                       error_handler)

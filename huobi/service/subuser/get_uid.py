@@ -5,7 +5,6 @@ from huobi.model.subuser import *
 from huobi.utils.json_parser import default_parse_data_as_long
 
 
-
 class GetUidService:
 
     def __init__(self, params):

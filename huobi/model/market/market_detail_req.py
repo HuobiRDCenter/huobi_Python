@@ -1,5 +1,6 @@
 from huobi.model.market.market_detail import MarketDetail
 
+
 class MarketDetailReq:
     """
      The 24H trade statistics received by request of trade statistics only once.

@@ -13,5 +13,3 @@ class SubuserAccountList:
             for list_obj in self.list:
                 list_obj.print_object("\t")
                 print()
-
-

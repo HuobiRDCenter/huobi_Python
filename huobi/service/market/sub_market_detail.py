@@ -6,7 +6,6 @@ from huobi.connection.subscribe_client import SubscribeClient
 from huobi.model.market import *
 
 
-
 class SubMarketDetailService:
     def __init__(self, params):
         self.params = params
@@ -23,9 +22,6 @@ class SubMarketDetailService:
             return default_parse(dict_data, MarketDetailEvent, MarketDetail)
 
         SubscribeClient(**kwargs).execute_subscribe_v1(subscription,
-                                            parse,
-                                            callback,
-                                            error_handler)
-
-
-
+                                                       parse,
+                                                       callback,
+                                                       error_handler)

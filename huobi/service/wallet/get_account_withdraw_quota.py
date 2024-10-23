@@ -18,9 +18,3 @@ class GetAccountWithdrawQuotaService:
             return default_parse_list_dict(chains, WithdrawQuota)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
-
-
-
-
-
-

@@ -1,5 +1,6 @@
 from huobi.model.market.market_detail import MarketDetail
 
+
 class MarketDetailEvent:
     """
      The 24H trade statistics received by subscription of trade statistics.

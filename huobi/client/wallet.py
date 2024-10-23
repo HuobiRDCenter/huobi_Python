@@ -122,7 +122,7 @@ class WalletClient(object):
         return GetAccountWithdrawQuotaService(params).request(**self.__kwargs)
 
     # 提币地址查询
-    def get_account_withdraw_address(self, currency: 'str', chain: 'str'=None, note: 'str'=None, limit: 'int' = 100,
+    def get_account_withdraw_address(self, currency: 'str', chain: 'str' = None, note: 'str' = None, limit: 'int' = 100,
                                      fromid: 'int' = None):
         check_should_not_none(currency, "currency")
         params = {
@@ -143,6 +143,3 @@ class WalletClient(object):
         }
         from huobi.service.wallet.get_account_withdraw_client_order_id import GetAccountWithdrawClientOrderIdService
         return GetAccountWithdrawClientOrderIdService(params).request(**self.__kwargs)
-
-
-

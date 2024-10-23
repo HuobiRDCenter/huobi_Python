@@ -1,4 +1,3 @@
-
 class FeeRate:
     """
     The account information for spot account, margin account etc.

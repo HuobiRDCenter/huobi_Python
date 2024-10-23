@@ -16,10 +16,3 @@ class PostEtfSwapOutService:
             return default_parse_fill_directly(dict_data, EtfSwapInOut)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, channel, self.params, parse)
-
-
-
-
-
-
-

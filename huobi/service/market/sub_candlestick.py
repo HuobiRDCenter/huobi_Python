@@ -6,10 +6,8 @@ from huobi.connection.subscribe_client import SubscribeClient
 from huobi.model.market import *
 
 
-
 class SubCandleStickService:
     def __init__(self, params):
-
         self.params = params
 
     def subscribe(self, callback, error_handler, **kwargs):
@@ -25,9 +23,6 @@ class SubCandleStickService:
             return default_parse(dict_data, CandlestickEvent, Candlestick)
 
         SubscribeClient(**kwargs).execute_subscribe_v1(subscription,
-                                            parse,
-                                            callback,
-                                            error_handler)
-
-
-
+                                                       parse,
+                                                       callback,
+                                                       error_handler)

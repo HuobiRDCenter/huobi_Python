@@ -44,8 +44,6 @@ class OrderUpdate:
         self.orderValue = ""
         self.execAmt = ""
 
-
-
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.orderId, format_data + "Order Id")
@@ -69,7 +67,3 @@ class OrderUpdate:
         PrintBasic.print_basic(self.orderSize, format_data + "Order Size")
         PrintBasic.print_basic(self.orderValue, format_data + "Order Value")
         PrintBasic.print_basic(self.execAmt, format_data + "Exec Amount")
-
-
-
-

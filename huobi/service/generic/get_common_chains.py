@@ -18,9 +18,3 @@ class GetCommonChainsService:
             return default_parse_list_dict(data_list, CommonChains, [])
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET, channel, self.params, parse)
-
-
-
-
-
-

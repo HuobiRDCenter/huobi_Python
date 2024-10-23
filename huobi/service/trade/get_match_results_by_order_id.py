@@ -11,6 +11,7 @@ class GetMatchResultsByOrderIdService:
 
     def request(self, **kwargs):
         order_id = self.params["order_id"]
+
         def get_channel():
             path = "/v1/order/orders/{}/matchresults"
             return path.format(order_id)
@@ -20,9 +21,3 @@ class GetMatchResultsByOrderIdService:
             return default_parse_list_dict(data_list, MatchResult, [])
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, get_channel(), self.params, parse)
-
-
-
-
-
-

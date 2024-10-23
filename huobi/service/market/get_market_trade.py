@@ -18,9 +18,3 @@ class GetMarketTradeService:
             return default_parse_list_dict(data, Trade, [])
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET, channel, self.params, parse)
-
-
-
-
-
-

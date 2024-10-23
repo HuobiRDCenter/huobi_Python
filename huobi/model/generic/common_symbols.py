@@ -37,7 +37,6 @@ class CommonSymbols:
         self.ca1oa = 0
         self.ca2oa = 0
 
-
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.si, format_data + "si")

@@ -17,9 +17,3 @@ class GetMatchResultsService:
             return default_parse_list_dict(data_list, MatchResult, [])
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
-
-
-
-
-
-

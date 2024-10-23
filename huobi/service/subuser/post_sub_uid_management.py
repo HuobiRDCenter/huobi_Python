@@ -16,9 +16,3 @@ class PostSubUidManagementService:
             return default_parse_list_dict(dict_data.get("data", {}), SubUidManagement)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, channel, self.params, parse)
-
-
-
-
-
-

@@ -1,6 +1,5 @@
 import time
 
-
 from huobi.connection.subscribe_client import SubscribeClient
 from huobi.model.trade import *
 from huobi.utils import *
@@ -22,14 +21,7 @@ class SubTradeClearingV2Service:
             return TradeClearingEvent.json_parse(dict_data)
 
         SubscribeClient(**kwargs).execute_subscribe_v2(subscription,
-                                            parse,
-                                            callback,
-                                            error_handler,
-                                            is_trade=True)
-
-
-
-
-
-
-
+                                                       parse,
+                                                       callback,
+                                                       error_handler,
+                                                       is_trade=True)

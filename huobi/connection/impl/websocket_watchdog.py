@@ -32,7 +32,8 @@ class WebSocketWatchDog(threading.Thread):
     mutex = threading.Lock()
     websocket_manage_list = list()
 
-    def __init__(self, is_auto_connect=True, heart_beat_limit_ms=CONNECT_HEART_BEAT_LIMIT_MS, reconnect_after_ms=RECONNECT_AFTER_TIME_MS):
+    def __init__(self, is_auto_connect=True, heart_beat_limit_ms=CONNECT_HEART_BEAT_LIMIT_MS,
+                 reconnect_after_ms=RECONNECT_AFTER_TIME_MS):
         threading.Thread.__init__(self)
         self.is_auto_connect = is_auto_connect
         self.heart_beat_limit_ms = heart_beat_limit_ms
@@ -62,6 +63,3 @@ class WebSocketWatchDog(threading.Thread):
         wait_millisecond = wait_millisecond if wait_millisecond else 1000
         # job loop after 1 second
         return (wait_millisecond + now_ms)
-
-
-

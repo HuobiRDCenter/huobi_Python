@@ -12,6 +12,3 @@ from huobi.model.trade.batch_create_order import BatchCreateOrder
 from huobi.model.trade.transact_feerate import TransactFeeRate
 from huobi.model.trade.trade_clearing import TradeClearing
 from huobi.model.trade.trade_clearing_event import TradeClearingEvent
-
-
-

@@ -17,9 +17,3 @@ class GetAccountWithdrawClientOrderIdService:
             return default_parse(dict_data.get("data", {}), AccountWithdrawClientOrderId)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
-
-
-
-
-
-

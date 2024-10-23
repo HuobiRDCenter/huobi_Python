@@ -1,4 +1,3 @@
-
 from huobi.client.market import MarketClient
 from huobi.constant import DepthStep
 from huobi.exception.huobi_api_exception import HuobiApiException

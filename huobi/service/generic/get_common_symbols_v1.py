@@ -17,9 +17,3 @@ class GetCommonSymbolsV1Service:
             return default_parse_list_dict(data_list, CommonSymbolsV1, [])
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET, channel, self.params, parse)
-
-
-
-
-
-

@@ -1,7 +1,7 @@
 from huobi.connection.restapi_sync_client import RestApiSyncClient
 from huobi.constant import *
 from huobi.model.margin.general_repay_loan_result import GeneralRepayLoanResult
-from huobi.utils.json_parser import  default_parse_list_dict
+from huobi.utils.json_parser import default_parse_list_dict
 
 
 class PostGeneralRepayLoanService:
@@ -10,7 +10,6 @@ class PostGeneralRepayLoanService:
         self.params = params
 
     def request(self, **kwargs):
-
         def get_channel():
             path = "/v2/account/repayment"
             return path

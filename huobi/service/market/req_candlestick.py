@@ -26,9 +26,6 @@ class ReqCandleStickService:
             return default_parse(dict_data, CandlestickReq, Candlestick)
 
         WebSocketReqClient(**kwargs).execute_subscribe_v1(subscription,
-                                            parse,
-                                            callback,
-                                            error_handler)
-
-
-
+                                                          parse,
+                                                          callback,
+                                                          error_handler)

@@ -15,4 +15,3 @@ order_id = trade_client.create_order(symbol=symbol_test, account_id=g_account_id
 LogInfo.output("created order id : {id}, {client_order_id}".format(id=order_id, client_order_id=client_order_id_test))
 result = trade_client.cancel_client_order(client_order_id=client_order_id_test)
 LogInfo.output("cancel result {id}".format(id=result))
-

@@ -17,7 +17,6 @@ class MbpReq:
 
         self.data = Mbp()
 
-
     @staticmethod
     def json_parse(data_json):
         mbp_event = MbpReq()

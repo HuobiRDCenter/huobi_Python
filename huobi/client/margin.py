@@ -386,4 +386,3 @@ class MarginClient(object):
 
         from huobi.service.margin.post_margin_limit import PostMarginLimitService
         return PostMarginLimitService(params).request(**self.__kwargs)
-

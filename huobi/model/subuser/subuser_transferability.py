@@ -1,4 +1,3 @@
-
 class SubuserTransferability:
     """
     The trade information with price and amount etc.

@@ -14,9 +14,3 @@ class PostCrossMarginLoanOrderRepayService:
             return dict_data.get("status", None)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, channel, self.params, parse)
-
-
-
-
-
-

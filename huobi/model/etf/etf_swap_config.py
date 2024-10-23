@@ -18,6 +18,7 @@ class EtfSwapConfig:
         unit_price_list: ETF constitution in format of amount and currency.
 
     """
+
     def __init__(self):
         self.etf_name = ""
         self.etf_status = EtfStatus.INVALID

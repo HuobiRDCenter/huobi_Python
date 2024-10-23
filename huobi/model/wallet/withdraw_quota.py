@@ -1,4 +1,3 @@
-
 class WithdrawQuota:
     """
     Withdraw Quota info.
@@ -13,6 +12,7 @@ class WithdrawQuota:
         withdrawQuotaTotal: Maximum withdraw amount in total
         remainWithdrawQuotaTotal: Remaining withdraw quota in total
     """
+
     def __init__(self):
         self.chain = ""
         self.maxWithdrawAmt = ""
@@ -22,8 +22,6 @@ class WithdrawQuota:
         self.remainWithdrawQuotaPerYear = ""
         self.withdrawQuotaTotal = ""
         self.remainWithdrawQuotaTotal = ""
-
-
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic

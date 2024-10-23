@@ -1,8 +1,9 @@
 import json
 from huobi.utils.time_service import get_current_timestamp
 
+
 def dict_add_new(old_dict, new_dict):
-    if old_dict  is None:
+    if old_dict is None:
         old_dict = {}
 
     if new_dict and len(new_dict):
@@ -16,7 +17,8 @@ def dict_add_new(old_dict, new_dict):
 
     return old_dict
 
-def request_kline_channel(symbol, interval, from_ts_second = None, to_ts_second = None):
+
+def request_kline_channel(symbol, interval, from_ts_second=None, to_ts_second=None):
     channel = dict()
     channel["req"] = "market." + symbol + ".kline." + interval
     channel["id"] = str(get_current_timestamp())
@@ -34,11 +36,12 @@ def request_trade_detail_channel(symbol):
     return json.dumps(channel)
 
 
-def request_price_depth_channel(symbol, step_type = "step0"):
+def request_price_depth_channel(symbol, step_type="step0"):
     channel = dict()
     channel["req"] = "market." + symbol + ".depth." + step_type
     channel["id"] = str(get_current_timestamp())
     return json.dumps(channel)
+
 
 def request_market_detail_channel(symbol):
     channel = dict()
@@ -46,14 +49,16 @@ def request_market_detail_channel(symbol):
     channel["id"] = str(get_current_timestamp())
     return json.dumps(channel)
 
-def request_account_list_channel(client_req_id = None):
+
+def request_account_list_channel(client_req_id=None):
     channel = dict()
     channel["op"] = "req"
     channel["topic"] = "accounts.list"
     channel["cid"] = str(client_req_id) if client_req_id else str(get_current_timestamp())
     return json.dumps(channel)
 
-def request_order_list_channel(symbol, account_id, states_str= None, client_req_id = None, more_key={}):
+
+def request_order_list_channel(symbol, account_id, states_str=None, client_req_id=None, more_key={}):
     channel = dict()
     try:
         channel["op"] = "req"
@@ -69,7 +74,8 @@ def request_order_list_channel(symbol, account_id, states_str= None, client_req_
         print(e)
     return json.dumps(channel)
 
-def request_order_detail_channel(order_id, client_req_id = None):
+
+def request_order_detail_channel(order_id, client_req_id=None):
     channel = dict()
     channel["op"] = "req"
     channel["topic"] = "orders.detail"

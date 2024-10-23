@@ -21,6 +21,3 @@ from huobi.model.market.mbp import Mbp
 from huobi.model.market.mbp_increase_event import MbpIncreaseEvent
 from huobi.model.market.mbp_full_event import MbpFullEvent
 from huobi.model.market.mbp_req import MbpReq
-
-
-

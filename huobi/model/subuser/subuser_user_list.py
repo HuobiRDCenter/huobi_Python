@@ -11,4 +11,3 @@ class SubuserUserList:
         PrintBasic.print_basic(self.userState, format_data + "userState")
         PrintBasic.print_basic(self.subUserName, format_data + "subUserName")
         PrintBasic.print_basic(self.note, format_data + "note")
-

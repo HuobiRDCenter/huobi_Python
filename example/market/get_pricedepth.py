@@ -1,7 +1,5 @@
-
 from huobi.client.market import MarketClient
 from huobi.utils import *
-
 
 market_client = MarketClient()
 symbol = "btcusdt"

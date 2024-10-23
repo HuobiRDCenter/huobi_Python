@@ -1,4 +1,3 @@
-
 class Candlestick:
     """
     The candlestick/kline data.
@@ -18,20 +17,19 @@ class Candlestick:
 
     def __init__(self):
         self.id = 0
-        #self.timestamp = 0
+        # self.timestamp = 0
         self.high = 0.0
         self.low = 0.0
         self.open = 0.0
         self.close = 0.0
         self.amount = 0.0
         self.count = 0
-        self.vol = 0.0  #self.volume = 0.0
-
+        self.vol = 0.0  # self.volume = 0.0
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.id, format_data + "Id")
-        #PrintBasic.print_basic(self.timestamp, format_data + "Unix Time")
+        # PrintBasic.print_basic(self.timestamp, format_data + "Unix Time")
         PrintBasic.print_basic(self.high, format_data + "High")
         PrintBasic.print_basic(self.low, format_data + "Low")
         PrintBasic.print_basic(self.open, format_data + "Open")

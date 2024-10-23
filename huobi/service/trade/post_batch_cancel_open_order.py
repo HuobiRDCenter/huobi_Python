@@ -17,9 +17,3 @@ class PostBatchCancelOpenOrderService:
             return default_parse(data, BatchCancelCount)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, channel, self.params, parse)
-
-
-
-
-
-

@@ -5,7 +5,6 @@ from huobi.model.margin import *
 from huobi.utils import *
 
 
-
 class GetMarginAccountBalanceService:
 
     def __init__(self, params):
@@ -24,9 +23,3 @@ class GetMarginAccountBalanceService:
             return account_balance_list
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
-
-
-
-
-
-

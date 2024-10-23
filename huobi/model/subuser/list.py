@@ -15,5 +15,3 @@ class List:
             for accountIds_obj in self.accountIds:
                 accountIds_obj.print_object("\t")
                 print()
-
-

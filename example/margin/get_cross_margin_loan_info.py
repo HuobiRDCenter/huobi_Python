@@ -5,4 +5,3 @@ from huobi.utils import *
 margin_client = MarginClient(api_key=g_api_key, secret_key=g_secret_key)
 list_obj = margin_client.get_cross_margin_loan_info()
 LogInfo.output_list(list_obj)
-

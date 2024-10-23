@@ -17,7 +17,6 @@ class CandlestickEvent:
         self.ts = 0
         self.tick = Candlestick()
 
-
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.ts, format_data + "Unix Time")

@@ -12,5 +12,3 @@ class Updated:
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.success, format_data + "success")
         PrintBasic.print_basic(self.time, format_data + "time")
-
-

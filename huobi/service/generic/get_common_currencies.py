@@ -17,9 +17,3 @@ class GetCommonCurrenciesService:
             return default_parse_list_dict(data_list, CommonCurrencies, [])
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET, channel, self.params, parse)
-
-
-
-
-
-

@@ -43,7 +43,7 @@ class Order:
         self.client_order_id = ""
         self.stop_price = ""
         self.next_time = 0
-        self.operator=""
+        self.operator = ""
 
     @staticmethod
     def json_parse(json_data):
@@ -77,7 +77,7 @@ class Order:
         PrintBasic.print_basic(self.filled_amount, format_data + "Filled Amount")
         PrintBasic.print_basic(self.filled_cash_amount, format_data + "Filled Cash Amount")
         PrintBasic.print_basic(self.filled_fees, format_data + "Filled Fees")
-        #PrintBasic.print_basic(self.account_type, format_data + "Account Type")
+        # PrintBasic.print_basic(self.account_type, format_data + "Account Type")
         PrintBasic.print_basic(self.source, format_data + "Order Source")
         PrintBasic.print_basic(self.canceled_source, format_data + "Canceled Source")
         PrintBasic.print_basic(self.state, format_data + "Order State")
@@ -85,4 +85,3 @@ class Order:
         PrintBasic.print_basic(self.stop_price, format_data + "Stop Price")
         PrintBasic.print_basic(self.operator, format_data + "Operator")
         PrintBasic.print_basic(self.next_time, format_data + "Next Time")
-

@@ -17,6 +17,7 @@ class Withdraw:
         updated_at: The UNIX formatted timestamp in UTC for the transfer's latest update.
         state: The withdraw state of this transfer.
     """
+
     def __init__(self):
         self.id = 0
         self.type = DepositWithdraw.WITHDRAW
@@ -30,7 +31,6 @@ class Withdraw:
         self.created_at = 0
         self.updated_at = 0
         self.state = WithdrawState.INVALID
-
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic

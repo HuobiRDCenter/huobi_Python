@@ -1,4 +1,3 @@
-
 class LoanInfo:
     """
     The margin rate define.

@@ -16,6 +16,7 @@ class DepositHistoryItem:
          created_timestamp: The UNIX formatted timestamp in UTC for the transfer creation.
          updated_timestamp: The UNIX formatted timestamp in UTC for the transfer's latest update.
      """
+
     def __init__(self):
         self.id = 0
         self.currency = ""
