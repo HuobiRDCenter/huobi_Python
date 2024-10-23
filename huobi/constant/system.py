@@ -1,5 +1,6 @@
 
-HUOBI_URL_PRO = "https://api.huobi.pro"
+HUOBI_URL_PRO = "http://api.huobi.pro"
+
 HUOBI_URL_VN = "https://api.huobi.vn"
 HUOBI_URL_SO = "https://api.huobi.so"
 

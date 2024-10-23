@@ -348,6 +348,25 @@ class TradeClient(object):
         from huobi.service.trade.post_create_order import PostCreateOrderService
         return PostCreateOrderService(params).request(**self.__kwargs)
 
+    # 合约下单
+    def create_order2(self, contract_code =None, direction=None, offset=None, price=None,
+                     lever_rate = None, volume= None, order_price_type= None) -> int:
+
+
+        params = {
+  "contract_code": "BTC-USDT",
+  "direction": "buy",
+  "offset": "both",
+  "price": 0.16,
+  "lever_rate": 5,
+  "volume": 1,
+  "order_price_type": "limit"
+}
+        from huobi.service.trade.post_create_order import PostCreateOrderService
+        return PostCreateOrderService(params).request2(**self.__kwargs)
+
+
+
     def create_spot_order(self, symbol: 'str', account_id: 'int', order_type: 'OrderType', amount: 'float',
                           price: 'float', client_order_id=None, stop_price=None,
                           operator=None) -> int:

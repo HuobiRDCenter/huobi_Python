@@ -26,6 +26,7 @@ def create_signature(api_key, secret_key, method, url, builder):
     qs0 = '&'.join(['%s=%s' % (key, parse.quote(builder.param_map[key], safe='')) for key in keys])
     # 请求方法，域名，路径，参数 后加入`\n`
     payload0 = '%s\n%s\n%s\n%s' % (method, host, path, qs0)
+
     dig = hmac.new(secret_key.encode('utf-8'), msg=payload0.encode('utf-8'), digestmod=hashlib.sha256).digest()
     # 进行base64编码
     s = base64.b64encode(dig).decode()
