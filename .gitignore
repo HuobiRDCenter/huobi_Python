@@ -1,0 +1,16 @@
+### Venv ###
+venv/
+
+### Build File ###
+.idea/
+build/
+dist/
+huobi_client.egg-info/
+
+### Python ###
+__pycache__
+*.pyc
+huobi/privateconfig.py
+
+### Other ###
+.DS_Store
