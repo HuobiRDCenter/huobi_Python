@@ -137,7 +137,6 @@ class SubuserClient(object):
 
     # 获取子用户列表
     def get_subuser_user_list(self, from_id: 'int' = None):
-
         params = {
             "fromId": from_id
         }
@@ -175,7 +174,7 @@ class SubuserClient(object):
 
     # 资产划转（母子用户之间）
     def transfer_between_parent_and_subuser(self, sub_uid: 'int', currency: 'str', amount: 'float',
-                                            transfer_type: 'TransferMasterType', client_order_id: 'str'=None):
+                                            transfer_type: 'TransferMasterType', client_order_id: 'str' = None):
         """
         Transfer Asset between Parent and Sub Account.
 
@@ -302,8 +301,8 @@ class SubuserClient(object):
         return PostSubuserApikeyGenerationService(params).request(**self.__kwargs)
 
     # 用户主动授信
-    def post_active_credit(self, transaction_id: 'int', currency: 'str', amount: 'float', account_id: 'int', user_id: 'int'):
-
+    def post_active_credit(self, transaction_id: 'int', currency: 'str', amount: 'float', account_id: 'int',
+                           user_id: 'int'):
         check_should_not_none(transaction_id, "transactionId")
         check_should_not_none(currency, "currency")
         check_should_not_none(amount, "amount")
@@ -319,5 +318,3 @@ class SubuserClient(object):
         }
         from huobi.service.subuser.post_active_credit import PostActiveCreditService
         return PostActiveCreditService(params).request(**self.__kwargs)
-
-

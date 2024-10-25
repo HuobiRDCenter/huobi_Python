@@ -12,6 +12,7 @@ class PriceDepth:
         asks: The list of the ask depth. The content is DepthEntry class.
 
     """
+
     def __init__(self):
         self.ts = 0
         self.version = 0
@@ -48,7 +49,7 @@ class PriceDepth:
             for entry in self.bids:
                 i = i + 1
                 print(format_data, str(i) + ": price: " + str(entry.price) + ", amount: " + str(entry.amount))
-                #print()
+                # print()
 
         if len(self.asks):
             i = 0
@@ -56,4 +57,4 @@ class PriceDepth:
             for entry in self.asks:
                 i = i + 1
                 print(format_data, str(i) + ": price: " + str(entry.price) + ", amount: " + str(entry.amount))
-                #print()
+                # print()

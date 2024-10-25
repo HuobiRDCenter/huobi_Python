@@ -25,9 +25,3 @@ class GetCommonSymbolsService:
             return ret_list
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET, channel, self.params, parse)
-
-
-
-
-
-

@@ -1,4 +1,3 @@
-
 class SubuserCreation:
     """
     The trade information with price and amount etc.
@@ -22,6 +21,3 @@ class SubuserCreation:
         PrintBasic.print_basic(self.uid, format_data + "uid")
         PrintBasic.print_basic(self.err_code, format_data + "errCode")
         PrintBasic.print_basic(self.err_message, format_data + "errMessage")
-
-
-

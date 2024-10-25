@@ -18,9 +18,3 @@ class PostCreateWithdrawService:
             return default_parse_data_as_long(dict_data, None)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, channel, self.params, parse)
-
-
-
-
-
-

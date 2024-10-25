@@ -16,9 +16,3 @@ class GetHistoryOrdersService:
             return Order.json_parse_list(data_list)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
-
-
-
-
-
-

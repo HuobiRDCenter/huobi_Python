@@ -1,4 +1,3 @@
-
 class AccountWithdrawClientOrderId:
     def __init__(self):
         self.address = ""
@@ -46,5 +45,3 @@ class AccountWithdrawClientOrderId:
         PrintBasic.print_basic(self.updated_at, format_data + "updated_at")
         PrintBasic.print_basic(self.user_id, format_data + "user_id")
         PrintBasic.print_basic(self.wallet_confirm, format_data + "wallet_confirm")
-
-

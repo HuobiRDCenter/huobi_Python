@@ -23,8 +23,8 @@ class EtfClient(object):
         :return: The etf configuration information.
         """
         check_symbol(etf_name)
-        params={
-            "etf_name":etf_name
+        params = {
+            "etf_name": etf_name
         }
 
         from huobi.service.etf.get_etf_swap_config import GetEtfSwapConfigService
@@ -38,10 +38,10 @@ class EtfClient(object):
         :return: The swap history.
         """
         check_symbol(etf_name)
-        params={
-            "etf_name":etf_name,
-            "offset" : offset,
-            "limit" : size
+        params = {
+            "etf_name": etf_name,
+            "offset": offset,
+            "limit": size
         }
 
         from huobi.service.etf.get_etf_swap_list import GetEtfSwapListService
@@ -59,8 +59,8 @@ class EtfClient(object):
         check_should_not_none(amount, "amount")
 
         params = {
-            "etf_name" : etf_name,
-            "amount" : amount
+            "etf_name": etf_name,
+            "amount": amount
         }
 
         from huobi.service.etf.post_etf_swap_in import PostEftSwapInService
@@ -85,4 +85,3 @@ class EtfClient(object):
 
         from huobi.service.etf.post_etf_swap_out import PostEtfSwapOutService
         return PostEtfSwapOutService(params).request(**self.__kwargs)
-

@@ -323,7 +323,8 @@ class TradeClient(object):
 
     # 下单
     def create_order(self, symbol: 'str', account_id: 'int', order_type: 'OrderType', amount: 'float',
-                     price: 'float' = None, source: 'str' = None, self_match_prevent: 'int' = None, client_order_id=None,
+                     price: 'float' = None, source: 'str' = None, self_match_prevent: 'int' = None,
+                     client_order_id=None,
                      stop_price=None, operator=None) -> int:
         """
         Make an order in huobi.
@@ -347,6 +348,22 @@ class TradeClient(object):
                                                price, source, self_match_prevent, client_order_id, stop_price, operator)
         from huobi.service.trade.post_create_order import PostCreateOrderService
         return PostCreateOrderService(params).request(**self.__kwargs)
+
+    # 合约下单
+    def create_order2(self, contract_code=None, direction=None, offset=None, price=None,
+                      lever_rate=None, volume=None, order_price_type=None) -> int:
+
+        params = {
+            "contract_code": "BTC-USDT",
+            "direction": "buy",
+            "offset": "both",
+            "price": 0.16,
+            "lever_rate": 5,
+            "volume": 1,
+            "order_price_type": "limit"
+        }
+        from huobi.service.trade.post_create_order import PostCreateOrderService
+        return PostCreateOrderService(params).request2(**self.__kwargs)
 
     def create_spot_order(self, symbol: 'str', account_id: 'int', order_type: 'OrderType', amount: 'float',
                           price: 'float', client_order_id=None, stop_price=None,
@@ -389,7 +406,7 @@ class TradeClient(object):
         return PostCancelOrderService(params).request(**self.__kwargs)
 
     # 批量撤销指定订单
-    def cancel_orders(self, order_id_list = None, client_order_ids = None) -> BatchCancelResult:
+    def cancel_orders(self, order_id_list=None, client_order_ids=None) -> BatchCancelResult:
         """
         Submit cancel request for cancelling multiple orders.
 

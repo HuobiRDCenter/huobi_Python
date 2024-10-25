@@ -1,4 +1,3 @@
-
 class MarketDetailMerged:
     """
     The best bid/ask consisting of price and amount.

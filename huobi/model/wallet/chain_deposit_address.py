@@ -1,4 +1,3 @@
-
 class ChainDepositAddress:
     """
     The deposit address.
@@ -9,14 +8,13 @@ class ChainDepositAddress:
         addressTag: Deposit address tag.
         chain: Block chain name.
     """
+
     def __init__(self):
         self.userId = 0
         self.currency = ""
         self.address = ""
         self.addressTag = ""
         self.chain = ""
-
-
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic

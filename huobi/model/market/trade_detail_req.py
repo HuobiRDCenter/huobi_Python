@@ -1,5 +1,3 @@
-
-
 class TradeDetailReq:
     """
     The trade received by subscription of trade.

@@ -17,6 +17,3 @@ class GetSubUserDepositAddressService:
             return default_parse_list_dict(json_data_list, ChainDepositAddress, [])
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
-
-
-

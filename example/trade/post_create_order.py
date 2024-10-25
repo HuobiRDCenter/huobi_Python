@@ -4,7 +4,6 @@ from huobi.utils import *
 
 symbol_test = "eosusdt"
 
-
 account_id = g_account_id
 
 trade_client = TradeClient(api_key=g_api_key, secret_key=g_secret_key)

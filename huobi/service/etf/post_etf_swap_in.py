@@ -4,7 +4,6 @@ from huobi.utils import *
 from huobi.model.etf import *
 
 
-
 class PostEftSwapInService:
 
     def __init__(self, params):
@@ -17,12 +16,3 @@ class PostEftSwapInService:
             return default_parse_fill_directly(dict_data, EtfSwapInOut)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, channel, self.params, parse)
-
-
-
-
-
-
-
-
-

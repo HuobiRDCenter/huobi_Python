@@ -27,7 +27,7 @@ class GenericClientPerformance(GenericClient):
         """
 
         ret = ExchangeInfo()
-        ret.symbol_list, req_cost_1, cost_manual_1  = self.get_exchange_symbols()
+        ret.symbol_list, req_cost_1, cost_manual_1 = self.get_exchange_symbols()
         ret.currencies, req_cost_2, cost_manual_2 = self.get_exchange_currencies()
         return ret, req_cost_1 + req_cost_2, cost_manual_1 + cost_manual_2
 
@@ -42,4 +42,3 @@ if __name__ == "__main__":
     # list_obj, req_cost, cost_manual = generic_client.get_exchange_symbols()
     #
     # print(len(list_obj), req_cost, cost_manual)
-

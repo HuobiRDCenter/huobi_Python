@@ -26,6 +26,3 @@ class GeneralRepayLoanResult:
         PrintBasic.print_basic(self.repayTime, format_data + "repayTime")
 
         print()
-
-
-

@@ -10,16 +10,9 @@ class PostOrderAutoPlaceService:
         self.params = params
 
     def request(self, **kwargs):
-
         channel = "/v1/order/auto/place"
 
         def parse(dict_data):
             return default_parse(dict_data.get("data", {}), OrderAutoPlace)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, channel, self.params, parse)
-
-
-
-
-
-

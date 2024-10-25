@@ -19,4 +19,3 @@ class LastTradeAndBestQuote:
         self.ask_amount = 0.0
         self.bid_price = 0.0
         self.bid_amount = 0.0
-

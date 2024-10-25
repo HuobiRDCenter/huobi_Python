@@ -16,9 +16,3 @@ class GetPriceDepthService:
             return PriceDepth.json_parse(tick)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET, channel, self.params, parse)
-
-
-
-
-
-

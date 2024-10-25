@@ -4,7 +4,6 @@ from huobi.model.market import *
 from huobi.utils import *
 
 
-
 class GetMarketDetailMergedService:
 
     def __init__(self, params):
@@ -18,9 +17,3 @@ class GetMarketDetailMergedService:
             return default_parse_fill_directly(tick, MarketDetailMerged)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET, channel, self.params, parse)
-
-
-
-
-
-

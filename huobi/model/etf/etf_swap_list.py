@@ -47,8 +47,10 @@ class EtfSwapList:
                 etf_swap_obj.rate = detail.get("rate", 0)
                 etf_swap_obj.fee = detail.get("fee", 0)
                 etf_swap_obj.point_card_amount = detail.get("point_card_amount", 0)
-                etf_swap_obj.used_currency_list = default_parse_list_dict(detail.get("used_currency_list"), UnitPrice, [])
-                etf_swap_obj.obtain_currency_list = default_parse_list_dict(detail.get("obtain_currency_list"), UnitPrice, [])
+                etf_swap_obj.used_currency_list = default_parse_list_dict(detail.get("used_currency_list"), UnitPrice,
+                                                                          [])
+                etf_swap_obj.obtain_currency_list = default_parse_list_dict(detail.get("obtain_currency_list"),
+                                                                            UnitPrice, [])
             return etf_swap_obj
 
         return None
@@ -62,7 +64,6 @@ class EtfSwapList:
                 ret_list.append(item_obj)
 
         return ret_list
-
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
@@ -85,4 +86,3 @@ class EtfSwapList:
             PrintBasic.print_basic("obtain_currency_list as below:")
             for row in self.obtain_currency_list:
                 row.print_object(format_data + "\t")
-

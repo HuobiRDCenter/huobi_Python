@@ -5,7 +5,7 @@ class WebsocketRequest(object):
 
     def __init__(self):
         self.subscription_handler = None
-        self.auto_close = False   # close connection after receive data, for subscribe set False, for request set True
+        self.auto_close = False  # close connection after receive data, for subscribe set False, for request set True
         self.is_trading = False
         self.is_mbp_feed = False
         self.error_handler = None

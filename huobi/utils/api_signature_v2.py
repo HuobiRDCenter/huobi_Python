@@ -9,7 +9,7 @@ from huobi.exception.huobi_api_exception import HuobiApiException
 
 def create_signature_v2(api_key, secret_key, method, url, builder):
     if api_key is None or secret_key is None or api_key == "" or secret_key == "":
-        raise HuobiApiException(HuobiApiException.KEY_MISSING,  "API key and secret key are required")
+        raise HuobiApiException(HuobiApiException.KEY_MISSING, "API key and secret key are required")
 
     timestamp = utc_now()
     builder.put_url("accessKey", api_key)
@@ -37,8 +37,8 @@ def create_signature_v2(api_key, secret_key, method, url, builder):
         "signatureVersion": "2.1",
         "signatureMethod": "HmacSHA256",
         "timestamp": timestamp,
-        "signature":s,
-        "authType":"api"
+        "signature": s,
+        "authType": "api"
     }
 
     builder.put_url("action", "req")
@@ -55,6 +55,7 @@ def create_signature_v2(api_key, secret_key, method, url, builder):
 
     return json.dumps(ret_maps)
     """
+
 
 def utc_now():
     return datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')

@@ -16,9 +16,3 @@ class GetExchangeTimestampService:
             return default_parse_data_as_long(dict_data, None)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET, channel, self.params, parse)
-
-
-
-
-
-

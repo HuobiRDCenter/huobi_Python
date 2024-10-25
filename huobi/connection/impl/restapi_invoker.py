@@ -8,12 +8,14 @@ from huobi.utils.print_mix_object import TypeCheck
 
 session = requests.Session()
 
+
 def check_response(dict_data):
     status = dict_data.get("status", None)
     code = dict_data.get("code", None)
     success = dict_data.get("success", None)
-    if status and len(status):
-        if TypeCheck.is_basic(status): # for normal case
+    # if status and len(status):
+    if status and (status == 'ok' or status == 'error' or status > 0):
+        if TypeCheck.is_basic(status):  # for normal case
             if status == "error":
                 err_code = dict_data.get("err-code", 0)
                 err_msg = dict_data.get("err-msg", "")
@@ -21,8 +23,9 @@ def check_response(dict_data):
                                         "[Executing] " + str(err_code) + ": " + err_msg)
             elif status != "ok":
                 raise HuobiApiException(HuobiApiException.RUNTIME_ERROR,
-                                        "[Invoking] Response is not expected: " + status)
-        elif TypeCheck.is_dict(status): # for https://status.huobigroup.com/api/v2/summary.json in example example/generic/get_system_status.py
+                                        "[Invoking] Response is not expected: " + str(status))
+        elif TypeCheck.is_dict(
+                status):  # for https://status.huobigroup.com/api/v2/summary.json in example example/generic/get_system_status.py
             if dict_data.get("page") and dict_data.get("components"):
                 pass
             else:
@@ -53,24 +56,26 @@ def call_sync(request, is_checked=False):
         response = session.get(request.host + request.url, headers=request.header)
         if is_checked is True:
             return response.text
-        dict_data = json.loads(response.text, encoding="utf-8")
-        # print("call_sync  === recv data : ", dict_data)
+        dict_data = json.loads(response.text)
+        print("call_sync  === recv data : ", dict_data)
         check_response(dict_data)
         return request.json_parser(dict_data)
 
     elif request.method == "POST":
         response = session.post(request.host + request.url, data=json.dumps(request.post_body), headers=request.header)
-        dict_data = json.loads(response.text, encoding="utf-8")
+        # dict_data = json.loads(response.text, encoding="utf-8")
+        dict_data = json.loads(response.text)
         # print("call_sync  === recv data : ", dict_data)
         check_response(dict_data)
         return request.json_parser(dict_data)
+
 
 def call_sync_perforence_test(request, is_checked=False):
     if request.method == "GET":
         inner_start_time = time.time()
         # print("call_sync_perforence_test url : ", request.host + request.url)
         response = session.get(request.host + request.url, headers=request.header)
-        #print("call_sync_perforence_test data :", response.text)
+        # print("call_sync_perforence_test data :", response.text)
         inner_end_time = time.time()
         cost_manual = round(inner_end_time - inner_start_time, 6)
         req_cost = response.elapsed.total_seconds()

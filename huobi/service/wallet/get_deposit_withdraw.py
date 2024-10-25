@@ -22,9 +22,3 @@ class GetDepositWithdrawService:
             return []
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
-
-
-
-
-
-

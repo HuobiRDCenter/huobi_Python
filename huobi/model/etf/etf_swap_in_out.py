@@ -1,5 +1,3 @@
-
-
 class EtfSwapInOut:
     """
     :member

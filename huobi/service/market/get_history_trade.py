@@ -27,9 +27,3 @@ class GetHistoryTradeService:
             return trade_list_ret
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET, channel, self.params, parse)
-
-
-
-
-
-

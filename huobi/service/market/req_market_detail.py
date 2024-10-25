@@ -23,9 +23,6 @@ class ReqMarketDetailService:
             return default_parse(dict_data, MarketDetailReq, MarketDetail)
 
         WebSocketReqClient(**kwargs).execute_subscribe_v1(subscription,
-                                            parse,
-                                            callback,
-                                            error_handler)
-
-
-
+                                                          parse,
+                                                          callback,
+                                                          error_handler)

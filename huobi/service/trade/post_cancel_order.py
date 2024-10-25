@@ -17,10 +17,5 @@ class PostCancelOrderService:
 
         def parse(dict_data):
             return default_parse_data_as_long(dict_data, None)
+
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, get_channel(), self.params, parse)
-
-
-
-
-
-

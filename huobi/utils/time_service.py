@@ -19,4 +19,3 @@ def convert_cst_in_millisecond_to_utc(time_in_ms):
         return time_in_ms - 8 * 60 * 60 * 1000
     else:
         return 0
-

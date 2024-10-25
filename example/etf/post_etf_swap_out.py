@@ -3,19 +3,3 @@ from huobi.constant import *
 
 etf_client = EtfClient(api_key=g_api_key, secret_key=g_secret_key)
 etf_client.post_etf_swap_out("hb10", 1000)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

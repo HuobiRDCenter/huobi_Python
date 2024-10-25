@@ -1,5 +1,3 @@
-
-
 class CommonChains:
 
     def __init__(self):
@@ -38,7 +36,6 @@ class CommonChains:
         self.withdraw_tips_desc = ""
         self.suspend_visible_desc = ""
 
-
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.adt, format_data + "adt")
@@ -75,7 +72,3 @@ class CommonChains:
         PrintBasic.print_basic(self.fn, format_data + "fn")
         PrintBasic.print_basic(self.withdraw_tips_desc, format_data + "withdraw_tips_desc")
         PrintBasic.print_basic(self.suspend_visible_desc, format_data + "suspend_visible_desc")
-
-
-
-

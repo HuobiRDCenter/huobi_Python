@@ -8,5 +8,3 @@ LogInfo.output(transfer_id)
 
 transfer_id = margin_client.post_cross_margin_transfer_out(currency="eos", amount=5)
 LogInfo.output(transfer_id)
-
-

@@ -1,6 +1,5 @@
-
-
 from huobi.model.market.depth_entry import DepthEntry
+
 
 class Mbp:
     """
@@ -13,6 +12,7 @@ class Mbp:
         asks: The list of the ask depth. The content is DepthEntry class.
 
     """
+
     def __init__(self):
         self.seqNum = 0
         self.prevSeqNum = 0
@@ -24,7 +24,8 @@ class Mbp:
         mbp = Mbp()
         bid_list = list()
         mbp.seqNum = json_data.get("seqNum", 0)
-        mbp.prevSeqNum = json_data.get("prevSeqNum", 0)  # prevSeqNum only for increased subscribe, request doesn't have this value
+        mbp.prevSeqNum = json_data.get("prevSeqNum",
+                                       0)  # prevSeqNum only for increased subscribe, request doesn't have this value
         for item in json_data.get("bids", []):
             depth_entry = DepthEntry()
             depth_entry.price = item[0]
@@ -40,8 +41,6 @@ class Mbp:
         mbp.asks = ask_list
 
         return mbp
-
-
 
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic

@@ -1,5 +1,6 @@
 from huobi.constant import *
 
+
 class Chain:
     """
     The Huobi Chain.

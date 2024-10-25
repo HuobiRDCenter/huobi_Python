@@ -15,9 +15,3 @@ class GetExchangeCurrenciesService:
             return data_list if len(data_list) else []
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET, channel, self.params, parse)
-
-
-
-
-
-

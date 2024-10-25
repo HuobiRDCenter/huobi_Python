@@ -1,4 +1,3 @@
-
 class MockWebsocketConnection:
     def __init__(self, request):
         self.request = request
@@ -9,5 +8,3 @@ class MockWebsocketConnection:
 
     def pop_output_message(self):
         return self.send_data_buffer.pop(0)
-
-

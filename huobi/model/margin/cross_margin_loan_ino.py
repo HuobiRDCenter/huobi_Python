@@ -1,5 +1,5 @@
-
 from huobi.model.margin.loan_ino import LoanInfo
+
 
 class CrossMarginLoanInfo(LoanInfo):
     def __init__(self):

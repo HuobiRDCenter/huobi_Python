@@ -1,9 +1,7 @@
-
 from huobi.utils import *
 
 from huobi.connection.websocket_req_client import *
 from huobi.model.account import *
-
 
 
 class ReqAccountBalanceService:
@@ -12,6 +10,7 @@ class ReqAccountBalanceService:
 
     def subscribe(self, callback, error_handler, **kwargs):
         client_req_id = self.params["client_req_id"]
+
         def subscription(connection):
             connection.send(request_account_list_channel(client_req_id))
 
@@ -25,10 +24,7 @@ class ReqAccountBalanceService:
             return req_obj
 
         WebSocketReqClient(**kwargs).execute_subscribe_v1(subscription,
-                                            parse,
-                                            callback,
-                                            error_handler,
-                                            is_trade=True)
-
-
-
+                                                          parse,
+                                                          callback,
+                                                          error_handler,
+                                                          is_trade=True)

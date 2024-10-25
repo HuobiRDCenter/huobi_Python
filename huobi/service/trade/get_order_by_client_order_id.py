@@ -16,9 +16,3 @@ class GetOrderByClientOrderIdService:
             return Order.json_parse(data_dict)
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
-
-
-
-
-
-

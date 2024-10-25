@@ -38,7 +38,6 @@ class GeneralRepayLoanRecord:
 
 
 class Transact:
-
     """
     The general repay loan record information.
 
@@ -56,4 +55,3 @@ class Transact:
         self.repaidInterest = None
         self.paidHt = None
         self.paidPoint = None
-

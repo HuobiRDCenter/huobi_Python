@@ -1,31 +1,38 @@
 # Huobi Python SDK For Spot v3
 
-This is Huobi Python SDK v3, you can import to your python project and use this SDK to query all market data, trading and manage your account. The SDK supports RESTful API invoking, and concurrently subscribing the market, account and order update from the Websocket connection.
+This is Huobi Python SDK v3, you can import to your python project and use this SDK to query all market data, trading
+and manage your account. The SDK supports RESTful API invoking, and concurrently subscribing the market, account and
+order update from the Websocket connection.
 
-If you already use SDK v1 or v2, it is strongly suggested migrate to v3 as we refactor the implementation to make it simpler and easy to maintain. The SDK v3 is completely consistent with the API documentation of the new HTX open platform. Compared to SDK versions v1 and v2, due to changes in parameters of many interfaces, in order to match the latest interface parameter situation, v3 version has made adjustments to parameters of more than 80 interfaces to ensure that requests can be correctly initiated and accurate response data can be obtained. Meanwhile, the v3 version has added over 130 new interfaces available for use, greatly expanding the number of available interfaces. We will stop the maintenance of v2 in the near future. Please refer to the instruction on how to migrate v1 or v2 to v3 in section [Migrate from v1 or v2](#Migrate-from-v1-or-v2)
-
+If you already use SDK v1 or v2, it is strongly suggested migrate to v3 as we refactor the implementation to make it
+simpler and easy to maintain. The SDK v3 is completely consistent with the API documentation of the new HTX open
+platform. Compared to SDK versions v1 and v2, due to changes in parameters of many interfaces, in order to match the
+latest interface parameter situation, v3 version has made adjustments to parameters of more than 80 interfaces to ensure
+that requests can be correctly initiated and accurate response data can be obtained. Meanwhile, the v3 version has added
+over 130 new interfaces available for use, greatly expanding the number of available interfaces. We will stop the
+maintenance of v2 in the near future. Please refer to the instruction on how to migrate v1 or v2 to v3 in
+section [Migrate from v1 or v2](#Migrate-from-v1-or-v2)
 
 ## Table of Contents
 
 - [Quick Start](#Quick-Start)
 - [Usage](#Usage)
-  - [Folder structure](#Folder-structure)
-  - [Run Examples](#Run-examples)
-  - [Client](#client)
-  - [Migrate from v1 or v2](#Migrate-from-v1-or-v2)
+    - [Folder structure](#Folder-structure)
+    - [Run Examples](#Run-examples)
+    - [Client](#client)
+    - [Migrate from v1 or v2](#Migrate-from-v1-or-v2)
 - [Request example](#Request-example)
-  - [Reference data](#Reference-data)
-  - [Market data](#Market-data)
-  - [Account](#account)
-  - [Wallet](#wallet)
-  - [Trading](#trading)
-  - [Margin Loan](#margin-loan)
+    - [Reference data](#Reference-data)
+    - [Market data](#Market-data)
+    - [Account](#account)
+    - [Wallet](#wallet)
+    - [Trading](#trading)
+    - [Margin Loan](#margin-loan)
 - [Subscription example](#Subscription-example)
-  - [Subscribe trade update](#Subscribe-trade-update)
-  - [Subscribe candlestick update](#subscribe-candlestick-update)
-  - [Subscribe order update](#Subscribe-order-update)
-  - [Subscribe account change](#subscribe-account-change)
-
+    - [Subscribe trade update](#Subscribe-trade-update)
+    - [Subscribe candlestick update](#subscribe-candlestick-update)
+    - [Subscribe order update](#Subscribe-order-update)
+    - [Subscribe account change](#subscribe-account-change)
 
 ## Quick Start
 
@@ -50,30 +57,34 @@ LogInfo.output_list(list_obj)
 
 ## Usage
 
-After above section, this SDK should be already download to your local machine, this section introduce this SDK and how to use it correctly.
+After above section, this SDK should be already download to your local machine, this section introduce this SDK and how
+to use it correctly.
 
 ### Folder structure
 
 This is the folder and package structure of SDK source code and the description
 
 - **huobi**: The core of the SDK
-  - **client**: The client that are responsible to access data, this is the external interface layer.
-  - **connection**: Responsible to manage the remote server connection
-  - **constant**: The constant configuration
-  - **exception**: The wrapped exception
-  - **model**: The server returned data model
-  - **service**: The internal implementation for each **client**.
-  - **utils**:The utility classes, including signature, json parser, logging etc.
+    - **client**: The client that are responsible to access data, this is the external interface layer.
+    - **connection**: Responsible to manage the remote server connection
+    - **constant**: The constant configuration
+    - **exception**: The wrapped exception
+    - **model**: The server returned data model
+    - **service**: The internal implementation for each **client**.
+    - **utils**:The utility classes, including signature, json parser, logging etc.
 - **performance**: This is for internal performance testing
 - **tests**: This is for internal functional testing
-- **example**: The main package is defined here, it provides the examples how to use **client** instance to access API and read response.
+- **example**: The main package is defined here, it provides the examples how to use **client** instance to access API
+  and read response.
 
 ### Run examples
 
-This SDK provides examples that under **/example** folder, if you want to run the examples to access private data, you need below additional steps:
+This SDK provides examples that under **/example** folder, if you want to run the examples to access private data, you
+need below additional steps:
 
 1. Create an **API Key** first from Huobi official website
-2. Create **privateconfig.py** into your **huobi** folder. The purpose of this file is to prevent submitting SecretKey into repository by accident, so this file is already added in the *.gitignore* file. 
+2. Create **privateconfig.py** into your **huobi** folder. The purpose of this file is to prevent submitting SecretKey
+   into repository by accident, so this file is already added in the *.gitignore* file.
 3. Assign your API access key and secret key to as below:
 
 ```python
@@ -87,9 +98,11 @@ Regarding the difference between public data and private data you can find detai
 
 ### Client
 
-In this SDK, the client is the struct to access the Huobi API. In order to isolate the private data with public data, and isolated different kind of data, the client category is designated to match the API category. 
+In this SDK, the client is the struct to access the Huobi API. In order to isolate the private data with public data,
+and isolated different kind of data, the client category is designated to match the API category.
 
-All the client is listed in below table. Each client is very small and simple, it is only responsible to operate its related data, you can pick up multiple clients to create your own application based on your business.
+All the client is listed in below table. Each client is very small and simple, it is only responsible to operate its
+related data, you can pick up multiple clients to create your own application based on your business.
 
 | Data Category | Client        | Privacy | API Protocol       |
 | ------------- | ------------- | ------- | ------------------ |
@@ -111,7 +124,8 @@ The client class support customized host so that you can define your own host, r
 
 There are two types of privacy that is correspondent with privacy of API:
 
-**Public client**: It invokes public API to get public data (Generic data and Market data), therefore you can create a new instance without applying an API Key.
+**Public client**: It invokes public API to get public data (Generic data and Market data), therefore you can create a
+new instance without applying an API Key.
 
 ```python
 // Create a GenericClient instance
@@ -121,7 +135,8 @@ generic_client = GenericClient()
 market_client = MarketClient(url="https://api-aws.huobi.pro")
 ```
 
-**Private client**: It invokes private API to access private data, you need to follow the API document to apply an API Key first, and pass the API Key to the init function
+**Private client**: It invokes private API to access private data, you need to follow the API document to apply an API
+Key first, and pass the API Key to the init function
 
 ```python
 // Create an AccountClient instance with APIKey
@@ -139,12 +154,14 @@ There are two protocols of API, Rest and WebSocket
 
 **Rest**: It invokes Rest API and get once-off response, it has two basic types of method: GET and POST
 
-**WebSocket**: It establishes WebSocket connection with server and data will be pushed from server actively. There are two types of method for WebSocket client:
+**WebSocket**: It establishes WebSocket connection with server and data will be pushed from server actively. There are
+two types of method for WebSocket client:
 
 - Request method: The method name starts with "Request-", it will receive the once-off data after sending the request.
 - Subscription: The method name starts with "Subscribe-", it will receive update after sending the subscription.
 
-In this python SDK, some clients support both Rest and WebSocket protocols, the method name are prefixed and can be easily identified, take TradeClient as an example, the method prefix and their examples are:
+In this python SDK, some clients support both Rest and WebSocket protocols, the method name are prefixed and can be
+easily identified, take TradeClient as an example, the method prefix and their examples are:
 
 - **get**: get_order, get_matchresult
 - **post**: post_create_order, post_batch_cancel_open_order
@@ -157,15 +174,28 @@ In this python SDK, some clients support both Rest and WebSocket protocols, the 
 
 The major difference between v1 and v2 is that the client category.
 
-In SDK v1, the client is categorized as two protocol, request client and subscription client. For example, for Rest API, you can operate everything in request client. It is simple to choose which client you use, however, when you have a client instance, you will have dozens of method, and it is not easy to choose the proper method.
+In SDK v1, the client is categorized as two protocol, request client and subscription client. For example, for Rest API,
+you can operate everything in request client. It is simple to choose which client you use, however, when you have a
+client instance, you will have dozens of method, and it is not easy to choose the proper method.
 
-The thing is different in SDK v2, the client class is categorized as seven data categories, so that the responsibility for each client is clear. For example, if you only need to access market data, you can use MarketClient without applying API Key, and all the market data can be retrieved from MarketClient. If you want to operate your order, then you know you should use TradeClient and all the order related methods are there. Since the category is exactly same as the API document, so it is easy to find the relationship between API and SDK. In SDK v2, each client is smaller and simpler, which means it is easier to maintain and less bugs.
+The thing is different in SDK v2, the client class is categorized as seven data categories, so that the responsibility
+for each client is clear. For example, if you only need to access market data, you can use MarketClient without applying
+API Key, and all the market data can be retrieved from MarketClient. If you want to operate your order, then you know
+you should use TradeClient and all the order related methods are there. Since the category is exactly same as the API
+document, so it is easy to find the relationship between API and SDK. In SDK v2, each client is smaller and simpler,
+which means it is easier to maintain and less bugs.
 
-Compared to SDK versions v1 and v2, due to changes and updates in the out and in parameters of many interfaces, in order to match the latest interface in and out parameter situation, v3 version has made adjustments and updates to the out and in parameters of more than 80 interfaces to ensure that requests can be correctly initiated and accurate response data can be obtained. Meanwhile, the v3 version has added over 130 new interfaces available for use, greatly expanding the number of available interfaces.
+Compared to SDK versions v1 and v2, due to changes and updates in the out and in parameters of many interfaces, in order
+to match the latest interface in and out parameter situation, v3 version has made adjustments and updates to the out and
+in parameters of more than 80 interfaces to ensure that requests can be correctly initiated and accurate response data
+can be obtained. Meanwhile, the v3 version has added over 130 new interfaces available for use, greatly expanding the
+number of available interfaces.
 
 #### How to migrate
 
-You don't need to change your business logic, what you need is to find the v1 or v2 request client and subscription client, and replace with the proper v3 client. The additional cost is that you need to have additional initialization for each v3 client.
+You don't need to change your business logic, what you need is to find the v1 or v2 request client and subscription
+client, and replace with the proper v3 client. The additional cost is that you need to have additional initialization
+for each v3 client.
 
 ## Request example
 

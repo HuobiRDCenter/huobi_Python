@@ -24,9 +24,6 @@ class SubTradeDetailService:
             return trade_detail_event
 
         SubscribeClient(**kwargs).execute_subscribe_v1(subscription,
-                                            parse,
-                                            callback,
-                                            error_handler)
-
-
-
+                                                       parse,
+                                                       callback,
+                                                       error_handler)

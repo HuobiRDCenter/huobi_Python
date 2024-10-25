@@ -1,5 +1,6 @@
 from huobi.constant import *
 
+
 class P:
 
     def __init__(self):
@@ -12,5 +13,3 @@ class P:
         PrintBasic.print_basic(self.id, format_data + "id")
         PrintBasic.print_basic(self.name, format_data + "name")
         PrintBasic.print_basic(self.weight, format_data + "weight")
-
-

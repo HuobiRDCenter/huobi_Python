@@ -1,5 +1,5 @@
-
 from huobi.model.market.pricedepth import PriceDepth
+
 
 class PriceDepthReq:
     """
@@ -12,6 +12,7 @@ class PriceDepthReq:
         asks: The list of the ask depth. The content is DepthEntry class.
 
     """
+
     def __init__(self):
         self.rep = ""
         self.data = PriceDepth()

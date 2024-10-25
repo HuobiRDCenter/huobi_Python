@@ -16,9 +16,3 @@ class PostCrossMarginTransferOutService:
             return transfer_id
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.POST_SIGN, channel, self.params, parse)
-
-
-
-
-
-

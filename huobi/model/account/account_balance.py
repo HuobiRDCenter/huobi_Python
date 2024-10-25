@@ -54,5 +54,5 @@ class AccountBalance:
         print()
         if len(self.list):
             for row in self.list:
-                row.print_object(format_data+"\t")
+                row.print_object(format_data + "\t")
                 print()

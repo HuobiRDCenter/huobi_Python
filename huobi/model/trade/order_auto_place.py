@@ -10,6 +10,3 @@ class OrderAutoPlace:
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.order_id, format_data + "order_id")
-
-
-

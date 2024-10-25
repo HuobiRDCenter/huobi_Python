@@ -19,7 +19,6 @@ list_obj = margin_client.get_margin_loan_orders(symbol="eosusdt", states=LoanOrd
 LogInfo.output("step 3: loaning order information")
 LogInfo.output_list(list_obj)
 
-
 list_obj = margin_client.get_margin_loan_orders(symbol="eosusdt")
 LogInfo.output("step 4: loan order history")
 LogInfo.output_list(list_obj)

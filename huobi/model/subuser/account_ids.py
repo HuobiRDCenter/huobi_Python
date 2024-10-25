@@ -10,6 +10,3 @@ class AccountIds:
         PrintBasic.print_basic(self.accountId, format_data + "accountId")
         PrintBasic.print_basic(self.subType, format_data + "subType")
         PrintBasic.print_basic(self.accountStatus, format_data + "accountStatus")
-
-
-

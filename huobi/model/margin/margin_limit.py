@@ -11,8 +11,3 @@ class MarginLimit:
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.currency, format_data + "currency")
         PrintBasic.print_basic(self.maxHoldings, format_data + "maxHoldings")
-
-
-
-
-

@@ -1,6 +1,3 @@
-
-
-
 class BatchCancelCount:
     """
     The result of batch cancel operation.

@@ -6,7 +6,7 @@ from huobi.constant import *
 from huobi.utils import *
 
 from huobi.exception.huobi_api_exception import HuobiApiException
-
+from huobi.utils.api_signature_ED25519 import create_signatureED25519
 
 
 class RestApiSyncClient(object):
@@ -63,6 +63,33 @@ class RestApiSyncClient(object):
         request.url = url + builder.build_url()
         return request
 
+    def __create_request_by_post_with_signatureED25519(self, url, builder):
+        request = RestApiRequest()
+        request.method = "POST"
+        request.host = self.__server_url
+        create_signatureED25519(self.__api_key, self.__secret_key, request.method, request.host + url, builder)
+        request.header.update({'Content-Type': 'application/json', "x-connecting-ip": "192.2.12.19",
+                               'HB-REAL-IP': '192.2.12.19', 'X-Forwarded-For': '192.2.12.19',
+                               'X-Real-IP': '192.2.12.19'})
+
+        if (len(builder.post_list)):  # specify for case : /v1/order/batch-orders
+            request.post_body = builder.post_list
+        else:
+            request.post_body = builder.post_map
+        request.url = url + builder.build_url()
+        return request
+
+    def __create_request_by_get_with_signatureED25519(self, url, builder):
+        request = RestApiRequest()
+        request.method = "GET"
+        request.host = self.__server_url
+        create_signatureED25519(self.__api_key, self.__secret_key, request.method, request.host + url, builder)
+        request.header.update({"Content-Type": "application/x-www-form-urlencoded", "x-connecting-ip": "192.2.12.19",
+                               'HB-REAL-IP': '192.2.12.19', 'X-Forwarded-For': '192.2.12.19',
+                               'X-Real-IP': '192.2.12.19'})
+        request.url = url + builder.build_url()
+        return request
+
     def create_request(self, method, url, params, parse):
         builder = UrlParamsBuilder()
         if params and len(params):
@@ -75,17 +102,28 @@ class RestApiSyncClient(object):
             else:
                 raise HuobiApiException(HuobiApiException.EXEC_ERROR,
                                         "[error] undefined HTTP method")
-
-        if method == HttpMethod.GET:
-            request = self.__create_request_by_get(url, builder)
-        elif method == HttpMethod.GET_SIGN:
-            request = self.__create_request_by_get_with_signature(url, builder)
-        elif method == HttpMethod.POST_SIGN:
-            request = self.__create_request_by_post_with_signature(url, builder)
-        elif method == HttpMethod.POST:
-            request = self.__create_request_by_post_with_signature(url, builder)
+        if g_sign == "256":
+            if method == HttpMethod.GET:
+                request = self.__create_request_by_get(url, builder)
+            elif method == HttpMethod.GET_SIGN:
+                request = self.__create_request_by_get_with_signature(url, builder)
+            elif method == HttpMethod.POST_SIGN:
+                request = self.__create_request_by_post_with_signature(url, builder)
+            elif method == HttpMethod.POST:
+                request = self.__create_request_by_post_with_signature(url, builder)
+            else:
+                raise HuobiApiException(HuobiApiException.INPUT_ERROR, "[Input] " + method + "  is invalid http method")
         else:
-            raise HuobiApiException(HuobiApiException.INPUT_ERROR, "[Input] " + method + "  is invalid http method")
+            if method == HttpMethod.GET:
+                request = self.__create_request_by_get(url, builder)
+            elif method == HttpMethod.GET_SIGN:
+                request = self.__create_request_by_get_with_signatureED25519(url, builder)
+            elif method == HttpMethod.POST_SIGN:
+                request = self.__create_request_by_post_with_signatureED25519(url, builder)
+            elif method == HttpMethod.POST:
+                request = self.__create_request_by_post_with_signatureED25519(url, builder)
+            else:
+                raise HuobiApiException(HuobiApiException.INPUT_ERROR, "[Input] " + method + "  is invalid http method")
 
         request.json_parser = parse
 
@@ -94,6 +132,7 @@ class RestApiSyncClient(object):
     """
     for post batch operation, such as batch create orders[ /v1/order/batch-orders ]
     """
+
     def create_request_post_batch(self, method, url, params, parse):
         builder = UrlParamsBuilder()
         if params and len(params):
@@ -132,6 +171,7 @@ class RestApiSyncClient(object):
     """
     for post batch operation, such as batch create orders[ /v1/order/batch-orders ]
     """
+
     def request_process_post_batch(self, method, url, params, parse):
         if self.__performance_test is not None and self.__performance_test is True:
             return self.request_process_post_batch_performance(method, url, params, parse)
@@ -151,4 +191,3 @@ class RestApiSyncClient(object):
             return call_sync_perforence_test(request)
 
         return None, 0, 0
-

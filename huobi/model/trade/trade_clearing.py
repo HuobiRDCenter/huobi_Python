@@ -56,5 +56,3 @@ class TradeClearing:
         PrintBasic.print_basic(self.transactFee, format_data + "Transact Fee")
         PrintBasic.print_basic(self.feeDeduct, format_data + "Fee Deduct")
         PrintBasic.print_basic(self.feeDeductType, format_data + "Fee Deduct Type")
-
-

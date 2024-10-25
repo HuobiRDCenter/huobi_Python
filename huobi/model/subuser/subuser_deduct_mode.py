@@ -12,5 +12,3 @@ class SubuserDeductMode:
         PrintBasic.print_basic(self.deductMode, format_data + "deductMode")
         PrintBasic.print_basic(self.errCode, format_data + "errCode")
         PrintBasic.print_basic(self.errMessage, format_data + "errMessage")
-
-

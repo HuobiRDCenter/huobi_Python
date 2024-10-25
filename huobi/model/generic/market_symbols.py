@@ -1,5 +1,3 @@
-
-
 class MarketSymbols:
 
     def __init__(self):
@@ -39,7 +37,6 @@ class MarketSymbols:
         self.flr = 0.0
         self.castate = ""
 
-
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.symbol, format_data + "symbol")
@@ -77,7 +74,3 @@ class MarketSymbols:
         PrintBasic.print_basic(self.maxov, format_data + "maxov")
         PrintBasic.print_basic(self.flr, format_data + "flr")
         PrintBasic.print_basic(self.castate, format_data + "castate")
-
-
-
-

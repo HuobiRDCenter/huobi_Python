@@ -8,5 +8,3 @@ class SubuserUserState:
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.uid, format_data + "uid")
         PrintBasic.print_basic(self.userState, format_data + "userState")
-
-

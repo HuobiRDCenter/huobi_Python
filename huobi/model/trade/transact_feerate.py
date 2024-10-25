@@ -1,4 +1,3 @@
-
 class TransactFeeRate:
     """
     The transact fee rate.

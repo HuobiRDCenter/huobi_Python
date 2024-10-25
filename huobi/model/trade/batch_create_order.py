@@ -9,6 +9,7 @@ class BatchCreateOrder:
         err_msg: The number of crypto asset transferred in its minimum unit.
 
     """
+
     def __init__(self):
         self.order_id = 0
         self.client_order_id = ""

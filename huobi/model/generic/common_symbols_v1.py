@@ -1,5 +1,3 @@
-
-
 class CommonSymbolsV1:
 
     def __init__(self):
@@ -37,7 +35,6 @@ class CommonSymbolsV1:
         self.ca2oa = 0
         self.ca2ca = 0
 
-
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.symbol, format_data + "symbol")
@@ -73,5 +70,3 @@ class CommonSymbolsV1:
         PrintBasic.print_basic(self.ca1ca, format_data + "ca1ca")
         PrintBasic.print_basic(self.ca2oa, format_data + "ca2oa")
         PrintBasic.print_basic(self.ca2ca, format_data + "ca2ca")
-
-

@@ -51,4 +51,3 @@ class MarketClientPerformance(MarketClient):
                 ret_data.asks = ret_data.asks[0:depth_size]
 
         return ret_data, req_cost, cost_manual
-

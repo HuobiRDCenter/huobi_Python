@@ -5,7 +5,6 @@ from huobi.utils import *
 from huobi.model.subuser.list import List
 
 
-
 class GetSubuserAccountListService:
 
     def __init__(self, params):

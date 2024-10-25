@@ -1,5 +1,6 @@
 from huobi.constant import *
 
+
 class CandlestickReq:
     """
     The candlestick/kline data received by subscription of candlestick/kline.

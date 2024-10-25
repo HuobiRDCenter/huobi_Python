@@ -1,5 +1,3 @@
-
-
 class CommonCurrencies:
 
     def __init__(self):
@@ -30,7 +28,6 @@ class CommonCurrencies:
         self.svd = ""
         self.tags = ""
 
-
     def print_object(self, format_data=""):
         from huobi.utils.print_mix_object import PrintBasic
         PrintBasic.print_basic(self.cc, format_data + "cc")
@@ -59,5 +56,3 @@ class CommonCurrencies:
         PrintBasic.print_basic(self.dd, format_data + "dd")
         PrintBasic.print_basic(self.svd, format_data + "svd")
         PrintBasic.print_basic(self.tags, format_data + "tags")
-
-

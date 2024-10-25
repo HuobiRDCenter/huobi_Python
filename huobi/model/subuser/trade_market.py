@@ -1,4 +1,3 @@
-
 class TradeMarket:
     """
     The trade information with price and amount etc.

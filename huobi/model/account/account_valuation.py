@@ -21,5 +21,3 @@ class AccountValuation:
                 profitAccountBalanceList_obj.print_object("\t")
                 print()
         self.updated.print_object()
-
-

@@ -4,7 +4,6 @@ from huobi.model.generic import *
 from huobi.utils import *
 
 
-
 class GetReferenceCurrenciesService:
 
     def __init__(self, params):
@@ -23,9 +22,3 @@ class GetReferenceCurrenciesService:
             return ret_list
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET, channel, self.params, parse)
-
-
-
-
-
-

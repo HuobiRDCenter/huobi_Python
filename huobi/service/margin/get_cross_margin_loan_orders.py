@@ -4,7 +4,6 @@ from huobi.model.margin.cross_loan_order import CrossLoanOrder
 from huobi.utils import *
 
 
-
 class GetCrossMarginLoanOrdersService:
 
     def __init__(self, params):
@@ -18,9 +17,3 @@ class GetCrossMarginLoanOrdersService:
             return default_parse_list_dict(data_list, CrossLoanOrder, [])
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
-
-
-
-
-
-

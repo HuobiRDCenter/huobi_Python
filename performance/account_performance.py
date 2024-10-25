@@ -29,7 +29,7 @@ class AccountClientPerformance(AccountClient):
         """
         server_url = get_default_server_url(self.__kwargs.get("url"))
         tasks = []
-        accounts, req_cost_1, cost_manual_1  = super(AccountClientPerformance, self).get_accounts()
+        accounts, req_cost_1, cost_manual_1 = super(AccountClientPerformance, self).get_accounts()
         start_time = time.time()
         account_balance_list = []
         account_balance_json_map = {}
@@ -38,7 +38,8 @@ class AccountClientPerformance(AccountClient):
             balance_request = GetBalanceService(balance_params).get_request(**self.__kwargs)
             balance_url = server_url + balance_request.url
             tasks.append(asyncio.ensure_future(
-                super(AccountClientPerformance, self).async_get_account_balance(balance_url, account_item.id, account_balance_json_map)))
+                super(AccountClientPerformance, self).async_get_account_balance(balance_url, account_item.id,
+                                                                                account_balance_json_map)))
 
         loop = asyncio.get_event_loop()
         try:

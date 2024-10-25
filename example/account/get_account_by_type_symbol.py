@@ -6,7 +6,7 @@ from huobi.constant import *
 from huobi.utils import *
 
 account_client = AccountClient(api_key=g_api_key,
-                              secret_key=g_secret_key)
+                               secret_key=g_secret_key)
 
 LogInfo.output("========= case 1 get spot (SDK encapsulated api) =========")
 account_obj = account_client.get_account_by_type_and_symbol(account_type=AccountType.SPOT, symbol=None)

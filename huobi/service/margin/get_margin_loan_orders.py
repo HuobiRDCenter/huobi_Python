@@ -4,7 +4,6 @@ from huobi.model.margin import *
 from huobi.utils import *
 
 
-
 class GetMarginLoanOrdersService:
 
     def __init__(self, params):
@@ -18,9 +17,3 @@ class GetMarginLoanOrdersService:
             return default_parse_list_dict(data_list, LoanOrder, [])
 
         return RestApiSyncClient(**kwargs).request_process(HttpMethod.GET_SIGN, channel, self.params, parse)
-
-
-
-
-
-
