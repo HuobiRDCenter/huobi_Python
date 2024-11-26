@@ -81,7 +81,8 @@ def call_sync_perforence_test(request, is_checked=False):
         req_cost = response.elapsed.total_seconds()
         if is_checked is True:
             return response.text
-        dict_data = json.loads(response.text, encoding="utf-8")
+        # dict_data = json.loads(response.text, encoding="utf-8")
+        dict_data = json.loads(response.text)
         # print("call_sync  === recv data : ", dict_data)
         check_response(dict_data)
         return request.json_parser(dict_data), req_cost, cost_manual
@@ -92,7 +93,8 @@ def call_sync_perforence_test(request, is_checked=False):
         inner_end_time = time.time()
         cost_manual = round(inner_end_time - inner_start_time, 6)
         req_cost = response.elapsed.total_seconds()
-        dict_data = json.loads(response.text, encoding="utf-8")
+        # dict_data = json.loads(response.text, encoding="utf-8")
+        dict_data = json.loads(response.text)
         # print("call_sync  === recv data : ", dict_data)
         check_response(dict_data)
         return request.json_parser(dict_data), req_cost, cost_manual
