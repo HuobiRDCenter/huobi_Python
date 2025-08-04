@@ -30,7 +30,7 @@ class OrderUpdate:
         self.remainAmt = ""
         self.orderStatus = OrderState.INVALID
         self.clientOrderId = ""
-        self.eventType = ""
+        self.event = ""
         self.symbol = ""
         self.type = OrderType.INVALID
         self.accountId = 0
@@ -54,7 +54,7 @@ class OrderUpdate:
         PrintBasic.print_basic(self.aggressor, format_data + "is Taker")
         PrintBasic.print_basic(self.orderStatus, format_data + "Order State")
         PrintBasic.print_basic(self.clientOrderId, format_data + "Client Order Id")
-        PrintBasic.print_basic(self.eventType, format_data + "Event Type")
+        PrintBasic.print_basic(self.event, format_data + "Event")
         PrintBasic.print_basic(self.symbol, format_data + "Symbol")
         PrintBasic.print_basic(self.type, format_data + "Order Type")
         PrintBasic.print_basic(self.accountId, format_data + "Account Id")
