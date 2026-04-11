@@ -10,9 +10,10 @@ class SubAccountUpdateV2Service:
 
     def subscribe(self, callback, error_handler, **kwargs):
         mode = self.params["mode"]
+        action = self.params['action']
 
         def subscription(connection):
-            connection.send(accounts_update_channel(mode))
+            connection.send(accounts_update_channel(mode, action))
 
         def parse(dict_data):
             account_change_event = AccountUpdateEvent()

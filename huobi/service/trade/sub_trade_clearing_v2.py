@@ -10,11 +10,13 @@ class SubTradeClearingV2Service:
         self.params = params
 
     def subscribe(self, callback, error_handler, **kwargs):
+        mode = self.params["mode"]
+        action = self.params["action"]
         symbol_list = self.params["symbol_list"]
 
         def subscription(connection):
             for symbol in symbol_list:
-                connection.send(trade_clearing_channel(symbol))
+                connection.send(trade_clearing_channel(symbol=symbol,mode=mode,action=action))
                 time.sleep(0.01)
 
         def parse(dict_data):

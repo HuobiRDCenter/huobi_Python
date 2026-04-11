@@ -10,11 +10,12 @@ class SubOrderUpdateV2Service:
         self.params = params
 
     def subscribe(self, callback, error_handler, **kwargs):
+        action = self.params["action"]
         symbol_list = self.params["symbol_list"]
 
         def subscription(connection):
             for val in symbol_list:
-                connection.send(orders_update_channel(val))
+                connection.send(orders_update_channel(val, action=action))
                 time.sleep(0.01)
 
         def parse(dict_data):

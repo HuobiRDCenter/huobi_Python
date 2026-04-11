@@ -31,9 +31,9 @@ def price_depth_bbo_channel(symbol):
     return json.dumps(channel)
 
 
-def orders_update_channel(symbol):
+def orders_update_channel(symbol, action='sub'):
     channel = dict()
-    channel["action"] = "sub"
+    channel["action"] = action
     channel["ch"] = "orders#{symbol}".format(symbol=symbol)
     return json.dumps(channel)
 
@@ -45,9 +45,9 @@ def market_detail_channel(symbol):
     return json.dumps(channel)
 
 
-def accounts_update_channel(mode=0):
+def accounts_update_channel(mode=0, action='sub'):
     channel = dict()
-    channel["action"] = "sub"
+    channel["action"] = action
     if mode is None:
         channel["ch"] = "accounts.update"
     else:
@@ -76,9 +76,9 @@ def request_mbp_channel(symbol, levels):
     return json.dumps(channel)
 
 
-def trade_clearing_channel(symbol="*", mode="0"):
+def trade_clearing_channel(symbol="*", mode="0", action='sub'):
     channel = dict()
-    channel["action"] = "sub"
+    channel["action"] = action
     channel["ch"] = "trade.clearing#" + symbol + "#" + mode
     return json.dumps(channel)
 
