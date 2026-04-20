@@ -15,38 +15,63 @@ section [Migrate from v1 or v2](#Migrate-from-v1-or-v2)
 
 ## Table of Contents
 
-- [Quick Start](#Quick-Start)
-- [Usage](#Usage)
-    - [Folder structure](#Folder-structure)
-    - [Run Examples](#Run-examples)
+- [Huobi Python SDK For Spot v3](#huobi-python-sdk-for-spot-v3)
+  - [Table of Contents](#table-of-contents)
+  - [Quick Start](#quick-start)
+  - [Usage](#usage)
+    - [Folder structure](#folder-structure)
+    - [Run examples](#run-examples)
     - [Client](#client)
-    - [Migrate from v1 or v2](#Migrate-from-v1-or-v2)
-- [Request example](#Request-example)
-    - [Reference data](#Reference-data)
-    - [Market data](#Market-data)
+      - [Customized Host](#customized-host)
+      - [Public and Private](#public-and-private)
+      - [Rest and WebSocket](#rest-and-websocket)
+    - [Migrate from v1 or v2](#migrate-from-v1-or-v2)
+      - [Why v3](#why-v3)
+      - [How to migrate](#how-to-migrate)
+  - [Request example](#request-example)
+    - [Reference data](#reference-data)
+      - [Exchange timestamp](#exchange-timestamp)
+      - [Symbol and currencies](#symbol-and-currencies)
+    - [Market data](#market-data)
+      - [Candlestick](#candlestick)
+      - [Depth](#depth)
+      - [Latest trade](#latest-trade)
+      - [Historical](#historical)
     - [Account](#account)
+      - [Get account balance](#get-account-balance)
     - [Wallet](#wallet)
+      - [Withdraw](#withdraw)
+      - [Cancel withdraw](#cancel-withdraw)
+      - [Withdraw and deposit history](#withdraw-and-deposit-history)
     - [Trading](#trading)
+      - [Create order](#create-order)
+      - [Cancel order](#cancel-order)
+      - [Cancel open orders](#cancel-open-orders)
+      - [Get order info](#get-order-info)
+      - [Historical orders](#historical-orders)
     - [Margin Loan](#margin-loan)
-- [Subscription example](#Subscription-example)
-    - [Subscribe trade update](#Subscribe-trade-update)
+      - [Apply loan](#apply-loan)
+      - [Repay loan](#repay-loan)
+      - [Loan history](#loan-history)
+  - [Subscription example](#subscription-example)
+    - [Subscribe trade update](#subscribe-trade-update)
     - [Subscribe candlestick update](#subscribe-candlestick-update)
-    - [Subscribe order update](#Subscribe-order-update)
+    - [Subscribe order update](#subscribe-order-update)
     - [Subscribe account change](#subscribe-account-change)
 
 ## Quick Start
 
-*The SDK is compiled by Python 3.7 and above*
+_The SDK is compiled by Python 3.7 and above_
 
 You can download and open the source code directly in your python project, and then you can follow below steps:
 
-* Create the client instance.
-* Call the interfaces provided by client.
+- Create the client instance.
+- Call the interfaces provided by client.
 
 ```python
 # Create generic client instance and get the timestamp
 generic_client = GenericClient()
-ts = generic_client.get_exchange_timestamp()
+timestamp = generic_client.get_exchange_timestamp()
 print(timestamp)
 
 # Create the market client instance and get the latest btcusdt‘s candlestick
@@ -65,13 +90,13 @@ to use it correctly.
 This is the folder and package structure of SDK source code and the description
 
 - **huobi**: The core of the SDK
-    - **client**: The client that are responsible to access data, this is the external interface layer.
-    - **connection**: Responsible to manage the remote server connection
-    - **constant**: The constant configuration
-    - **exception**: The wrapped exception
-    - **model**: The server returned data model
-    - **service**: The internal implementation for each **client**.
-    - **utils**:The utility classes, including signature, json parser, logging etc.
+  - **client**: The client that are responsible to access data, this is the external interface layer.
+  - **connection**: Responsible to manage the remote server connection
+  - **constant**: The constant configuration
+  - **exception**: The wrapped exception
+  - **model**: The server returned data model
+  - **service**: The internal implementation for each **client**.
+  - **utils**:The utility classes, including signature, json parser, logging etc.
 - **performance**: This is for internal performance testing
 - **tests**: This is for internal functional testing
 - **example**: The main package is defined here, it provides the examples how to use **client** instance to access API
@@ -84,7 +109,7 @@ need below additional steps:
 
 1. Create an **API Key** first from Huobi official website
 2. Create **privateconfig.py** into your **huobi** folder. The purpose of this file is to prevent submitting SecretKey
-   into repository by accident, so this file is already added in the *.gitignore* file.
+   into repository by accident, so this file is already added in the _.gitignore_ file.
 3. Assign your API access key and secret key to as below:
 
 ```python
@@ -248,7 +273,7 @@ list_obj = market_client.get_history_trade("btcusdt", 6)
 
 ### Account
 
-*Authentication is required.*
+_Authentication is required._
 
 #### Get account balance
 
@@ -259,7 +284,7 @@ account_balance_list = account_client.get_account_balance()
 
 ### Wallet
 
-*Authentication is required.*
+_Authentication is required._
 
 #### Withdraw
 
@@ -287,7 +312,7 @@ list_withdraw_history = wallet_client.get_deposit_withdraw(op_type=DepositWithdr
 
 ### Trading
 
-*Authentication is required.*
+_Authentication is required._
 
 #### Create order
 
@@ -326,7 +351,7 @@ list_obj = trade_client.get_history_orders(symbol="btcusdt", start_time=None, en
 
 ### Margin Loan
 
-*Authentication is required.*
+_Authentication is required._
 
 These are examples for cross margin
 
@@ -381,7 +406,7 @@ market_client.sub_candlestick("btcusdt,ethusdt", CandlestickInterval.MIN1, callb
 
 ### Subscribe order update
 
-*Authentication is required.*
+_Authentication is required._
 
 ```python
 def callback(upd_event: 'OrderUpdateEvent'):
@@ -395,7 +420,7 @@ trade_client.sub_order_update("eosusdt", callback)
 
 ### Subscribe account change
 
-*Authentication is required.*
+_Authentication is required._
 
 ```python
 def callback(account_change_event: 'AccountChangeEvent'):
