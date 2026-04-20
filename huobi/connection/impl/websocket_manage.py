@@ -16,25 +16,29 @@ from huobi.utils.api_signature_ED25519 import create_signatureED25519
 websocket_connection_handler = dict()
 
 
-def on_message(original_connection, message):
+def on_message(original_connection, message, *args, **kwargs):
     websocket_connection = websocket_connection_handler[original_connection]
-    websocket_connection.on_message(message)
+    if websocket_connection and hasattr(websocket_connection, "on_message"):
+        websocket_connection.on_message(message)
     return
 
 
-def on_error(original_connection, error):
+def on_error(original_connection, error, *args, **kwargs):
     websocket_connection = websocket_connection_handler[original_connection]
-    websocket_connection.on_failure(error)
+    if websocket_connection and hasattr(websocket_connection, "on_failure"):
+        websocket_connection.on_failure(error)
 
 
-def on_close(original_connection):
+def on_close(original_connection, *args, **kwargs):
     websocket_connection = websocket_connection_handler[original_connection]
-    websocket_connection.on_close()
+    if websocket_connection and hasattr(websocket_connection, "on_close"):
+        websocket_connection.on_close()
 
 
-def on_open(original_connection):
+def on_open(original_connection, *args, **kwargs):
     websocket_connection = websocket_connection_handler[original_connection]
-    websocket_connection.on_open(original_connection)
+    if websocket_connection and hasattr(websocket_connection, "on_open"):
+        websocket_connection.on_open(original_connection)
 
 
 connection_id = 0
